@@ -8,11 +8,22 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: FormViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        self.form.sections = [
+            FormSection(rows: [
+                FormRow(title: "Vorname", value: "Andreas"),
+                FormRow(title: "Nachname", value: "Alfarè", cellSelection: { (cell) -> Void in
+                    print("cell selected")
+                }),
+                FormRow(title: "Nachname", value: "Alfarè", cellClass: TextFieldFormCell.self, valueChanged: { (row) -> Void in
+                    print("row value: \(row.value)")
+                })
+            ])
+        ]
     }
 
     override func didReceiveMemoryWarning() {

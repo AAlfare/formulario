@@ -13,6 +13,7 @@
 		E117A7421C80AAFB00B00A28 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E117A7411C80AAFB00B00A28 /* Assets.xcassets */; };
 		E117A7451C80AAFB00B00A28 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E117A7431C80AAFB00B00A28 /* LaunchScreen.storyboard */; };
 		E117A7501C80AAFB00B00A28 /* FormularioUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E117A74F1C80AAFB00B00A28 /* FormularioUITests.swift */; };
+		E117A75B1C80AB0900B00A28 /* Formulario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E117A75A1C80AB0900B00A28 /* Formulario.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		E117A74B1C80AAFB00B00A28 /* FormularioUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FormularioUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E117A74F1C80AAFB00B00A28 /* FormularioUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormularioUITests.swift; sourceTree = "<group>"; };
 		E117A7511C80AAFB00B00A28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E117A75A1C80AB0900B00A28 /* Formulario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Formulario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 			children = (
 				E117A73A1C80AAFB00B00A28 /* AppDelegate.swift */,
 				E117A73C1C80AAFB00B00A28 /* ViewController.swift */,
+				E117A75A1C80AB0900B00A28 /* Formulario.swift */,
 				E117A73E1C80AAFB00B00A28 /* Main.storyboard */,
 				E117A7411C80AAFB00B00A28 /* Assets.xcassets */,
 				E117A7431C80AAFB00B00A28 /* LaunchScreen.storyboard */,
@@ -197,6 +200,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E117A75B1C80AB0900B00A28 /* Formulario.swift in Sources */,
 				E117A73D1C80AAFB00B00A28 /* ViewController.swift in Sources */,
 				E117A73B1C80AAFB00B00A28 /* AppDelegate.swift in Sources */,
 			);
