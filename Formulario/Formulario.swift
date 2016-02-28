@@ -9,7 +9,7 @@
 import UIKit
 
 class Form: NSObject {
-    var sections: [FormSection]? {
+    var sections = [FormSection]() {
         didSet {
             tableView?.reloadData()
         }
@@ -26,7 +26,7 @@ class Form: NSObject {
 
 extension Form: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let row = sections![indexPath.section].rows[indexPath.row]
+        let row = sections[indexPath.section].rows[indexPath.row]
         if let cell = tableView.cellForRowAtIndexPath(indexPath) as? FormCell {
             row.selection?(cell)
         }
@@ -35,25 +35,31 @@ extension Form: UITableViewDelegate {
 
 extension Form: UITableViewDataSource {
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return sections?.count ?? 0
+        return sections.count ?? 0
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections![section].rows.count ?? 0
+        return sections[section].rows.count ?? 0
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let row = sections![indexPath.section].rows[indexPath.row]
+        let row = sections[indexPath.section].rows[indexPath.row]
         
         let cell = tableView.dequeueReusableCellWithIdentifier(row.cellClass.cellIdentifier(), forIndexPath: indexPath) as! FormCell
         cell.configure(row)
         return cell
     }
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let section = sections[section]
+        return section.title
+    }
 }
 
 struct FormSection {
     var rows: [FormRow]
-    init(rows: [FormRow] = []) {
+    var title: String?
+    init(title: String? = nil, rows: [FormRow] = []) {
+        self.title = title
         self.rows = rows
     }
 }
@@ -74,15 +80,23 @@ class FormRow: NSObject {
         self.selection = cellSelection
         self.valueChanged = valueChanged
         super.init()
-        self.addObserver(self, forKeyPath: "value", options: .New, context: nil)
+        addObserver(self, forKeyPath: "value", options: .New, context: nil)
     }
     deinit {
-        
+        removeObserver(self, forKeyPath: "value")
     }
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "value" {
             valueChanged?(self)
         }
+    }
+}
+
+class TextFieldFormRow: FormRow {
+    var placeholder: String?
+    init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+        self.placeholder = placeholder
+        super.init(title: title, value: value, cellClass: TextFieldFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
 }
 
@@ -110,10 +124,22 @@ class TextFieldFormCell: FormCell, UITextFieldDelegate {
     var textField = UITextField()
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
-        textField.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
-        textField.frame = contentView.frame
+        
+        textLabel?.translatesAutoresizingMaskIntoConstraints = false
+        textLabel?.setContentHuggingPriority(1000, forAxis: .Horizontal)
+        
         textField.addTarget(self, action: "textFieldValueChanged:", forControlEvents: .EditingChanged)
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.setContentHuggingPriority(100, forAxis: .Horizontal)
         contentView.addSubview(textField)
+        
+        let views = [
+            "textLabel": textLabel!,
+            "textField": textField
+        ]
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-[textField]-7-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textField]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -126,11 +152,19 @@ class TextFieldFormCell: FormCell, UITextFieldDelegate {
     
     override func configure(row: FormRow) {
         self.row = row
+        textLabel?.text = row.title
         textField.text = row.value as? String
+        textField.placeholder = (row as? TextFieldFormRow)?.placeholder
     }
     
     func textFieldValueChanged(textField: UITextField) {
         row?.value = textField.text
+    }
+    
+    override func setSelected(selected: Bool, animated: Bool) {
+        if selected {
+            textField.becomeFirstResponder()
+        }
     }
 }
 

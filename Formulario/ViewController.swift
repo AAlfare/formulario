@@ -12,16 +12,21 @@ class ViewController: FormViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.form.sections.append(FormSection(title: "Blubb", rows: [
+            FormRow(title: "Test", value: "Möpp!")
+        ]))
         self.form.sections = [
             FormSection(rows: [
                 FormRow(title: "Vorname", value: "Andreas"),
                 FormRow(title: "Nachname", value: "Alfarè", cellSelection: { (cell) -> Void in
                     print("cell selected")
                 }),
-                FormRow(title: "Nachname", value: "Alfarè", cellClass: TextFieldFormCell.self, valueChanged: { (row) -> Void in
-                    print("row value: \(row.value)")
+                TextFieldFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: { (row) -> Void in
+                    print(row.value)
                 })
+            ]),
+            FormSection(title: "Kommunikation", rows: [
+                FormRow(title: "Email", value: "andreas@alfare.it")
             ])
         ]
     }
