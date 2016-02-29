@@ -222,7 +222,7 @@ public class SliderFormCell: FormCell {
 }
 
 public class FormViewController: UIViewController {
-    var form = Form() {
+    public var form = Form() {
         willSet {
             form.tableView = nil
         }
