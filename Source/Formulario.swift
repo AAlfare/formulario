@@ -89,7 +89,7 @@ public class FormRow: NSObject {
     var selection: ((FormCell)->Void)?
     var valueChanged: ((FormRow)->Void)?
     
-    init(title: String?, value: AnyObject?, cellClass: FormCell.Type? = nil, cellSelection: ((FormCell) -> Void)? = nil, valueChanged: ((FormRow)->Void)? = nil) {
+    public init(title: String?, value: AnyObject?, cellClass: FormCell.Type? = nil, cellSelection: ((FormCell) -> Void)? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
         self.value = value
         self.cellClass = cellClass ?? FormCell.self
@@ -141,6 +141,7 @@ public class FormCell: UITableViewCell {
 
 public class TextFieldFormCell: FormCell, UITextFieldDelegate {
     var textField = UITextField()
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
         
@@ -252,12 +253,14 @@ public class FormViewController: UIViewController {
         form.tableView = tableView
     }
     
-    convenience init() {
+    public convenience init() {
         self.init(style: .Plain)
     }
+    
     override public func loadView() {
         view = tableView
     }
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
         form.tableView = tableView
