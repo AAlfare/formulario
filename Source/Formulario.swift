@@ -9,12 +9,12 @@
 import UIKit
 
 public class Form: NSObject {
-    var sections = [FormSection]() {
+    public var sections = [FormSection]() {
         didSet {
             tableView?.reloadData()
         }
     }
-    var tableView: UITableView? {
+    public var tableView: UITableView? {
         willSet {
             tableView?.dataSource = nil
             tableView?.delegate = nil
@@ -35,7 +35,7 @@ public class Form: NSObject {
         SliderFormCell.self
     ]
     
-    class func registerCellClass(cellClass: FormCell.Type) {
+    public class func registerCellClass(cellClass: FormCell.Type) {
         registeredCellClasses.append(cellClass)
     }
 }
@@ -74,7 +74,7 @@ extension Form: UITableViewDataSource {
 public struct FormSection {
     var rows: [FormRow]
     var title: String?
-    init(title: String? = nil, rows: [FormRow] = []) {
+    public init(title: String? = nil, rows: [FormRow] = []) {
         self.title = title
         self.rows = rows
     }
@@ -83,11 +83,11 @@ public struct FormSection {
 
 
 public class FormRow: NSObject {
-    var title: String?
-    dynamic var value: AnyObject?
-    var cellClass: FormCell.Type
-    var selection: ((FormCell)->Void)?
-    var valueChanged: ((FormRow)->Void)?
+    public var title: String?
+    dynamic public var value: AnyObject?
+    public var cellClass: FormCell.Type
+    public var selection: ((FormCell)->Void)?
+    public var valueChanged: ((FormRow)->Void)?
     
     public init(title: String?, value: AnyObject?, cellClass: FormCell.Type? = nil, cellSelection: ((FormCell) -> Void)? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
@@ -112,15 +112,15 @@ public class FormRow: NSObject {
 
 public class TextFieldFormRow: FormRow {
     var placeholder: String?
-    init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
         self.placeholder = placeholder
         super.init(title: title, value: value, cellClass: TextFieldFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
 }
 
 public class FormCell: UITableViewCell {
-    var row: FormRow?
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public var row: FormRow?
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
     }
 
@@ -132,7 +132,7 @@ public class FormCell: UITableViewCell {
         return String.fromCString(class_getName(self)) ?? "FormCell"
     }
     
-    func configure(row: FormRow) {
+    public func configure(row: FormRow) {
         self.row = row
         self.textLabel?.text = row.title
         self.detailTextLabel?.text = row.value as? String
@@ -167,7 +167,7 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func configure(row: FormRow) {
+    override public func configure(row: FormRow) {
         self.row = row
         textLabel?.text = row.title
         textField.text = row.value as? String
@@ -211,7 +211,7 @@ public class SliderFormCell: FormCell {
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    override func configure(row: FormRow) {
+    override public func configure(row: FormRow) {
         super.configure(row)
         if let value = row.value as? Float {
             slider.value = value

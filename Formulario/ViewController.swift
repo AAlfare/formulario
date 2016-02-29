@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Formulario
 
 class ViewController: FormViewController {
 

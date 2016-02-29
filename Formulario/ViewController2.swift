@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Formulario
 
 class ViewController2: UIViewController {
     var tableView = UITableView()

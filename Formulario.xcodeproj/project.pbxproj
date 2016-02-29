@@ -15,8 +15,9 @@
 		E117A7501C80AAFB00B00A28 /* FormularioUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E117A74F1C80AAFB00B00A28 /* FormularioUITests.swift */; };
 		E16291591C849B4B00FECC90 /* Formulario.h in Headers */ = {isa = PBXBuildFile; fileRef = E16291581C849B4B00FECC90 /* Formulario.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E16291631C849B7F00FECC90 /* Formulario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA9C51C843636001D0DF0 /* Formulario.swift */; };
+		E16291661C84A6A300FECC90 /* Formulario.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E16291561C849B4B00FECC90 /* Formulario.framework */; };
+		E162916B1C84A74600FECC90 /* Formulario.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E16291561C849B4B00FECC90 /* Formulario.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E1DEA9C41C843390001D0DF0 /* ViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA9C31C843390001D0DF0 /* ViewController2.swift */; };
-		E1DEA9C61C843636001D0DF0 /* Formulario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA9C51C843636001D0DF0 /* Formulario.swift */; };
 		E1DEA9C91C8438BE001D0DF0 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA9C81C8438BE001D0DF0 /* CustomCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -28,7 +29,28 @@
 			remoteGlobalIDString = E117A7361C80AAFB00B00A28;
 			remoteInfo = Formulario;
 		};
+		E16291671C84A6B400FECC90 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E117A72F1C80AAFB00B00A28 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E16291551C849B4B00FECC90;
+			remoteInfo = Formulario;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E162916A1C84A73A00FECC90 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E162916B1C84A74600FECC90 /* Formulario.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		E117A7371C80AAFB00B00A28 /* Formulario-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Formulario-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E16291661C84A6A300FECC90 /* Formulario.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,10 +180,12 @@
 				E117A7331C80AAFB00B00A28 /* Sources */,
 				E117A7341C80AAFB00B00A28 /* Frameworks */,
 				E117A7351C80AAFB00B00A28 /* Resources */,
+				E162916A1C84A73A00FECC90 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E16291681C84A6B400FECC90 /* PBXTargetDependency */,
 			);
 			name = "Formulario-Example";
 			productName = Formulario;
@@ -281,7 +306,6 @@
 				E117A73D1C80AAFB00B00A28 /* ViewController.swift in Sources */,
 				E1DEA9C91C8438BE001D0DF0 /* CustomCell.swift in Sources */,
 				E117A73B1C80AAFB00B00A28 /* AppDelegate.swift in Sources */,
-				E1DEA9C61C843636001D0DF0 /* Formulario.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,6 +332,11 @@
 			isa = PBXTargetDependency;
 			target = E117A7361C80AAFB00B00A28 /* Formulario-Example */;
 			targetProxy = E117A74C1C80AAFB00B00A28 /* PBXContainerItemProxy */;
+		};
+		E16291681C84A6B400FECC90 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E16291551C849B4B00FECC90 /* Formulario */;
+			targetProxy = E16291671C84A6B400FECC90 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -417,6 +446,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Formulario/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = it.alfare.Formulario;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -428,6 +458,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Formulario/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = it.alfare.Formulario;
 				PRODUCT_NAME = "$(TARGET_NAME)";

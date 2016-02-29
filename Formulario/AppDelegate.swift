@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Formulario
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
