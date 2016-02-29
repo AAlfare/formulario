@@ -8,7 +8,7 @@
 
 import UIKit
 
-class Form: NSObject {
+public class Form: NSObject {
     var sections = [FormSection]() {
         didSet {
             tableView?.reloadData()
@@ -41,7 +41,7 @@ class Form: NSObject {
 }
 
 extension Form: UITableViewDelegate {
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let row = sections[indexPath.section].rows[indexPath.row]
         if let cell = tableView.cellForRowAtIndexPath(indexPath) as? FormCell {
             row.selection?(cell)
@@ -50,28 +50,28 @@ extension Form: UITableViewDelegate {
 }
 
 extension Form: UITableViewDataSource {
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return sections.count ?? 0
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sections[section].rows.count ?? 0
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].rows[indexPath.row]
         
         let cell = tableView.dequeueReusableCellWithIdentifier(row.cellClass.cellIdentifier(), forIndexPath: indexPath) as! FormCell
         cell.configure(row)
         return cell
     }
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let section = sections[section]
         return section.title
     }
 }
 
-struct FormSection {
+public struct FormSection {
     var rows: [FormRow]
     var title: String?
     init(title: String? = nil, rows: [FormRow] = []) {
@@ -82,7 +82,7 @@ struct FormSection {
 
 
 
-class FormRow: NSObject {
+public class FormRow: NSObject {
     var title: String?
     dynamic var value: AnyObject?
     var cellClass: FormCell.Type
@@ -98,17 +98,19 @@ class FormRow: NSObject {
         super.init()
         addObserver(self, forKeyPath: "value", options: .New, context: nil)
     }
+    
     deinit {
         removeObserver(self, forKeyPath: "value")
     }
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    
+    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "value" {
             valueChanged?(self)
         }
     }
 }
 
-class TextFieldFormRow: FormRow {
+public class TextFieldFormRow: FormRow {
     var placeholder: String?
     init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
         self.placeholder = placeholder
@@ -116,13 +118,13 @@ class TextFieldFormRow: FormRow {
     }
 }
 
-class FormCell: UITableViewCell {
+public class FormCell: UITableViewCell {
     var row: FormRow?
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -137,7 +139,7 @@ class FormCell: UITableViewCell {
     }
 }
 
-class TextFieldFormCell: FormCell, UITextFieldDelegate {
+public class TextFieldFormCell: FormCell, UITextFieldDelegate {
     var textField = UITextField()
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
@@ -160,7 +162,7 @@ class TextFieldFormCell: FormCell, UITextFieldDelegate {
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -175,14 +177,14 @@ class TextFieldFormCell: FormCell, UITextFieldDelegate {
         row?.value = textField.text
     }
     
-    override func setSelected(selected: Bool, animated: Bool) {
+    override public func setSelected(selected: Bool, animated: Bool) {
         if selected {
             textField.becomeFirstResponder()
         }
     }
 }
 
-class SliderFormCell: FormCell {
+public class SliderFormCell: FormCell {
     var slider = UISlider()
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -205,7 +207,7 @@ class SliderFormCell: FormCell {
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     override func configure(row: FormRow) {
@@ -219,7 +221,7 @@ class SliderFormCell: FormCell {
     }
 }
 
-class FormViewController: UIViewController {
+public class FormViewController: UIViewController {
     var form = Form() {
         willSet {
             form.tableView = nil
@@ -244,7 +246,7 @@ class FormViewController: UIViewController {
         form.tableView = tableView
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         tableView = UITableView(frame: .zero, style: .Plain)
         super.init(coder: aDecoder)
         form.tableView = tableView
@@ -253,206 +255,16 @@ class FormViewController: UIViewController {
     convenience init() {
         self.init(style: .Plain)
     }
-    override func loadView() {
+    override public func loadView() {
         view = tableView
     }
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         form.tableView = tableView
     }
     
-    override func didReceiveMemoryWarning() {
+    override public func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 }
-
-
-
-//
-//
-//class FormField: NSObject {
-//    var label: String?
-//    dynamic var data: AnyObject?
-//    var cellClass: AnyClass?
-//    var action: ((FormFieldCVCell)->())?
-//    var automaticallyBecomeFirstResponder = false
-//    convenience init(label: String) {
-//        self.init()
-//        self.label = label
-//    }
-//}
-//
-//@objc protocol MultiSelectionObject {
-//    var titleMultiSelection: String? { get }
-//}
-//
-//class MultiSelectionFormField: FormField {
-//    dynamic var items: [MultiSelectionObject]?
-//    dynamic var selectedItem: MultiSelectionObject?
-//    var titleInMultiSelectionList: String?
-//    override init() {
-//        super.init()
-//        cellClass = MultiSelectionFormFieldCVCell.self
-//    }
-//}
-//
-//class ZIPandCityFormField: FormField {
-//    var cityLabel: String?
-//    var zip: String?
-//    dynamic var geoItems: [GeoItem]?
-//    dynamic var selectedGeoItem: GeoItem?
-//    var cityTappedHandler: ((ZIPCodeCityFormFieldCVCell)->())?
-//    override init() {
-//        super.init()
-//        cellClass = ZIPCodeCityFormFieldCVCell.self
-//        label = NSLocalizedString("Postleitzahl", comment: "")
-//        cityLabel = NSLocalizedString("Ort", comment: "")
-//    }
-//}
-//
-//class SegmentedFormField: FormField {
-//    var cityLabel: String?
-//    var items: [String]?
-//    var initialSelectedIndex: Int?
-//    override init() {
-//        super.init()
-//        cellClass = SegmentedFormFieldCell.self
-//    }
-//    convenience init(label: String, items: [String]) {
-//        self.init()
-//        self.label = label
-//        self.items = items
-//    }
-//}
-//
-//class KilowattHourPickerFormField: FormField {
-//    var usage: Int {
-//        get {
-//            if let data = data as? Int {
-//                return data
-//            }
-//            return 0
-//        }
-//        set {
-//            data = newValue
-//        }
-//    }
-//    override init() {
-//        super.init()
-//        cellClass = KilowattHourPickerFormFieldCVCell.self
-//    }
-//}
-//
-//protocol FormFieldCell {
-//    static func cellReuseIdentifier() -> String
-//}
-//
-//class FormFieldBaseCVCell: UICollectionViewCell, FormFieldCell {
-//    class func cellReuseIdentifier() -> String {
-//        return "FormFieldBaseCVCell"
-//    }
-//}
-//
-//
-//
-//class FormViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-//    var form: Form?
-//    lazy var collectionView: UICollectionView = {
-//        let layout = UICollectionViewFlowLayout()
-//        layout.sectionInset = UIEdgeInsets(top: 16.0, left: 10, bottom: 16.0, right: 10)
-//        layout.minimumLineSpacing = 15
-//        let c = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
-//        c.backgroundColor = UIColor.lightBackgroundColor()
-//        c.translatesAutoresizingMaskIntoConstraints = false
-//        return c
-//    }()
-//    
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        
-//        collectionView.registerClass(FormFieldCVCell.self, forCellWithReuseIdentifier: FormFieldCVCell.reuseIdentifier())
-//        collectionView.registerClass(ZIPCodeCityFormFieldCVCell.self, forCellWithReuseIdentifier: ZIPCodeCityFormFieldCVCell.reuseIdentifier())
-//        collectionView.registerClass(SegmentedFormFieldCell.self, forCellWithReuseIdentifier: SegmentedFormFieldCell.reuseIdentifier())
-//        collectionView.registerClass(KilowattHourPickerFormFieldCVCell.self, forCellWithReuseIdentifier: KilowattHourPickerFormFieldCVCell.reuseIdentifier())
-//        collectionView.registerClass(MultiSelectionFormFieldCVCell.self, forCellWithReuseIdentifier: MultiSelectionFormFieldCVCell.reuseIdentifier())
-//        collectionView.delegate = self
-//        collectionView.dataSource = self
-//        view.addSubview(collectionView)
-//        
-//        let views: [String: AnyObject] = [
-//            "topLayoutGuide": topLayoutGuide,
-//            "collectionView": collectionView]
-//        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[collectionView]|", options: [], metrics: nil, views: views))
-//        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[topLayoutGuide][collectionView]|", options: [], metrics: nil, views: views))
-//    }
-//    
-//    override func didReceiveMemoryWarning() {
-//        super.didReceiveMemoryWarning()
-//        // Dispose of any resources that can be recreated.
-//    }
-//    
-//    
-//    // MARK: - collection view delegate and datasource methods
-//    
-//    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-//        return 1
-//    }
-//    
-//    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        if let fields = form?.fields {
-//            return fields.count
-//        }
-//        return 0
-//    }
-//    
-//    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-//        if let field = form?.fields[indexPath.row] {
-//            let cell = collectionView.dequeueReusableCellWithReuseIdentifier(field.cellClass!.reuseIdentifier(), forIndexPath: indexPath) as! FormFieldCVCell
-//            cell.field = field
-//            return cell
-//        }
-//        return UICollectionViewCell()
-//    }
-//    
-//    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-//        if let field = form?.fields[indexPath.row] {
-//            if let field = field as? MultiSelectionFormField {
-//                if field.action == nil && field.items != nil {
-//                    let multiSelectionController = MultiSelectionItemsViewController(items: field.items!, tableHeaderTitle: field.titleInMultiSelectionList, selectionHandler: { (selectedItem, controller) -> () in
-//                        field.selectedItem = selectedItem
-//                        controller.navigationController?.popViewControllerAnimated(true)
-//                    })
-//                    navigationController?.pushViewController(multiSelectionController, animated: true)
-//                }
-//            } else if let field = field as? KilowattHourPickerFormField {
-//                let kWhPicker = KilowattPickerController()
-//                kWhPicker.usage = field.usage
-//                kWhPicker.selectionHandler = { (selectedNumber) in
-//                    field.usage = selectedNumber
-//                }
-//                kWhPicker.modalPresentationStyle = .OverCurrentContext
-//                presentViewController(kWhPicker, animated: true, completion: nil)
-//            }
-//        }
-//    }
-//    
-//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-//        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-//        var height: CGFloat = 74
-//        if let field = form?.fields[indexPath.row] {
-//            if field.isMemberOfClass(ZIPandCityFormField.self) {
-//                
-//            } else if field.isMemberOfClass(SegmentedFormField.self) {
-//                height += 12
-//            } else if field.isMemberOfClass(KilowattHourPickerFormField.self) {
-//                
-//            }
-//            
-//            if field.label == nil {
-//                height -= 24
-//            }
-//        }
-//        return CGSize(width: collectionView.bounds.width-layout.sectionInset.left-layout.sectionInset.right, height: height)
-//    }
-//}
