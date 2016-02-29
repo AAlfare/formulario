@@ -27,7 +27,10 @@ class ViewController2: UIViewController {
         form.tableView = tableView
         form.sections.append(FormSection(title: "Joooojojojo", rows: [
             FormRow(title: "Hallo", value: "Otttoooo"),
-            FormRow(title: "Geschwindigkeit", value: 0.3, cellClass: CustomCell.self, cellSelection: nil, valueChanged: { (row) -> Void in
+            FormRow(title: nil, value: 0.3, cellClass: CustomCell.self, cellSelection: nil, valueChanged: { (row) -> Void in
+                print("Slider changed: \(row.value)")
+            }),
+            FormRow(title: "Geschwindigkeit", value: 0.7, cellClass: SliderFormCell.self, cellSelection: nil, valueChanged: { (row) -> Void in
                 print("Slider changed: \(row.value)")
             })
         ]))

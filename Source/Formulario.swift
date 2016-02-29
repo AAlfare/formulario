@@ -31,7 +31,8 @@ class Form: NSObject {
     }
     private static var registeredCellClasses = [
         FormCell.self,
-        TextFieldFormCell.self
+        TextFieldFormCell.self,
+        SliderFormCell.self
     ]
     
     class func registerCellClass(cellClass: FormCell.Type) {
@@ -147,13 +148,14 @@ class TextFieldFormCell: FormCell, UITextFieldDelegate {
         textField.addTarget(self, action: "textFieldValueChanged:", forControlEvents: .EditingChanged)
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setContentHuggingPriority(100, forAxis: .Horizontal)
+        textField.textAlignment = .Right
         contentView.addSubview(textField)
         
         let views = [
             "textLabel": textLabel!,
             "textField": textField
         ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-[textField]-7-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-[textField]-|", options: [], metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textField]|", options: [], metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
     }
@@ -177,6 +179,43 @@ class TextFieldFormCell: FormCell, UITextFieldDelegate {
         if selected {
             textField.becomeFirstResponder()
         }
+    }
+}
+
+class SliderFormCell: FormCell {
+    var slider = UISlider()
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        textLabel!.translatesAutoresizingMaskIntoConstraints = false
+        textLabel!.setContentHuggingPriority(1000, forAxis: .Horizontal)
+        
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        slider.addTarget(self, action: "sliderChanged:", forControlEvents: .ValueChanged)
+        slider.setContentHuggingPriority(100, forAxis: .Horizontal)
+        contentView.addSubview(slider)
+        
+        let views = [
+            "textLabel": textLabel!,
+            "slider": slider
+        ]
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-[slider]-16-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[slider]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    override func configure(row: FormRow) {
+        super.configure(row)
+        if let value = row.value as? Float {
+            slider.value = value
+        }
+    }
+    func sliderChanged(slider: UISlider) {
+        row?.value = slider.value
     }
 }
 

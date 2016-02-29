@@ -28,7 +28,6 @@ class ViewController: FormViewController {
             FormSection(title: "Kommunikation", rows: [
                 FormRow(title: "Email", value: "andreas@alfare.it"),
                 TextFieldFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: nil),
-                TextFieldFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: nil)
             ])
         ]
         
