@@ -13,7 +13,9 @@
 		E117A7421C80AAFB00B00A28 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E117A7411C80AAFB00B00A28 /* Assets.xcassets */; };
 		E117A7451C80AAFB00B00A28 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E117A7431C80AAFB00B00A28 /* LaunchScreen.storyboard */; };
 		E117A7501C80AAFB00B00A28 /* FormularioUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E117A74F1C80AAFB00B00A28 /* FormularioUITests.swift */; };
-		E117A75B1C80AB0900B00A28 /* Formulario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E117A75A1C80AB0900B00A28 /* Formulario.swift */; };
+		E1DEA9C41C843390001D0DF0 /* ViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA9C31C843390001D0DF0 /* ViewController2.swift */; };
+		E1DEA9C61C843636001D0DF0 /* Formulario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA9C51C843636001D0DF0 /* Formulario.swift */; };
+		E1DEA9C91C8438BE001D0DF0 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA9C81C8438BE001D0DF0 /* CustomCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,7 +39,9 @@
 		E117A74B1C80AAFB00B00A28 /* FormularioUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FormularioUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E117A74F1C80AAFB00B00A28 /* FormularioUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormularioUITests.swift; sourceTree = "<group>"; };
 		E117A7511C80AAFB00B00A28 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E117A75A1C80AB0900B00A28 /* Formulario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Formulario.swift; sourceTree = "<group>"; };
+		E1DEA9C31C843390001D0DF0 /* ViewController2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController2.swift; sourceTree = "<group>"; };
+		E1DEA9C51C843636001D0DF0 /* Formulario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Formulario.swift; path = Source/Formulario.swift; sourceTree = SOURCE_ROOT; };
+		E1DEA9C81C8438BE001D0DF0 /* CustomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,8 +84,10 @@
 			isa = PBXGroup;
 			children = (
 				E117A73A1C80AAFB00B00A28 /* AppDelegate.swift */,
+				E1DEA9C81C8438BE001D0DF0 /* CustomCell.swift */,
 				E117A73C1C80AAFB00B00A28 /* ViewController.swift */,
-				E117A75A1C80AB0900B00A28 /* Formulario.swift */,
+				E1DEA9C31C843390001D0DF0 /* ViewController2.swift */,
+				E1DEA9C71C84363A001D0DF0 /* Source */,
 				E117A73E1C80AAFB00B00A28 /* Main.storyboard */,
 				E117A7411C80AAFB00B00A28 /* Assets.xcassets */,
 				E117A7431C80AAFB00B00A28 /* LaunchScreen.storyboard */,
@@ -97,6 +103,14 @@
 				E117A7511C80AAFB00B00A28 /* Info.plist */,
 			);
 			path = FormularioUITests;
+			sourceTree = "<group>";
+		};
+		E1DEA9C71C84363A001D0DF0 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				E1DEA9C51C843636001D0DF0 /* Formulario.swift */,
+			);
+			name = Source;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -200,9 +214,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E117A75B1C80AB0900B00A28 /* Formulario.swift in Sources */,
+				E1DEA9C41C843390001D0DF0 /* ViewController2.swift in Sources */,
 				E117A73D1C80AAFB00B00A28 /* ViewController.swift in Sources */,
+				E1DEA9C91C8438BE001D0DF0 /* CustomCell.swift in Sources */,
 				E117A73B1C80AAFB00B00A28 /* AppDelegate.swift in Sources */,
+				E1DEA9C61C843636001D0DF0 /* Formulario.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,6 +406,7 @@
 				E117A7561C80AAFB00B00A28 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E117A7571C80AAFB00B00A28 /* Build configuration list for PBXNativeTarget "FormularioUITests" */ = {
 			isa = XCConfigurationList;
@@ -398,6 +415,7 @@
 				E117A7591C80AAFB00B00A28 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

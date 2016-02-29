@@ -15,12 +15,27 @@ class Form: NSObject {
         }
     }
     var tableView: UITableView? {
+        willSet {
+            tableView?.dataSource = nil
+            tableView?.delegate = nil
+        }
         didSet {
             tableView?.dataSource = self
             tableView?.delegate = self
-            tableView?.registerClass(FormCell.self, forCellReuseIdentifier: FormCell.cellIdentifier())
-            tableView?.registerClass(TextFieldFormCell.self, forCellReuseIdentifier: TextFieldFormCell.cellIdentifier())
+            
+            for cellClass in Form.registeredCellClasses {
+                tableView?.registerClass(cellClass, forCellReuseIdentifier: cellClass.cellIdentifier())
+                print(cellClass.cellIdentifier())
+            }
         }
+    }
+    private static var registeredCellClasses = [
+        FormCell.self,
+        TextFieldFormCell.self
+    ]
+    
+    class func registerCellClass(cellClass: FormCell.Type) {
+        registeredCellClasses.append(cellClass)
     }
 }
 
@@ -111,8 +126,9 @@ class FormCell: UITableViewCell {
     }
     
     class func cellIdentifier() -> String {
-        return "FormCell"
+        return String.fromCString(class_getName(self)) ?? "FormCell"
     }
+    
     func configure(row: FormRow) {
         self.row = row
         self.textLabel?.text = row.title
@@ -144,10 +160,6 @@ class TextFieldFormCell: FormCell, UITextFieldDelegate {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override class func cellIdentifier() -> String {
-        return "TextFieldFormCell"
     }
     
     override func configure(row: FormRow) {

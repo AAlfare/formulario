@@ -34,7 +34,7 @@ class ViewController: FormViewController {
         
         form.sections.append(FormSection(title: "Blubb", rows: [
             FormRow(title: "Test", value: "Möpp!")
-            ]))
+        ]))
     }
 
     override func didReceiveMemoryWarning() {
