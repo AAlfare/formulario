@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E117A7361C80AAFB00B00A28"
-               BuildableName = "Formulario.app"
+               BlueprintIdentifier = "E16291551C849B4B00FECC90"
+               BuildableName = "Formulario.framework"
                BlueprintName = "Formulario"
                ReferencedContainer = "container:Formulario.xcodeproj">
             </BuildableReference>
@@ -28,26 +28,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E117A74A1C80AAFB00B00A28"
-               BuildableName = "FormularioUITests.xctest"
-               BlueprintName = "FormularioUITests"
-               ReferencedContainer = "container:Formulario.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E117A7361C80AAFB00B00A28"
-            BuildableName = "Formulario.app"
-            BlueprintName = "Formulario"
-            ReferencedContainer = "container:Formulario.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -61,16 +42,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E117A7361C80AAFB00B00A28"
-            BuildableName = "Formulario.app"
+            BlueprintIdentifier = "E16291551C849B4B00FECC90"
+            BuildableName = "Formulario.framework"
             BlueprintName = "Formulario"
             ReferencedContainer = "container:Formulario.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -80,16 +60,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E117A7361C80AAFB00B00A28"
-            BuildableName = "Formulario.app"
+            BlueprintIdentifier = "E16291551C849B4B00FECC90"
+            BuildableName = "Formulario.framework"
             BlueprintName = "Formulario"
             ReferencedContainer = "container:Formulario.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
