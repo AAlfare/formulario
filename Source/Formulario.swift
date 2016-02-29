@@ -235,13 +235,13 @@ public class FormViewController: UIViewController {
     
     // MARK: - Initialization
     
-    init(style: UITableViewStyle) {
+    public init(style: UITableViewStyle) {
         tableView = UITableView(frame: .zero, style: style)
         super.init(nibName: nil, bundle: nil)
         form.tableView = tableView
     }
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         tableView = UITableView(frame: .zero, style: .Plain)
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         form.tableView = tableView
@@ -253,7 +253,7 @@ public class FormViewController: UIViewController {
         form.tableView = tableView
     }
     
-    public convenience init() {
+    convenience public init() {
         self.init(style: .Plain)
     }
     
