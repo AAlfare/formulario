@@ -14,8 +14,6 @@ class ViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Formulario"
-        
         form.sections = [
             FormSection(rows: [
                 FormRow(title: "Vorname", value: "Andreas"),
@@ -25,16 +23,15 @@ class ViewController: FormViewController {
                 TextFieldFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: { (row) -> Void in
                     print(row.value)
                 })
-            ]),
-            FormSection(title: "Kommunikation", rows: [
-                FormRow(title: "Email", value: "andreas@alfare.it"),
-                TextFieldFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: nil),
             ])
         ]
         
-        form.sections.append(FormSection(title: "Blubb", rows: [
-            FormRow(title: "Test", value: "Möpp!")
-        ]))
+        form.sections.append(
+            FormSection(title: "Kommunikation", rows: [
+                FormRow(title: "Telefon", value: "+43 1 53422"),
+                TextFieldFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: nil),
+                ])
+        )
     }
 
     override func didReceiveMemoryWarning() {

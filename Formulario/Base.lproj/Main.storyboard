@@ -5,11 +5,11 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
     </dependencies>
     <scenes>
-        <!--Item-->
+        <!--FormViewController-->
         <scene sceneID="j7S-bb-UZg">
             <objects>
                 <navigationController id="g8c-1h-sRt" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="QlY-f1-GtV"/>
+                    <tabBarItem key="tabBarItem" title="FormViewController" id="QlY-f1-GtV"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Zhi-O8-6ky">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -60,11 +60,11 @@
             </objects>
             <point key="canvasLocation" x="-1541" y="367"/>
         </scene>
-        <!--Item-->
+        <!--Custom UIViewController-->
         <scene sceneID="Mkv-Zi-Try">
             <objects>
                 <navigationController id="ZLD-9V-DWS" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="ntZ-Uh-KV7"/>
+                    <tabBarItem key="tabBarItem" title="Custom UIViewController" id="ntZ-Uh-KV7"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="KRt-iQ-mIQ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -77,10 +77,10 @@
             </objects>
             <point key="canvasLocation" x="-721" y="906"/>
         </scene>
-        <!--View Controller2-->
+        <!--Custom View Controller-->
         <scene sceneID="98Z-WI-MLe">
             <objects>
-                <viewController id="qas-BB-IDh" customClass="ViewController2" customModule="Formulario_Example" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="qas-BB-IDh" customClass="CustomViewController" customModule="Formulario_Example" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="7nf-HF-Ho7"/>
                         <viewControllerLayoutGuide type="bottom" id="1Pv-Jt-6ah"/>

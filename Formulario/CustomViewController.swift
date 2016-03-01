@@ -1,5 +1,5 @@
 //
-//  ViewController2.swift
+//  CustomViewController.swift
 //  Formulario
 //
 //  Created by Andreas Alfarè on 29.02.16.
@@ -9,7 +9,7 @@
 import UIKit
 import Formulario
 
-class ViewController2: UIViewController {
+class CustomViewController: UIViewController {
     var tableView = UITableView()
     var form = Form()
     
@@ -26,14 +26,12 @@ class ViewController2: UIViewController {
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[tableView]|", options: [], metrics: nil, views: views))
         
         form.tableView = tableView
-        form.sections.append(FormSection(title: "Joooojojojo", rows: [
-            FormRow(title: "Hallo", value: "Otttoooo"),
+        form.sections.append(FormSection(title: "Servus", rows: [
+            FormRow(title: "Hallo", value: "Otto"),
             FormRow(title: nil, value: 0.3, cellClass: CustomCell.self, cellSelection: nil, valueChanged: { (row) -> Void in
                 print("Slider changed: \(row.value)")
             }),
-            FormRow(title: "Geschwindigkeit", value: 0.7, cellClass: SliderFormCell.self, cellSelection: nil, valueChanged: { (row) -> Void in
-                print("Slider changed: \(row.value)")
-            })
+            FormRow(title: "Geschwindigkeit", value: 0.7, cellClass: SliderFormCell.self, cellSelection: nil, valueChanged: nil)
         ]))
     }
 
