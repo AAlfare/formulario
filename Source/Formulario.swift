@@ -22,10 +22,10 @@ public class Form: NSObject {
         didSet {
             tableView?.dataSource = self
             tableView?.delegate = self
+            tableView?.keyboardDismissMode = .OnDrag
             
             for cellClass in Form.registeredCellClasses {
                 tableView?.registerClass(cellClass, forCellReuseIdentifier: cellClass.cellIdentifier())
-                print(cellClass.cellIdentifier())
             }
         }
     }
