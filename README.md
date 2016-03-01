@@ -66,3 +66,8 @@ class ColorFormRow: FormRow {
   }
 }
 ```
+
+## Install via Carthage
+```
+github "AAlfare/Formulario"
+```
