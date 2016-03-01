@@ -222,7 +222,7 @@ public class SliderFormCell: FormCell {
     }
 }
 
-public class FormViewController: UIViewController {
+public class FormViewController: UITableViewController {
     public var form = Form() {
         willSet {
             form.tableView = nil
@@ -231,38 +231,25 @@ public class FormViewController: UIViewController {
             form.tableView = tableView
         }
     }
-    var tableView: UITableView!
     
     // MARK: - Initialization
     
-    public init(style: UITableViewStyle) {
-        tableView = UITableView(frame: .zero, style: style)
-        super.init(nibName: nil, bundle: nil)
-        form.tableView = tableView
+    
+    public init() {
+        super.init(style: .Plain)
     }
     
-    override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
-        tableView = UITableView(frame: .zero, style: .Plain)
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        form.tableView = tableView
+    public override init(style: UITableViewStyle) {
+        super.init(style: style)
     }
-    
+
     required public init?(coder aDecoder: NSCoder) {
-        tableView = UITableView(frame: .zero, style: .Plain)
         super.init(coder: aDecoder)
-        form.tableView = tableView
-    }
-    
-    convenience public init() {
-        self.init(style: .Plain)
-    }
-    
-    override public func loadView() {
-        view = tableView
     }
     
     override public func viewDidLoad() {
         super.viewDidLoad()
+        
         form.tableView = tableView
     }
     
