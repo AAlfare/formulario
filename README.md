@@ -36,7 +36,6 @@ class CustomCell: FormCell {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     // add custom views
   }
-
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
@@ -62,8 +61,8 @@ FormRow(title: "Farbe", value: UIColor.redColor(), cellClass: CustomCell.self, c
 class ColorFormRow: FormRow {
   var color: UIColor?
   public init(title: String?, color: UIColor?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
-      self.color = color
-      super.init(title: title, value: color, cellClass: CustomCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
+    self.color = color
+    super.init(title: title, value: color, cellClass: CustomCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
   }
 }
 ```
