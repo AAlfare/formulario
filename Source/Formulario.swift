@@ -37,7 +37,8 @@ public class Form: NSObject {
         PhoneFormCell.self,
         DecimalFormCell.self,
         CurrencyFormCell.self,
-        SliderFormCell.self
+        SliderFormCell.self,
+        SwitchFormCell.self
     ]
     
     public class func registerCellClass(cellClass: FormCell.Type) {
@@ -84,6 +85,8 @@ public struct FormSection {
         self.rows = rows
     }
 }
+
+// MARK: - Rows
 
 public class FormRow: NSObject {
     public var title: String?
@@ -155,6 +158,14 @@ public class CurrencyFormRow: TextFieldFormRow {
         self.cellClass = CurrencyFormCell.self
     }
 }
+
+public class SwitchFormRow: FormRow {
+    public init(title: String?, value: Bool, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+        super.init(title: title, value: value, cellClass: SwitchFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
+    }
+}
+
+// MARK: - Cells
 
 public class FormCell: UITableViewCell {
     public var row: FormRow?
@@ -331,6 +342,44 @@ public class SliderFormCell: FormCell {
         row?.value = slider.value
     }
 }
+
+public class SwitchFormCell: FormCell {
+    var switchControl = UISwitch()
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        textLabel!.translatesAutoresizingMaskIntoConstraints = false
+        textLabel!.setContentHuggingPriority(1000, forAxis: .Horizontal)
+        
+        switchControl.translatesAutoresizingMaskIntoConstraints = false
+        switchControl.addTarget(self, action: #selector(SwitchFormCell.switched(_:)), forControlEvents: .ValueChanged)
+        switchControl.setContentHuggingPriority(100, forAxis: .Horizontal)
+        contentView.addSubview(switchControl)
+        
+        let views = [
+            "textLabel": textLabel!,
+            "switchControl": switchControl
+        ]
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-(>=15)-[switchControl]-16-|", options: [], metrics: nil, views: views))
+        contentView.addConstraint(NSLayoutConstraint(item: switchControl, attribute: .CenterY, relatedBy: .Equal, toItem: contentView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    override public func configure(row: FormRow) {
+        super.configure(row)
+        if let value = row.value as? Bool {
+            switchControl.on = value
+        }
+    }
+    func switched(control: UISwitch) {
+        row?.value = control.on
+    }
+}
+
+// MARK: - FormViewController
 
 public class FormViewController: UITableViewController {
     public var form = Form() {

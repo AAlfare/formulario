@@ -22,6 +22,9 @@ class ViewController: FormViewController {
                 }),
                 TextFieldFormRow(title: "Text", value: nil, placeholder: "Text", cellSelection: nil, valueChanged: { (row) -> Void in
                     print(row.value)
+                }),
+                SwitchFormRow(title: "Lights on", value: true, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
                 })
             ])
         ]
