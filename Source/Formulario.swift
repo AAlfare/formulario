@@ -32,6 +32,11 @@ public class Form: NSObject {
     private static var registeredCellClasses = [
         FormCell.self,
         TextFieldFormCell.self,
+        EmailFormCell.self,
+        PasswordFormCell.self,
+        PhoneFormCell.self,
+        DecimalFormCell.self,
+        CurrencyFormCell.self,
         SliderFormCell.self
     ]
     
@@ -80,8 +85,6 @@ public struct FormSection {
     }
 }
 
-
-
 public class FormRow: NSObject {
     public var title: String?
     dynamic public var value: AnyObject?
@@ -115,6 +118,41 @@ public class TextFieldFormRow: FormRow {
     public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
         self.placeholder = placeholder
         super.init(title: title, value: value, cellClass: TextFieldFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
+    }
+}
+
+public class EmailFormRow: TextFieldFormRow {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
+        self.cellClass = EmailFormCell.self
+    }
+}
+
+public class PasswordFormRow: TextFieldFormRow {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
+        self.cellClass = PasswordFormCell.self
+    }
+}
+
+public class PhoneFormRow: TextFieldFormRow {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
+        self.cellClass = PhoneFormCell.self
+    }
+}
+
+public class DecimalFormRow: TextFieldFormRow {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
+        self.cellClass = DecimalFormCell.self
+    }
+}
+
+public class CurrencyFormRow: TextFieldFormRow {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
+        self.cellClass = CurrencyFormCell.self
     }
 }
 
@@ -182,6 +220,62 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
         if selected {
             textField.becomeFirstResponder()
         }
+    }
+}
+
+public class EmailFormCell: TextFieldFormCell {
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        textField.keyboardType = .EmailAddress
+        textField.autocapitalizationType = .None
+        textField.autocorrectionType = .No
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+public class PasswordFormCell: TextFieldFormCell {
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        textField.secureTextEntry = true
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+public class PhoneFormCell: TextFieldFormCell {
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        textField.keyboardType = .PhonePad
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+public class DecimalFormCell: TextFieldFormCell {
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        textField.keyboardType = .DecimalPad
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+public class CurrencyFormCell: DecimalFormCell {
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
