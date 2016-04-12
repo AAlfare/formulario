@@ -20,17 +20,37 @@ class ViewController: FormViewController {
                 FormRow(title: "Nachname", value: "Alfarè", cellSelection: { (cell) -> Void in
                     print("cell selected")
                 }),
-                TextFieldFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: { (row) -> Void in
+                TextFieldFormRow(title: "Text", value: nil, placeholder: "Text", cellSelection: nil, valueChanged: { (row) -> Void in
                     print(row.value)
                 })
             ])
         ]
         
         form.sections.append(
-            FormSection(title: "Kommunikation", rows: [
+            FormSection(title: "Various text field rows", rows: [
+                EmailFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: { (row) -> Void in
+                    print(row.value)
+                }),
+                PasswordFormRow(title: "Password", value: nil, placeholder: "Password", cellSelection: nil, valueChanged: { (row) -> Void in
+                    print(row.value)
+                }),
+                PhoneFormRow(title: "Phone", value: nil, placeholder: "Phone", cellSelection: nil, valueChanged: { (row) -> Void in
+                    print(row.value)
+                }),
+                DecimalFormRow(title: "Decimal", value: nil, placeholder: "Decimal", cellSelection: nil, valueChanged: { (row) -> Void in
+                    print(row.value)
+                }),
+                CurrencyFormRow(title: "Price", value: nil, placeholder: "Price", cellSelection: nil, valueChanged: { (row) -> Void in
+                    print(row.value)
+                })
+            ])
+        )
+            
+        form.sections.append(
+            FormSection(title: "Static", rows: [
                 FormRow(title: "Telefon", value: "+43 1 53422"),
-                TextFieldFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: nil),
-                ])
+                FormRow(title: "Email", value: "hello@example.com"),
+            ])
         )
     }
 
