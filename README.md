@@ -29,6 +29,18 @@ class ViewController: FormViewController {
 }
 ```
 
+## Available rows
+```
+FormRow
+TextFieldFormRow
+EmailFormRow
+PasswordFormRow
+PhoneFormRow
+DecimalFormRow
+CurrencyFormRow
+SwitchFormRow
+```
+
 ## Create custom cell classes
 ```swift
 class CustomCell: FormCell {
@@ -71,3 +83,15 @@ class ColorFormRow: FormRow {
 ```
 github "AAlfare/Formulario"
 ```
+
+## Changelog
+
+### 0.2
+- Adds Email, Password, Phone, Decimal and Currency form rows
+- Adds Switch form row
+
+### 0.1
+- Adds FormViewController, FormRow and FormSection to build a Form
+- Adds Slider form cell
+- Adds TextField form row
+- Example project
