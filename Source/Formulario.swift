@@ -148,7 +148,7 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
         textLabel?.translatesAutoresizingMaskIntoConstraints = false
         textLabel?.setContentHuggingPriority(1000, forAxis: .Horizontal)
         
-        textField.addTarget(self, action: "textFieldValueChanged:", forControlEvents: .EditingChanged)
+        textField.addTarget(self, action: #selector(TextFieldFormCell.textFieldValueChanged(_:)), forControlEvents: .EditingChanged)
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setContentHuggingPriority(100, forAxis: .Horizontal)
         textField.textAlignment = .Right
@@ -195,7 +195,7 @@ public class SliderFormCell: FormCell {
         textLabel!.setContentHuggingPriority(1000, forAxis: .Horizontal)
         
         slider.translatesAutoresizingMaskIntoConstraints = false
-        slider.addTarget(self, action: "sliderChanged:", forControlEvents: .ValueChanged)
+        slider.addTarget(self, action: #selector(SliderFormCell.sliderChanged(_:)), forControlEvents: .ValueChanged)
         slider.setContentHuggingPriority(100, forAxis: .Horizontal)
         contentView.addSubview(slider)
         

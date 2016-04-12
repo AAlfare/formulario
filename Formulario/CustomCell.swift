@@ -16,7 +16,7 @@ class CustomCell: FormCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         slider.translatesAutoresizingMaskIntoConstraints = false
-        slider.addTarget(self, action: "sliderChanged:", forControlEvents: .ValueChanged)
+        slider.addTarget(self, action: #selector(CustomCell.sliderChanged(_:)), forControlEvents: .ValueChanged)
         contentView.addSubview(slider)
         
         let views = [
