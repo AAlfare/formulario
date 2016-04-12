@@ -269,13 +269,29 @@ public class DecimalFormCell: TextFieldFormCell {
     }
 }
 
-public class CurrencyFormCell: DecimalFormCell {
+public class CurrencyFormCell: TextFieldFormCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        textField.keyboardType = .NumberPad
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func textFieldValueChanged(textField: UITextField) {
+        let formatter = NSNumberFormatter()
+        formatter.numberStyle = .CurrencyStyle
+        
+        if let centString = textField.text?.componentsSeparatedByCharactersInSet(NSCharacterSet.decimalDigitCharacterSet().invertedSet).joinWithSeparator("") where centString.isEmpty == false {
+            let centValue = (centString as NSString).doubleValue
+            let number = NSNumber(float: Float(centValue)/100.0)
+            row?.value = number.floatValue
+            textField.text = formatter.stringFromNumber(number)
+        } else {
+            row?.value = nil
+            textField.text = nil
+        }
     }
 }
 
