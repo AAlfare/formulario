@@ -62,6 +62,16 @@ public class Form: NSObject {
 }
 
 extension Form: UITableViewDelegate {
+    
+    public func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        if formViewController is SelectionFormViewController, let selectedRow = sections[indexPath.section].rows[indexPath.row] as? SelectableFormRow {
+            selectedRow.selected = false
+            if let selectedCell = tableView.cellForRowAtIndexPath(indexPath) as? FormCell {
+                selectedCell.configure(selectedRow)
+            }
+        }
+    }
+    
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let row = sections[indexPath.section].rows[indexPath.row]
         if let cell = tableView.cellForRowAtIndexPath(indexPath) as? FormCell {
@@ -70,6 +80,11 @@ extension Form: UITableViewDelegate {
             if let selectionRow = row as? SelectionFormRow {
                 let optionsFormViewController = SelectionFormViewController(selectionRow: selectionRow)
                 self.formViewController?.navigationController?.pushViewController(optionsFormViewController, animated: true)
+            }
+            
+            if let selectableRow = row as? SelectableFormRow {
+                selectableRow.selected = formViewController is SelectionFormViewController ? true : !selectableRow.selected
+                cell.configure(selectableRow)
             }
         }
     }
@@ -196,6 +211,14 @@ public class OptionsFormRow: FormRow {
 }
 
 public class SelectionFormRow: OptionsFormRow {
+    var selectedOption: String? {
+        get {
+            return value as? String
+        }
+        set {
+            value = newValue
+        }
+    }
     public override init(title: String?, options: [String], cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, options: options, cellSelection: cellSelection, valueChanged: valueChanged)
         self.cellClass = SelectionFormCell.self
@@ -448,8 +471,6 @@ public class SelectableFormCell: FormCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = .None
-        
-        gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(SelectableFormCell.didSelect))]
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -459,14 +480,6 @@ public class SelectableFormCell: FormCell {
     public override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
-    }
-    
-    func didSelect() {
-        if let row = row as? SelectableFormRow {
-            row.selected = !row.selected
-            configure(row)
-            row.selection?(self)
-        }
     }
     
     public override func configure(row: FormRow) {
@@ -529,6 +542,7 @@ public class FormViewController: UITableViewController {
 
 class SelectionFormViewController: FormViewController {
     var selectionRow: SelectionFormRow
+    var selectedOptionIndexPath: NSIndexPath?
     
     init(selectionRow: SelectionFormRow) {
         self.selectionRow = selectionRow
@@ -545,12 +559,22 @@ class SelectionFormViewController: FormViewController {
         title = selectionRow.title
         
         var optionRows = [FormRow]()
-        for option in selectionRow.options {
-            optionRows.append(SelectableFormRow(title: option, selected: selectionRow.value as? String == option, cellSelection: { (cell) in
-                self.selectionRow.value = option
+        for (index, option) in selectionRow.options.enumerate() {
+            if self.selectionRow.selectedOption == option {
+                self.selectedOptionIndexPath = NSIndexPath(forRow: index, inSection: 0)
+            }
+            optionRows.append(SelectableFormRow(title: option, selected: selectionRow.selectedOption == option, cellSelection: { (cell) in
+                self.selectionRow.selectedOption = option
                 self.navigationController?.popViewControllerAnimated(true)
             }, valueChanged: nil))
         }
         form = Form(sections: [FormSection(title: nil, rows: optionRows)])
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        tableView.selectRowAtIndexPath(selectedOptionIndexPath, animated: false, scrollPosition: .None)
     }
 }
