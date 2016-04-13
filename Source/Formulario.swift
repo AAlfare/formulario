@@ -68,7 +68,7 @@ extension Form: UITableViewDelegate {
             row.selection?(cell)
             
             if let selectionRow = row as? SelectionFormRow {
-                let optionsFormViewController = SelectionFormViewController(pushRow: selectionRow)
+                let optionsFormViewController = SelectionFormViewController(selectionRow: selectionRow)
                 self.formViewController?.navigationController?.pushViewController(optionsFormViewController, animated: true)
             }
         }
