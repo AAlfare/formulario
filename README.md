@@ -17,10 +17,16 @@ class ViewController: FormViewController {
     form.sections = [
       FormSection(rows: [
         FormRow(title: "Vorname", value: "Andreas"),
-        FormRow(title: "Nachname", value: "Alfarè", cellSelection: { (cell) -> Void in
-          print("cell selected")
+        TextFieldFormRow(title: "Nachname", value: "Alfarè", placeholder: "Nachname", cellSelection: nil, valueChanged: { (row) -> Void in
+          print(row.value)
         }),
-        TextFieldFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: { (row) -> Void in
+        EmailFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: { (row) -> Void in
+          print(row.value)
+        }),
+        SwitchFormRow(title: "Lights on", value: true, cellSelection: nil, valueChanged: { (row) in
+          print(row.value)
+        }),
+        SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], cellSelection: nil, valueChanged: { (row) in
           print(row.value)
         })
       ])
@@ -39,6 +45,8 @@ PhoneFormRow
 DecimalFormRow
 CurrencyFormRow
 SwitchFormRow
+SelectableFormRow
+SelectionFormRow
 ```
 
 ## Create custom cell classes
@@ -86,11 +94,17 @@ github "AAlfare/Formulario"
 
 ## Changelog
 
+### 0.3
+*13.04.2016*
+- Adds Selectable and Selection form rows
+
 ### 0.2
+*12.04.2016*
 - Adds Email, Password, Phone, Decimal and Currency form rows
 - Adds Switch form row
 
 ### 0.1
+*01.03.2016*
 - Adds FormViewController, FormRow and FormSection to build a Form
 - Adds Slider form cell
 - Adds TextField form row
