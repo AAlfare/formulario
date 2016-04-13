@@ -25,6 +25,15 @@ class ViewController: FormViewController {
                 }),
                 SwitchFormRow(title: "Lights on", value: true, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
+                }),
+                SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                SelectionFormRow(title: "Animals", options: ["Dog", "Frog", "Skunk"], cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                SelectableFormRow(title: "Happy?", selected: true, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
                 })
             ])
         ]

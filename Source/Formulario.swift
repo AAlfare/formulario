@@ -9,11 +9,14 @@
 import UIKit
 
 public class Form: NSObject {
-    public var sections = [FormSection]() {
+    var formViewController: FormViewController?
+    
+    public var sections: [FormSection] {
         didSet {
             tableView?.reloadData()
         }
     }
+    
     public var tableView: UITableView? {
         willSet {
             tableView?.dataSource = nil
@@ -29,6 +32,7 @@ public class Form: NSObject {
             }
         }
     }
+    
     private static var registeredCellClasses = [
         FormCell.self,
         TextFieldFormCell.self,
@@ -38,11 +42,22 @@ public class Form: NSObject {
         DecimalFormCell.self,
         CurrencyFormCell.self,
         SliderFormCell.self,
-        SwitchFormCell.self
+        SwitchFormCell.self,
+        SelectionFormCell.self,
+        SelectableFormCell.self
     ]
     
     public class func registerCellClass(cellClass: FormCell.Type) {
         registeredCellClasses.append(cellClass)
+    }
+    
+    public convenience override init() {
+        self.init(sections: [])
+    }
+    
+    public init(sections: [FormSection]) {
+        self.sections = sections
+        super.init()
     }
 }
 
@@ -51,6 +66,11 @@ extension Form: UITableViewDelegate {
         let row = sections[indexPath.section].rows[indexPath.row]
         if let cell = tableView.cellForRowAtIndexPath(indexPath) as? FormCell {
             row.selection?(cell)
+            
+            if let selectionRow = row as? SelectionFormRow {
+                let optionsFormViewController = SelectionFormViewController(pushRow: selectionRow)
+                self.formViewController?.navigationController?.pushViewController(optionsFormViewController, animated: true)
+            }
         }
     }
 }
@@ -71,6 +91,7 @@ extension Form: UITableViewDataSource {
         cell.configure(row)
         return cell
     }
+    
     public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let section = sections[section]
         return section.title
@@ -165,6 +186,37 @@ public class SwitchFormRow: FormRow {
     }
 }
 
+public class OptionsFormRow: FormRow {
+    var options: [String]
+    
+    public init(title: String?, options: [String], cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+        self.options = options
+        super.init(title: title, value: nil, cellClass: FormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
+    }
+}
+
+public class SelectionFormRow: OptionsFormRow {
+    public override init(title: String?, options: [String], cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+        super.init(title: title, options: options, cellSelection: cellSelection, valueChanged: valueChanged)
+        self.cellClass = SelectionFormCell.self
+    }
+}
+
+public class SelectableFormRow: FormRow {
+    var selected: Bool {
+        get {
+            return value as? Bool ?? false
+        }
+        set {
+            value = newValue
+        }
+    }
+    
+    public init(title: String?, selected: Bool = false, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+        super.init(title: title, value: selected, cellClass: SelectableFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
+    }
+}
+
 // MARK: - Cells
 
 public class FormCell: UITableViewCell {
@@ -183,8 +235,8 @@ public class FormCell: UITableViewCell {
     
     public func configure(row: FormRow) {
         self.row = row
-        self.textLabel?.text = row.title
-        self.detailTextLabel?.text = row.value as? String
+        self.textLabel?.text = row.title ?? row.value as? String
+        self.detailTextLabel?.text = row.title != nil ? row.value as? String : nil
     }
 }
 
@@ -379,20 +431,70 @@ public class SwitchFormCell: FormCell {
     }
 }
 
+public class SelectionFormCell: FormCell {
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        accessoryType = .DisclosureIndicator
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+public class SelectableFormCell: FormCell {
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        selectionStyle = .None
+        
+        gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(SelectableFormCell.didSelect))]
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func setSelected(selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        
+    }
+    
+    func didSelect() {
+        if let row = row as? SelectableFormRow {
+            row.selected = !row.selected
+            configure(row)
+            row.selection?(self)
+        }
+    }
+    
+    public override func configure(row: FormRow) {
+        super.configure(row)
+        textLabel?.text = row.title
+        detailTextLabel?.text = nil
+        
+        if let row = row as? SelectableFormRow {
+            accessoryType = row.selected == true ? .Checkmark : .None
+        }
+    }
+}
+
 // MARK: - FormViewController
 
 public class FormViewController: UITableViewController {
     public var form = Form() {
         willSet {
             form.tableView = nil
+            form.formViewController = nil
         }
         didSet {
             form.tableView = tableView
+            form.formViewController = self
         }
     }
     
     // MARK: - Initialization
-    
     
     public init() {
         super.init(style: .Plain)
@@ -410,10 +512,45 @@ public class FormViewController: UITableViewController {
         super.viewDidLoad()
         
         form.tableView = tableView
+        form.formViewController = self
+    }
+    
+    public override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        tableView.reloadData()
     }
     
     override public func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+}
+
+class SelectionFormViewController: FormViewController {
+    var selectionRow: SelectionFormRow
+    
+    init(selectionRow: SelectionFormRow) {
+        self.selectionRow = selectionRow
+        super.init()
+    }
+    
+    required internal init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        title = selectionRow.title
+        
+        var optionRows = [FormRow]()
+        for option in selectionRow.options {
+            optionRows.append(SelectableFormRow(title: option, selected: selectionRow.value as? String == option, cellSelection: { (cell) in
+                self.selectionRow.value = option
+                self.navigationController?.popViewControllerAnimated(true)
+            }, valueChanged: nil))
+        }
+        form = Form(sections: [FormSection(title: nil, rows: optionRows)])
     }
 }
