@@ -246,6 +246,8 @@ public class FormCell: UITableViewCell {
     public var row: FormRow?
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
+        
+        selectionStyle = .None
     }
 
     required public init?(coder aDecoder: NSCoder) {
@@ -458,6 +460,7 @@ public class SelectionFormCell: FormCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        selectionStyle = .Default
         accessoryType = .DisclosureIndicator
     }
     
@@ -469,8 +472,6 @@ public class SelectionFormCell: FormCell {
 public class SelectableFormCell: FormCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        selectionStyle = .None
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -509,6 +510,11 @@ public class FormViewController: UITableViewController {
     
     // MARK: - Initialization
     
+    public convenience init(form: Form) {
+        self.init(style: .Plain)
+        self.form = form
+    }
+    
     public init() {
         super.init(style: .Plain)
     }
@@ -543,6 +549,7 @@ public class FormViewController: UITableViewController {
 class SelectionFormViewController: FormViewController {
     var selectionRow: SelectionFormRow
     var selectedOptionIndexPath: NSIndexPath?
+    var allowsMultipleSelection = false
     
     init(selectionRow: SelectionFormRow) {
         self.selectionRow = selectionRow
@@ -565,7 +572,9 @@ class SelectionFormViewController: FormViewController {
             }
             optionRows.append(SelectableFormRow(title: option, selected: selectionRow.selectedOption == option, cellSelection: { (cell) in
                 self.selectionRow.selectedOption = option
-                self.navigationController?.popViewControllerAnimated(true)
+                if self.allowsMultipleSelection == false {
+                    self.navigationController?.popViewControllerAnimated(true)
+                }
             }, valueChanged: nil))
         }
         form = Form(sections: [FormSection(title: nil, rows: optionRows)])
