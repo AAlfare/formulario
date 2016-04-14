@@ -95,7 +95,7 @@ github "AAlfare/Formulario"
 ## Changelog
 
 ### 0.3
-*13.04.2016*
+*14.04.2016*
 - Adds Selectable and Selection form rows
 
 ### 0.2
