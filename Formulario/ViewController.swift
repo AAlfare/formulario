@@ -9,6 +9,16 @@
 import UIKit
 import Formulario
 
+enum Animal: SelectableOption {
+    case Dog
+    case Cow
+    case Sheep
+    
+    static func all() -> [Animal] {
+        return [.Cow, .Dog, .Sheep]
+    }
+}
+
 class ViewController: FormViewController {
 
     override func viewDidLoad() {
@@ -26,7 +36,7 @@ class ViewController: FormViewController {
                 SwitchFormRow(title: "Lights on", value: true, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], cellSelection: nil, valueChanged: { (row) in
+                SelectionFormRow<String>(title: "Emoji", options: ["🐣", "👸", "🐮"], cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
                 SelectionFormRow(title: "Animals", options: ["Dog", "Frog", "Skunk"], cellSelection: nil, valueChanged: { (row) in
@@ -34,7 +44,8 @@ class ViewController: FormViewController {
                 }),
                 SelectableFormRow(title: "Happy?", selected: true, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
-                })
+                }),
+                SelectionFormRow<Animal>(title: "", options: Animal.all(), cellSelection: nil, valueChanged: nil)
             ])
         ]
         

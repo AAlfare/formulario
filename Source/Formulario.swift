@@ -77,10 +77,10 @@ extension Form: UITableViewDelegate {
         if let cell = tableView.cellForRowAtIndexPath(indexPath) as? FormCell {
             row.selection?(cell)
             
-            if let selectionRow = row as? SelectionFormRow {
-                let optionsFormViewController = SelectionFormViewController(selectionRow: selectionRow)
-                self.formViewController?.navigationController?.pushViewController(optionsFormViewController, animated: true)
-            }
+//            if let selectionRow = row as? SelectionFormRow {
+//                let optionsFormViewController = SelectionFormViewController(selectionRow: selectionRow)
+//                self.formViewController?.navigationController?.pushViewController(optionsFormViewController, animated: true)
+//            }
             
             if let selectableRow = row as? SelectableFormRow {
                 selectableRow.selected = formViewController is SelectionFormViewController ? true : !selectableRow.selected
@@ -201,25 +201,33 @@ public class SwitchFormRow: FormRow {
     }
 }
 
-public class OptionsFormRow: FormRow {
-    var options: [String]
+public protocol SelectableOption {
     
-    public init(title: String?, options: [String], cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+}
+
+extension String: SelectableOption {
+}
+
+public class OptionsFormRow<T: SelectableOption>: FormRow {
+    var options: [T]
+    
+    public init(title: String?, options: [T], cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
         self.options = options
         super.init(title: title, value: nil, cellClass: FormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
 }
 
-public class SelectionFormRow: OptionsFormRow {
-    var selectedOption: String? {
-        get {
-            return value as? String
-        }
-        set {
-            value = newValue
-        }
-    }
-    public override init(title: String?, options: [String], cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+
+public class SelectionFormRow<T: SelectableOption>: OptionsFormRow<T> {
+//    var selectedOption: String? {
+//        get {
+//            return value as? String
+//        }
+//        set {
+//            value = newValue
+//        }
+//    }
+    public override init(title: String?, options: [T], cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, options: options, cellSelection: cellSelection, valueChanged: valueChanged)
         self.cellClass = SelectionFormCell.self
     }
@@ -547,43 +555,43 @@ public class FormViewController: UITableViewController {
 }
 
 class SelectionFormViewController: FormViewController {
-    var selectionRow: SelectionFormRow
-    var selectedOptionIndexPath: NSIndexPath?
-    var allowsMultipleSelection = false
-    
-    init(selectionRow: SelectionFormRow) {
-        self.selectionRow = selectionRow
-        super.init()
-    }
-    
-    required internal init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        title = selectionRow.title
-        
-        var optionRows = [FormRow]()
-        for (index, option) in selectionRow.options.enumerate() {
-            if self.selectionRow.selectedOption == option {
-                self.selectedOptionIndexPath = NSIndexPath(forRow: index, inSection: 0)
-            }
-            optionRows.append(SelectableFormRow(title: option, selected: selectionRow.selectedOption == option, cellSelection: { (cell) in
-                self.selectionRow.selectedOption = option
-                if self.allowsMultipleSelection == false {
-                    self.navigationController?.popViewControllerAnimated(true)
-                }
-            }, valueChanged: nil))
-        }
-        form = Form(sections: [FormSection(title: nil, rows: optionRows)])
-        
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        tableView.selectRowAtIndexPath(selectedOptionIndexPath, animated: false, scrollPosition: .None)
-    }
+//    var selectionRow: SelectionFormRow
+//    var selectedOptionIndexPath: NSIndexPath?
+//    var allowsMultipleSelection = false
+//    
+//    init(selectionRow: SelectionFormRow) {
+//        self.selectionRow = selectionRow
+//        super.init()
+//    }
+//    
+//    required internal init?(coder aDecoder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+//    
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//        
+//        title = selectionRow.title
+//        
+//        var optionRows = [FormRow]()
+//        for (index, option) in selectionRow.options.enumerate() {
+//            if self.selectionRow.selectedOption == option {
+//                self.selectedOptionIndexPath = NSIndexPath(forRow: index, inSection: 0)
+//            }
+//            optionRows.append(SelectableFormRow(title: option, selected: selectionRow.selectedOption == option, cellSelection: { (cell) in
+//                self.selectionRow.selectedOption = option
+//                if self.allowsMultipleSelection == false {
+//                    self.navigationController?.popViewControllerAnimated(true)
+//                }
+//            }, valueChanged: nil))
+//        }
+//        form = Form(sections: [FormSection(title: nil, rows: optionRows)])
+//        
+//    }
+//    
+//    override func viewWillAppear(animated: Bool) {
+//        super.viewWillAppear(animated)
+//        
+//        tableView.selectRowAtIndexPath(selectedOptionIndexPath, animated: false, scrollPosition: .None)
+//    }
 }
