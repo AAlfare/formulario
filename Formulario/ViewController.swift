@@ -36,6 +36,13 @@ class Person: NSObject, SelectableOption {
     func selectableOptionTitle() -> String {
         return title
     }
+    class func all() -> [Person] {
+        return [
+            Person(title: "👮"),
+            Person(title: "🎅"),
+            Person(title: "👷")
+        ]
+    }
 }
 
 class ViewController: FormViewController {
@@ -58,13 +65,13 @@ class ViewController: FormViewController {
                 SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                SelectionFormRow<String>(title: "Animals", options: ["Dog", "Frog", "Skunk"], cellSelection: nil, valueChanged: { (row) in
-                    print(row.value)
-                }),
                 SelectableFormRow(title: "Happy?", selected: true, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                SelectionFormRow<Animal>(title: "🐌", options: Animal.all(), cellSelection: nil, valueChanged: { (row) in
+                SelectionFormRow(title: "Animals", options: Animal.all(), cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                SelectionFormRow(title: "🙃", options: Person.all(), cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 })
             ])
