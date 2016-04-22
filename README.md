@@ -26,7 +26,7 @@ class ViewController: FormViewController {
         SwitchFormRow(title: "Lights on", value: true, cellSelection: nil, valueChanged: { (row) in
           print(row.value)
         }),
-        SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], cellSelection: nil, valueChanged: { (row) in
+        SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], selectedOption: "🐮", cellSelection: nil, valueChanged: { (row) in
           print(row.value)
         })
       ])
@@ -70,7 +70,7 @@ enum Animal: SelectableOption {
     }
 }
 
-let row = SelectionFormRow(title: "Animals", options: Animal.all(), cellSelection: nil, valueChanged: { (row) in
+let row = SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: Animal.first(),  cellSelection: nil, valueChanged: { (row) in
   print(row.value)
 })
 ```
@@ -116,6 +116,10 @@ github "AAlfare/Formulario"
 ```
 
 ## Changelog
+
+### 0.4.1
+*22.04.2016*
+- Set initial selected option in selection form row
 
 ### 0.4
 *22.04.2016*
