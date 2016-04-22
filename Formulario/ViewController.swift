@@ -17,6 +17,25 @@ enum Animal: SelectableOption {
     static func all() -> [Animal] {
         return [.Cow, .Dog, .Sheep]
     }
+    
+    func selectableOptionTitle() -> String {
+        switch self {
+        case .Cow: return "Cow"
+        case .Dog: return "Dog"
+        case .Sheep: return "Sheep"
+        }
+    }
+}
+
+class Person: NSObject, SelectableOption {
+    var title: String
+    init(title: String) {
+        self.title = title
+        super.init()
+    }
+    func selectableOptionTitle() -> String {
+        return title
+    }
 }
 
 class ViewController: FormViewController {
@@ -36,16 +55,18 @@ class ViewController: FormViewController {
                 SwitchFormRow(title: "Lights on", value: true, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                SelectionFormRow<String>(title: "Emoji", options: ["🐣", "👸", "🐮"], cellSelection: nil, valueChanged: { (row) in
+                SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                SelectionFormRow(title: "Animals", options: ["Dog", "Frog", "Skunk"], cellSelection: nil, valueChanged: { (row) in
+                SelectionFormRow<String>(title: "Animals", options: ["Dog", "Frog", "Skunk"], cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
                 SelectableFormRow(title: "Happy?", selected: true, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                SelectionFormRow<Animal>(title: "", options: Animal.all(), cellSelection: nil, valueChanged: nil)
+                SelectionFormRow<Animal>(title: "🐌", options: Animal.all(), cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                })
             ])
         ]
         
