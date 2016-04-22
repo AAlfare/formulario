@@ -49,15 +49,38 @@ SelectableFormRow
 SelectionFormRow
 ```
 
+## Selectable form row with custom types
+By conforming to the SelectableOption protocol formulario will automatically display the given title in the form.
+```swift
+enum Animal: SelectableOption {
+    case Dog
+    case Cow
+    case Sheep
+    
+    static func all() -> [Animal] {
+        return [.Cow, .Dog, .Sheep]
+    }
+    
+    func selectableOptionTitle() -> String {
+        switch self {
+        case .Cow: return "Cow"
+        case .Dog: return "Dog"
+        case .Sheep: return "Sheep"
+        }
+    }
+}
+
+let row = SelectionFormRow(title: "Animals", options: Animal.all(), cellSelection: nil, valueChanged: { (row) in
+  print(row.value)
+})
+```
+
 ## Create custom cell classes
 ```swift
 class CustomCell: FormCell {
   override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     // add custom views
-  }
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
   }
   override func configure(row: FormRow) {
     super.configure(row)
@@ -93,6 +116,10 @@ github "AAlfare/Formulario"
 ```
 
 ## Changelog
+
+### 0.4
+*22.04.2016*
+- Selection form row now accepts custom types as options
 
 ### 0.3
 *14.04.2016*
