@@ -70,7 +70,7 @@ enum Animal: SelectableOption {
     }
 }
 
-let row = SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: Animal.first(),  cellSelection: nil, valueChanged: { (row) in
+let row = SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: Animal.all().first,  cellSelection: nil, valueChanged: { (row) in
   print(row.value)
 })
 ```
