@@ -176,7 +176,7 @@ public class SwitchFormRow: FormRow {
     }
 }
 
-public protocol SelectableOption: Equatable {
+public protocol SelectableOption {
     func selectableOptionTitle() -> String
 }
 
@@ -196,7 +196,7 @@ public class OptionsFormRow<T: SelectableOption>: FormRow {
 }
 
 
-public class SelectionFormRow<T: SelectableOption>: OptionsFormRow<T> {
+public class SelectionFormRow<T: SelectableOption where T: Equatable>: OptionsFormRow<T> {
     var selectedOption: T? {
         get {
             return value as? T
@@ -464,9 +464,9 @@ public class SelectionFormCell: FormCell {
     public override func configure(row: FormRow) {
         super.configure(row)
         
-//        if let value = row.value {
-//            detailTextLabel?.text = option.selectableOptionTitle()
-//        }
+        if let option = row.value as? SelectableOption {
+            detailTextLabel?.text = option.selectableOptionTitle()
+        }
     }
 }
 
@@ -553,7 +553,7 @@ public class FormViewController: UITableViewController {
     }
 }
 
-class SelectionFormViewController<T: SelectableOption>: FormViewController {
+class SelectionFormViewController<T: SelectableOption where T: Equatable>: FormViewController {
     var selectionRow: SelectionFormRow<T>
     var selectedOptionIndexPath: NSIndexPath?
     var allowsMultipleSelection = false
