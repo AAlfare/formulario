@@ -62,16 +62,16 @@ class ViewController: FormViewController {
                 SwitchFormRow(title: "Lights on", value: true, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], cellSelection: nil, valueChanged: { (row) in
+                SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], selectedOption: nil, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
                 SelectableFormRow(title: "Happy?", selected: true, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                SelectionFormRow(title: "Animals", options: Animal.all(), cellSelection: nil, valueChanged: { (row) in
+                SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: nil, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                SelectionFormRow(title: "🙃", options: Person.all(), cellSelection: nil, valueChanged: { (row) in
+                SelectionFormRow(title: "🙃", options: Person.all(), selectedOption: Person.all().first, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 })
             ])

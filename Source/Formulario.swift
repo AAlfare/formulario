@@ -188,15 +188,6 @@ extension String: SelectableOption {
 
 public class OptionsFormRow<T: SelectableOption>: FormRow {
     var options: [T]
-    
-    public init(title: String?, options: [T], cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
-        self.options = options
-        super.init(title: title, value: nil, cellClass: FormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
-    }
-}
-
-
-public class SelectionFormRow<T: SelectableOption where T: Equatable>: OptionsFormRow<T> {
     var selectedOption: T? {
         get {
             return value as? T
@@ -205,8 +196,19 @@ public class SelectionFormRow<T: SelectableOption where T: Equatable>: OptionsFo
             value = newValue
         }
     }
-    public override init(title: String?, options: [T], cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
-        super.init(title: title, options: options, cellSelection: nil, valueChanged: valueChanged)
+    
+    public init(title: String?, options: [T], selectedOption: T?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+        self.options = options
+        super.init(title: title, value: nil, cellClass: FormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
+        self.selectedOption = selectedOption
+    }
+}
+
+
+public class SelectionFormRow<T: SelectableOption where T: Equatable>: OptionsFormRow<T> {
+    
+    public override init(title: String?, options: [T], selectedOption: T?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+        super.init(title: title, options: options, selectedOption: selectedOption, cellSelection: nil, valueChanged: valueChanged)
         self.cellClass = SelectionFormCell.self
         self.selection = { cell in
             cellSelection?(cell)
