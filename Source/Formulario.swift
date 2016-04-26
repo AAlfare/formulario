@@ -84,7 +84,10 @@ extension Form: UITableViewDataSource {
         row.form = self
         
         let cell = tableView.dequeueReusableCellWithIdentifier(row.cellClass.cellIdentifier(), forIndexPath: indexPath) as! FormCell
+        cell.row = row
         cell.configure(row)
+        
+        row.cell = cell
         return cell
     }
     
@@ -110,9 +113,11 @@ public class FormRow: NSObject {
     public var title: String?
     public var value: Any? {
         didSet {
+            cell?.configure(self)
             valueChanged?(self)
         }
     }
+    weak var cell: FormCell?
     public var cellClass: FormCell.Type
     public var selection: ((FormCell)->Void)?
     public var valueChanged: ((FormRow)->Void)?
@@ -237,6 +242,7 @@ public class SelectableFormRow: FormRow {
 
 public class FormCell: UITableViewCell {
     public var row: FormRow?
+    
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
         
@@ -252,7 +258,6 @@ public class FormCell: UITableViewCell {
     }
     
     public func configure(row: FormRow) {
-        self.row = row
         self.textLabel?.text = row.title ?? row.value as? String
         self.detailTextLabel?.text = row.title != nil ? row.value as? String : nil
     }
@@ -287,7 +292,6 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
     }
     
     override public func configure(row: FormRow) {
-        self.row = row
         textLabel?.text = row.title
         textField.text = row.value as? String
         textField.placeholder = (row as? TextFieldFormRow)?.placeholder

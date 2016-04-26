@@ -50,9 +50,11 @@ class ViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let nameRow = FormRow(title: "Vorname", value: "Andreas")
+        
         form.sections = [
             FormSection(rows: [
-                FormRow(title: "Vorname", value: "Andreas"),
+                nameRow,
                 FormRow(title: "Nachname", value: "Alfarè", cellSelection: { (cell) -> Void in
                     print("cell selected")
                 }),
@@ -103,6 +105,10 @@ class ViewController: FormViewController {
                 FormRow(title: "Email", value: "hello@example.com"),
             ])
         )
+        
+        delay(3.0) {
+            nameRow.value = "Andy"
+        }
     }
 
     override func didReceiveMemoryWarning() {
