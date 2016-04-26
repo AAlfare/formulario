@@ -35,6 +35,8 @@ public class Form: NSObject {
     
     private static var registeredCellClasses = [
         FormCell.self,
+        LabelFormCell.self,
+        SubtitleFormCell.self,
         TextFieldFormCell.self,
         EmailFormCell.self,
         PasswordFormCell.self,
@@ -133,7 +135,7 @@ public class FormRow: NSObject {
     public init(title: String?, value: Any?, cellClass: FormCell.Type? = nil, cellSelection: ((FormCell) -> Void)? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
         self.value = value
-        self.cellClass = cellClass ?? FormCell.self
+        self.cellClass = cellClass ?? LabelFormCell.self
         self.selection = cellSelection
         self.valueChanged = valueChanged
         super.init()
@@ -252,7 +254,7 @@ public class FormCell: UITableViewCell {
     public var row: FormRow?
     
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = .None
     }
@@ -268,6 +270,30 @@ public class FormCell: UITableViewCell {
     public func configure(row: FormRow) {
         self.textLabel?.text = row.title ?? row.value as? String
         self.detailTextLabel?.text = row.title != nil ? row.value as? String : nil
+    }
+}
+
+public class LabelFormCell: FormCell {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
+        
+        selectionStyle = .None
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+public class SubtitleFormCell: FormCell {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: .Subtitle, reuseIdentifier: reuseIdentifier)
+        
+        selectionStyle = .None
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
@@ -463,7 +489,7 @@ public class SwitchFormCell: FormCell {
 
 public class SelectionFormCell: FormCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = .Default
         accessoryType = .DisclosureIndicator

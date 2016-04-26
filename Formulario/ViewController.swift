@@ -53,34 +53,22 @@ class ViewController: FormViewController {
         let nameRow = FormRow(title: "Vorname", value: "Andreas")
         
         form.sections = [
-            FormSection(rows: [
+            FormSection(title: "Static", rows: [
                 nameRow,
                 FormRow(title: "Nachname", value: "Alfarè", cellSelection: { (cell) -> Void in
                     print("cell selected")
                 }),
-                TextFieldFormRow(title: "Text", value: nil, placeholder: "Text", cellSelection: nil, valueChanged: { (row) -> Void in
-                    print(row.value)
-                }),
-                SwitchFormRow(title: "Lights on", value: true, cellSelection: nil, valueChanged: { (row) in
-                    print(row.value)
-                }),
-                SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], selectedOption: nil, cellSelection: nil, valueChanged: { (row) in
-                    print(row.value)
-                }),
-                SelectableFormRow(title: "Happy?", selected: true, cellSelection: nil, valueChanged: { (row) in
-                    print(row.value)
-                }),
-                SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: nil, cellSelection: nil, valueChanged: { (row) in
-                    print(row.value)
-                }),
-                SelectionFormRow(title: "🙃", options: Person.all(), selectedOption: Person.all().first, cellSelection: nil, valueChanged: { (row) in
-                    print(row.value)
-                })
+                FormRow(title: "Land", value: "🇦🇹 Austria", cellClass: SubtitleFormCell.self),
+                FormRow(title: "Telefon", value: "+43 1 53422"),
+                FormRow(title: "Email", value: "hello@example.com")
             ])
         ]
         
         form.sections.append(
             FormSection(title: "Various text field rows", rows: [
+                TextFieldFormRow(title: "Text", value: nil, placeholder: "Text", cellSelection: nil, valueChanged: { (row) -> Void in
+                    print(row.value)
+                }),
                 EmailFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: { (row) -> Void in
                     print(row.value)
                 }),
@@ -100,9 +88,28 @@ class ViewController: FormViewController {
         )
             
         form.sections.append(
-            FormSection(title: "Static", rows: [
-                FormRow(title: "Telefon", value: "+43 1 53422"),
-                FormRow(title: "Email", value: "hello@example.com"),
+            FormSection(title: "Boolean", rows: [
+                SwitchFormRow(title: "Lights on", value: true, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                SelectableFormRow(title: "Happy?", selected: true, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                })
+            ])
+        )
+        
+        form.sections.append(
+            FormSection(title: "✅ Options", rows: [
+                SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], selectedOption: nil, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                
+                SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: nil, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                SelectionFormRow(title: "🙃", options: Person.all(), selectedOption: Person.all().first, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                })
             ])
         )
         
