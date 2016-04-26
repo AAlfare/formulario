@@ -86,9 +86,17 @@ extension Form: UITableViewDataSource {
         let cell = tableView.dequeueReusableCellWithIdentifier(row.cellClass.cellIdentifier(), forIndexPath: indexPath) as! FormCell
         cell.row = row
         cell.configure(row)
-        
-        row.cell = cell
         return cell
+    }
+    
+    public func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        let row = sections[indexPath.section].rows[indexPath.row]
+        row.cell = cell as? FormCell
+    }
+    
+    public func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        let row = sections[indexPath.section].rows[indexPath.row]
+        row.cell = nil
     }
     
     public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
