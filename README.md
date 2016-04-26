@@ -117,6 +117,10 @@ github "AAlfare/Formulario"
 
 ## Changelog
 
+### 0.4.2
+*26.04.2016*
+- Update the UI of a cell after changing the value of a row
+
 ### 0.4.1
 *22.04.2016*
 - Set initial selected option in selection form row
