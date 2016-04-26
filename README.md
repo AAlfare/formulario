@@ -117,29 +117,23 @@ github "AAlfare/Formulario"
 
 ## Changelog
 
-### 0.4.2
-*26.04.2016*
+**0.4.2** (*26.04.2016*)
 - Update the UI of a cell after changing the value of a row
 
-### 0.4.1
-*22.04.2016*
+**0.4.1** (*22.04.2016*)
 - Set initial selected option in selection form row
 
-### 0.4
-*22.04.2016*
+**0.4** (*22.04.2016*)
 - Selection form row now accepts custom types as options
 
-### 0.3
-*14.04.2016*
+**0.3** (*14.04.2016*)
 - Adds Selectable and Selection form rows
 
-### 0.2
-*12.04.2016*
+**0.2** (*12.04.2016*)
 - Adds Email, Password, Phone, Decimal and Currency form rows
 - Adds Switch form row
 
-### 0.1
-*01.03.2016*
+**0.1** (*01.03.2016*)
 - Adds FormViewController, FormRow and FormSection to build a Form
 - Adds Slider form cell
 - Adds TextField form row
