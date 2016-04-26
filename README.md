@@ -117,6 +117,11 @@ github "AAlfare/Formulario"
 
 ## Changelog
 
+**0.4.3** (*26.04.2016*)
+- Prevents updating wrong (dequeued) cell if it was removed from table
+- Adds LabelFormCell and SubtitleFormCell
+- Cleans up example code
+
 **0.4.2** (*26.04.2016*)
 - Update the UI of a cell after changing the value of a row
 
