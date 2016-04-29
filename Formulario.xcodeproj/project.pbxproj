@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E10E843C1CD39E01009EFDB1 /* RemoteFormulario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10E843B1CD39E01009EFDB1 /* RemoteFormulario.swift */; };
+		E10E843E1CD3A25B009EFDB1 /* RemoteFormExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10E843D1CD3A25B009EFDB1 /* RemoteFormExampleViewController.swift */; };
 		E117A73B1C80AAFB00B00A28 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E117A73A1C80AAFB00B00A28 /* AppDelegate.swift */; };
 		E117A73D1C80AAFB00B00A28 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E117A73C1C80AAFB00B00A28 /* ViewController.swift */; };
 		E117A7401C80AAFB00B00A28 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E117A73E1C80AAFB00B00A28 /* Main.storyboard */; };
@@ -55,6 +56,7 @@
 
 /* Begin PBXFileReference section */
 		E10E843B1CD39E01009EFDB1 /* RemoteFormulario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteFormulario.swift; sourceTree = "<group>"; };
+		E10E843D1CD3A25B009EFDB1 /* RemoteFormExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteFormExampleViewController.swift; sourceTree = "<group>"; };
 		E117A7371C80AAFB00B00A28 /* Formulario-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Formulario-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E117A73A1C80AAFB00B00A28 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E117A73C1C80AAFB00B00A28 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				E1DEA9C81C8438BE001D0DF0 /* CustomCell.swift */,
 				E117A73C1C80AAFB00B00A28 /* ViewController.swift */,
 				E1DEA9C31C843390001D0DF0 /* CustomViewController.swift */,
+				E10E843D1CD3A25B009EFDB1 /* RemoteFormExampleViewController.swift */,
 				E1DEA9C71C84363A001D0DF0 /* Source */,
 				E117A73E1C80AAFB00B00A28 /* Main.storyboard */,
 				E117A7411C80AAFB00B00A28 /* Assets.xcassets */,
@@ -344,6 +347,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E16291631C849B7F00FECC90 /* Formulario.swift in Sources */,
+				E10E843E1CD3A25B009EFDB1 /* RemoteFormExampleViewController.swift in Sources */,
 				E10E843C1CD39E01009EFDB1 /* RemoteFormulario.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
