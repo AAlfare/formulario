@@ -9,11 +9,15 @@
 import UIKit
 
 public class RemoteForm: Form {
-    var formUrl: String
+    var formUrl: String {
+        didSet {
+            parameters.removeAll()
+        }
+    }
     var title: String?
     var responseUrl: String?
     var action: String?
-    var parameters: [String: AnyObject]?
+    var parameters = [String: AnyObject]()
     
     public init(formUrl: String) {
         self.formUrl = formUrl
@@ -36,7 +40,6 @@ public class RemoteForm: Form {
                 self.title = json["title"] as? String
                 self.responseUrl = json["responseUrl"] as? String
                 self.action = json["action"] as? String
-                self.parameters = Dictionary()
                 
                 guard let jsonSections = json["sections"] as? Array<[String: AnyObject]> else {
                     return
@@ -46,9 +49,14 @@ public class RemoteForm: Form {
                     var rows = [FormRow]()
                     if let jsonRows = section["rows"] as? Array<[String: AnyObject]> {
                         for row in jsonRows {
-                            rows.append(TextFieldFormRow(title: row["label"] as? String, value: row["value"] as? String, placeholder: row["placeholder"] as? String, cellSelection: nil, valueChanged: { r in
-                                if let name = row["name"] as? String {
-                                    self.parameters?[name] = r.value as? AnyObject
+                            let name = row["name"] as? String
+                            var value = row["value"] as? String
+                            if let name = name, let oldValue = self.parameters[name] as? String {
+                                value = oldValue
+                            }
+                            rows.append(TextFieldFormRow(title: row["label"] as? String, value: value, placeholder: row["placeholder"] as? String, cellSelection: nil, valueChanged: { r in
+                                if let name = name {
+                                    self.parameters[name] = r.value as? AnyObject
                                 }
                             }))
                         }
@@ -59,6 +67,7 @@ public class RemoteForm: Form {
                 
                 dispatch_async(dispatch_get_main_queue(), { 
                     self.tableView?.reloadData()
+                    self.formViewController?.title = self.title
                 })
                 
             } catch {
@@ -74,20 +83,18 @@ public class RemoteForm: Form {
         
         let request = NSMutableURLRequest(URL: NSURL(string: responseUrl)!)
         request.HTTPMethod = action ?? "GET"
-        if let parameters = parameters {
-            print(parameters)
-            
-            
-            var paramString = ""
-            for (key, value) in parameters {
-                let escapedKey = key.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())
-                let escapedValue = value.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())
-                paramString += "\(escapedKey)=\(escapedValue)&"
-            }
-            
-            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            request.HTTPBody = paramString.dataUsingEncoding(NSUTF8StringEncoding)
+        
+        print(parameters)
+        
+        var paramString = ""
+        for (key, value) in parameters {
+            let escapedKey = key.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())
+            let escapedValue = value.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())
+            paramString += "\(escapedKey)=\(escapedValue)&"
         }
+        
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        request.HTTPBody = paramString.dataUsingEncoding(NSUTF8StringEncoding)
         
         let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
         session.dataTaskWithRequest(request) { (data, response, error) in
@@ -110,6 +117,7 @@ class RemoteFormViewController: FormViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        title = remoteForm?.title
         remoteForm?.loadForm()
     }
 }
