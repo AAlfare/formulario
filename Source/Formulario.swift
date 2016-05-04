@@ -6,8 +6,6 @@
 //  Copyright © 2016 alfare.it. All rights reserved.
 //
 
-import UIKit
-
 public class Form: NSObject {
     var formViewController: FormViewController?
     
