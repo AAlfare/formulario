@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E10E843C1CD39E01009EFDB1 /* RemoteFormulario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10E843B1CD39E01009EFDB1 /* RemoteFormulario.swift */; };
-		E10E843E1CD3A25B009EFDB1 /* RemoteFormExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10E843D1CD3A25B009EFDB1 /* RemoteFormExampleViewController.swift */; };
 		E117A73B1C80AAFB00B00A28 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E117A73A1C80AAFB00B00A28 /* AppDelegate.swift */; };
 		E117A73D1C80AAFB00B00A28 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E117A73C1C80AAFB00B00A28 /* ViewController.swift */; };
 		E117A7401C80AAFB00B00A28 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E117A73E1C80AAFB00B00A28 /* Main.storyboard */; };
@@ -19,6 +17,8 @@
 		E16291631C849B7F00FECC90 /* Formulario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA9C51C843636001D0DF0 /* Formulario.swift */; };
 		E16291661C84A6A300FECC90 /* Formulario.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E16291561C849B4B00FECC90 /* Formulario.framework */; };
 		E162916B1C84A74600FECC90 /* Formulario.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E16291561C849B4B00FECC90 /* Formulario.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E1CDF13F1CDA253400BD4A66 /* RemoteFormExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10E843D1CD3A25B009EFDB1 /* RemoteFormExampleViewController.swift */; };
+		E1CDF1421CDA264000BD4A66 /* RemoteFormulario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CDF1411CDA264000BD4A66 /* RemoteFormulario.swift */; };
 		E1DEA9C41C843390001D0DF0 /* CustomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA9C31C843390001D0DF0 /* CustomViewController.swift */; };
 		E1DEA9C91C8438BE001D0DF0 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA9C81C8438BE001D0DF0 /* CustomCell.swift */; };
 /* End PBXBuildFile section */
@@ -55,7 +55,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		E10E843B1CD39E01009EFDB1 /* RemoteFormulario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteFormulario.swift; sourceTree = "<group>"; };
 		E10E843D1CD3A25B009EFDB1 /* RemoteFormExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteFormExampleViewController.swift; sourceTree = "<group>"; };
 		E117A7371C80AAFB00B00A28 /* Formulario-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Formulario-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E117A73A1C80AAFB00B00A28 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -70,6 +69,7 @@
 		E16291561C849B4B00FECC90 /* Formulario.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Formulario.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E16291581C849B4B00FECC90 /* Formulario.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Formulario.h; sourceTree = "<group>"; };
 		E162915A1C849B4B00FECC90 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E1CDF1411CDA264000BD4A66 /* RemoteFormulario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RemoteFormulario.swift; path = Source/RemoteFormulario.swift; sourceTree = SOURCE_ROOT; };
 		E1DEA9C31C843390001D0DF0 /* CustomViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomViewController.swift; sourceTree = "<group>"; };
 		E1DEA9C51C843636001D0DF0 /* Formulario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Formulario.swift; path = Source/Formulario.swift; sourceTree = SOURCE_ROOT; };
 		E1DEA9C81C8438BE001D0DF0 /* CustomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
@@ -160,7 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				E1DEA9C51C843636001D0DF0 /* Formulario.swift */,
-				E10E843B1CD39E01009EFDB1 /* RemoteFormulario.swift */,
+				E1CDF1411CDA264000BD4A66 /* RemoteFormulario.swift */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -327,6 +327,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1CDF13F1CDA253400BD4A66 /* RemoteFormExampleViewController.swift in Sources */,
 				E1DEA9C41C843390001D0DF0 /* CustomViewController.swift in Sources */,
 				E117A73D1C80AAFB00B00A28 /* ViewController.swift in Sources */,
 				E1DEA9C91C8438BE001D0DF0 /* CustomCell.swift in Sources */,
@@ -347,8 +348,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E16291631C849B7F00FECC90 /* Formulario.swift in Sources */,
-				E10E843E1CD3A25B009EFDB1 /* RemoteFormExampleViewController.swift in Sources */,
-				E10E843C1CD39E01009EFDB1 /* RemoteFormulario.swift in Sources */,
+				E1CDF1421CDA264000BD4A66 /* RemoteFormulario.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

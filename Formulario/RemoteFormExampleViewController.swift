@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Formulario
 
 class RemoteFormExampleViewController: RemoteFormViewController {
     override func viewDidLoad() {

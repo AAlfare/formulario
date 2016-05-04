@@ -76,7 +76,7 @@ public class RemoteForm: Form {
         }.resume()
     }
     
-    func submit() {
+    public func submit() {
         guard let responseUrl = responseUrl else {
             return
         }
@@ -103,8 +103,8 @@ public class RemoteForm: Form {
     }
 }
 
-class RemoteFormViewController: FormViewController {
-    var remoteForm: RemoteForm? {
+public class RemoteFormViewController: FormViewController {
+    public var remoteForm: RemoteForm? {
         get {
             return form as? RemoteForm
         }
@@ -114,7 +114,7 @@ class RemoteFormViewController: FormViewController {
             }
         }
     }
-    override func viewWillAppear(animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         title = remoteForm?.title
