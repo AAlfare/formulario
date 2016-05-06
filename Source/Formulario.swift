@@ -6,6 +6,8 @@
 //  Copyright © 2016 alfare.it. All rights reserved.
 //
 
+import UIKit
+
 public class Form: NSObject {
     var formViewController: FormViewController?
     
@@ -83,9 +85,11 @@ extension Form: UITableViewDataSource {
         let row = sections[indexPath.section].rows[indexPath.row]
         row.form = self
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(row.cellClass.cellIdentifier(), forIndexPath: indexPath) as! FormCell
-        cell.row = row
-        cell.configure(row)
+        let cell = tableView.dequeueReusableCellWithIdentifier(row.cellClass.cellIdentifier(), forIndexPath: indexPath)
+        if let cell = cell as? FormCell {
+            cell.row = row
+            cell.configure(row)
+        }
         return cell
     }
     
@@ -130,14 +134,15 @@ public class FormRow: NSObject {
     public var selection: ((FormCell)->Void)?
     public var valueChanged: ((FormRow)->Void)?
     
-    public init(title: String?, value: Any?, cellClass: FormCell.Type? = nil, cellSelection: ((FormCell) -> Void)? = nil, valueChanged: ((FormRow)->Void)? = nil) {
+    public init(title: String?, value: Any?, cellClass: FormCell.Type = LabelFormCell.self, cellSelection: ((FormCell) -> Void)? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
         self.value = value
-        self.cellClass = cellClass ?? LabelFormCell.self
+        self.cellClass = cellClass
         self.selection = cellSelection
         self.valueChanged = valueChanged
         super.init()
     }
+    
 }
 
 public class TextFieldFormRow: FormRow {
@@ -253,12 +258,11 @@ public class FormCell: UITableViewCell {
     
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         selectionStyle = .None
     }
 
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
     
     class func cellIdentifier() -> String {
@@ -279,7 +283,7 @@ public class LabelFormCell: FormCell {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
 }
 
@@ -291,7 +295,7 @@ public class SubtitleFormCell: FormCell {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
 }
 
@@ -320,7 +324,7 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
     
     override public func configure(row: FormRow) {
@@ -349,7 +353,7 @@ public class EmailFormCell: TextFieldFormCell {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
 }
 
@@ -360,7 +364,7 @@ public class PasswordFormCell: TextFieldFormCell {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
 }
 
@@ -371,7 +375,7 @@ public class PhoneFormCell: TextFieldFormCell {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
 }
 
@@ -382,7 +386,7 @@ public class DecimalFormCell: TextFieldFormCell {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
 }
 
@@ -393,7 +397,7 @@ public class CurrencyFormCell: TextFieldFormCell {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
     
     override func textFieldValueChanged(textField: UITextField) {
@@ -436,7 +440,7 @@ public class SliderFormCell: FormCell {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
     override public func configure(row: FormRow) {
         super.configure(row)
@@ -472,7 +476,7 @@ public class SwitchFormCell: FormCell {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
     override public func configure(row: FormRow) {
         super.configure(row)
@@ -497,7 +501,7 @@ public class SelectionFormCell: FormCell {
         row?.selection?(self)
     }
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
     public override func configure(row: FormRow) {
         super.configure(row)
@@ -516,7 +520,7 @@ public class SelectableFormCell: FormCell {
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
     
     func didSelect(gestureRecognizer: UIGestureRecognizer) {
@@ -525,7 +529,9 @@ public class SelectableFormCell: FormCell {
         }
         (row as? SelectableFormRow)!.selected = !selected
         row?.selection?(self)
-        configure(row!)
+        if let row = row {
+            configure(row)
+        }
     }
     
     public override func configure(row: FormRow) {
