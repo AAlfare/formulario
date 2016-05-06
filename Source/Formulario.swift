@@ -120,6 +120,8 @@ public struct FormSection {
 
 // MARK: - Rows
 
+public typealias FormCellSelectionClosureType = FormCell -> Void
+
 public class FormRow: NSObject {
     weak var form: Form?
     public var title: String?
@@ -131,10 +133,10 @@ public class FormRow: NSObject {
     }
     weak var cell: FormCell?
     public var cellClass: FormCell.Type
-    public var selection: ((FormCell)->Void)?
+    public var selection: FormCellSelectionClosureType?
     public var valueChanged: ((FormRow)->Void)?
     
-    public init(title: String?, value: Any?, cellClass: FormCell.Type = LabelFormCell.self, cellSelection: ((FormCell) -> Void)? = nil, valueChanged: ((FormRow)->Void)? = nil) {
+    public init(title: String?, value: Any?, cellClass: FormCell.Type = LabelFormCell.self, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
         self.value = value
         self.cellClass = cellClass
@@ -147,49 +149,49 @@ public class FormRow: NSObject {
 
 public class TextFieldFormRow: FormRow {
     var placeholder: String?
-    public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.placeholder = placeholder
         super.init(title: title, value: value, cellClass: TextFieldFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
 }
 
 public class EmailFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
         self.cellClass = EmailFormCell.self
     }
 }
 
 public class PasswordFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
         self.cellClass = PasswordFormCell.self
     }
 }
 
 public class PhoneFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
         self.cellClass = PhoneFormCell.self
     }
 }
 
 public class DecimalFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
         self.cellClass = DecimalFormCell.self
     }
 }
 
 public class CurrencyFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
         self.cellClass = CurrencyFormCell.self
     }
 }
 
 public class SwitchFormRow: FormRow {
-    public init(title: String?, value: Bool, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, value: Bool, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: value, cellClass: SwitchFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
 }
@@ -215,7 +217,7 @@ public class OptionsFormRow<T: SelectableOption>: FormRow {
         }
     }
     
-    public init(title: String?, options: [T], selectedOption: T?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, options: [T], selectedOption: T?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.options = options
         super.init(title: title, value: nil, cellClass: FormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
         self.selectedOption = selectedOption
@@ -225,7 +227,7 @@ public class OptionsFormRow<T: SelectableOption>: FormRow {
 
 public class SelectionFormRow<T: SelectableOption where T: Equatable>: OptionsFormRow<T> {
     
-    public override init(title: String?, options: [T], selectedOption: T?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+    public override init(title: String?, options: [T], selectedOption: T?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, options: options, selectedOption: selectedOption, cellSelection: nil, valueChanged: valueChanged)
         self.cellClass = SelectionFormCell.self
         self.selection = { cell in
@@ -246,7 +248,7 @@ public class SelectableFormRow: FormRow {
         }
     }
     
-    public init(title: String?, selected: Bool = false, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, selected: Bool = false, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: selected, cellClass: SelectableFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
 }
