@@ -27,21 +27,30 @@ enum Animal: SelectableOption {
     }
 }
 
-class Person: NSObject, SelectableOption {
+class Person: NSObject, SelectableOption, SelectableOptionGroup {
     var title: String
-    init(title: String) {
+    var group: String
+    init(title: String, group: String) {
         self.title = title
+        self.group = group
         super.init()
     }
+    
+    class func all() -> [Person] {
+        return [
+            Person(title: "👮", group: "1️⃣"),
+            Person(title: "🎅", group: "2️⃣"),
+            Person(title: "👷", group: "1️⃣"),
+            Person(title: "🕵", group: "3️⃣")
+        ]
+    }
+    
     func selectableOptionTitle() -> String {
         return title
     }
-    class func all() -> [Person] {
-        return [
-            Person(title: "👮"),
-            Person(title: "🎅"),
-            Person(title: "👷")
-        ]
+    
+    func selectableOptionGroup() -> String {
+        return group
     }
 }
 

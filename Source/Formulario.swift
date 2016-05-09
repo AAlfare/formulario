@@ -200,6 +200,10 @@ public protocol SelectableOption {
     func selectableOptionTitle() -> String
 }
 
+public protocol SelectableOptionGroup {
+    func selectableOptionGroup() -> String
+}
+
 extension String: SelectableOption {
     public func selectableOptionTitle() -> String {
         return self
