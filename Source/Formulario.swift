@@ -10,6 +10,7 @@ import UIKit
 
 public class Form: NSObject {
     var formViewController: FormViewController?
+    var tableStyle: UITableViewStyle = .Plain
     
     public var sections: [FormSection] {
         didSet {
@@ -198,10 +199,13 @@ public class SwitchFormRow: FormRow {
 
 public protocol SelectableOption {
     func selectableOptionTitle() -> String
+    func selectableOptionSectionTitle() -> String
 }
 
-public protocol SelectableOptionGroup {
-    func selectableOptionGroup() -> String
+extension SelectableOption {
+    public func selectableOptionSectionTitle() -> String {
+        return ""
+    }
 }
 
 extension String: SelectableOption {
@@ -230,9 +234,13 @@ public class OptionsFormRow<T: SelectableOption>: FormRow {
 
 
 public class SelectionFormRow<T: SelectableOption where T: Equatable>: OptionsFormRow<T> {
+    var sectionTitles: [String]?
+    var tableStyle: UITableViewStyle
     
-    public override init(title: String?, options: [T], selectedOption: T?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, options: [T], selectedOption: T?, sectionTitles: [String]? = nil, tableStyle: UITableViewStyle = .Plain, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+        self.tableStyle = tableStyle
         super.init(title: title, options: options, selectedOption: selectedOption, cellSelection: nil, valueChanged: valueChanged)
+        self.sectionTitles = sectionTitles
         self.cellClass = SelectionFormCell.self
         self.selection = { cell in
             cellSelection?(cell)
@@ -568,12 +576,12 @@ public class FormViewController: UITableViewController {
     // MARK: - Initialization
     
     public convenience init(form: Form) {
-        self.init(style: .Plain)
+        self.init(style: form.tableStyle)
         self.form = form
     }
     
     public init() {
-        super.init(style: .Plain)
+        super.init(style: form.tableStyle)
     }
     
     public override init(style: UITableViewStyle) {
@@ -610,7 +618,7 @@ class SelectionFormViewController<T: SelectableOption where T: Equatable>: FormV
     
     init(selectionRow: SelectionFormRow<T>) {
         self.selectionRow = selectionRow
-        super.init()
+        super.init(style: selectionRow.tableStyle)
     }
 
     required internal init?(coder aDecoder: NSCoder) {
@@ -622,20 +630,35 @@ class SelectionFormViewController<T: SelectableOption where T: Equatable>: FormV
         
         title = selectionRow.title
         
-        var optionRows = [FormRow]()
-        for (index, option) in selectionRow.options.enumerate() {
-            if self.selectionRow.selectedOption == option {
-                self.selectedOptionIndexPath = NSIndexPath(forRow: index, inSection: 0)
+        var groupedOptions: [String: [T]] = [String: [T]]()
+        for option in selectionRow.options {
+            let sectionTitle = selectionRow.sectionTitles != nil ? option.selectableOptionSectionTitle() : ""
+            var sectionArray = groupedOptions[sectionTitle]
+            if sectionArray == nil {
+                sectionArray = [T]()
             }
-            optionRows.append(SelectableFormRow(title: option.selectableOptionTitle(), selected: self.selectionRow.selectedOption == option, cellSelection: { (cell) in
-                self.selectionRow.selectedOption = option
-                if self.allowsMultipleSelection == false {
-                    self.navigationController?.popViewControllerAnimated(true)
-                }
-            }, valueChanged: nil))
+            sectionArray!.append(option)
+            groupedOptions[sectionTitle] = sectionArray!
         }
-        form = Form(sections: [FormSection(title: nil, rows: optionRows)])
         
+        let sectionTitles = selectionRow.sectionTitles ?? groupedOptions.map({ (sectionTitle, options) in sectionTitle })
+        for (sectionIndex, sectionTitle) in sectionTitles.enumerate() {
+            var section = FormSection(title: sectionTitle)
+            if let options = groupedOptions[sectionTitle] {
+                for (rowIndex, option) in options.enumerate() {
+                    section.rows.append(SelectableFormRow(title: option.selectableOptionTitle(), selected: self.selectionRow.selectedOption == option, cellSelection: { (cell) in
+                        self.selectionRow.selectedOption = option
+                        if self.allowsMultipleSelection == false {
+                            self.navigationController?.popViewControllerAnimated(true)
+                        }
+                    }, valueChanged: nil))
+                    if self.selectionRow.selectedOption == option {
+                        self.selectedOptionIndexPath = NSIndexPath(forRow: rowIndex, inSection: sectionIndex)
+                    }
+                }
+            }
+            form.sections.append(section)
+        }
     }
     
     override func viewWillAppear(animated: Bool) {

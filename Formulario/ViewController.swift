@@ -27,7 +27,9 @@ enum Animal: SelectableOption {
     }
 }
 
-class Person: NSObject, SelectableOption, SelectableOptionGroup {
+
+
+class Person: NSObject, SelectableOption {
     var title: String
     var group: String
     init(title: String, group: String) {
@@ -45,12 +47,24 @@ class Person: NSObject, SelectableOption, SelectableOptionGroup {
         ]
     }
     
+    class func allGroups() -> [String] {
+        return ["1️⃣", "2️⃣", "3️⃣"]
+    }
+    
     func selectableOptionTitle() -> String {
         return title
     }
     
-    func selectableOptionGroup() -> String {
+    func selectableOptionSectionTitle() -> String {
         return group
+    }
+    
+    override func isEqual(object: AnyObject?) -> Bool {
+        guard let object = object as? Person else {
+            return false
+        }
+        
+        return self.title == object.title && self.group == object.group
     }
 }
 
@@ -113,10 +127,13 @@ class ViewController: FormViewController {
                     print(row.value)
                 }),
                 
-                SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: nil, cellSelection: nil, valueChanged: { (row) in
+                SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: Animal.Dog, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
                 SelectionFormRow(title: "🙃", options: Person.all(), selectedOption: Person.all().first, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                SelectionFormRow(title: "🙃 Grouped", options: Person.all(), selectedOption: Person.all().last, sectionTitles: Person.allGroups(), cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 })
             ])
