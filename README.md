@@ -75,6 +75,52 @@ let row = SelectionFormRow(title: "Animals", options: Animal.all(), selectedOpti
 })
 ```
 
+### Group options with section titles
+```swift
+class Person: NSObject, SelectableOption {
+  var title: String
+  var group: String
+  
+  init(title: String, group: String) {
+    self.title = title
+    self.group = group
+    super.init()
+  }
+  
+  class func all() -> [Person] {
+    return [
+      Person(title: "👮", group: "1️⃣"),
+      Person(title: "🎅", group: "2️⃣"),
+      Person(title: "👷", group: "1️⃣"),
+      Person(title: "🕵", group: "3️⃣")
+    ]
+  }
+  
+  class func allGroups() -> [String] {
+    return ["1️⃣", "2️⃣", "3️⃣"]
+  }
+  
+  func selectableOptionTitle() -> String {
+    return title
+  }
+  
+  func selectableOptionSectionTitle() -> String {
+    return group
+  }
+  
+  override func isEqual(object: AnyObject?) -> Bool {
+    guard let object = object as? Person else {
+      return false
+    }
+    return self.title == object.title && self.group == object.group
+  }
+}
+
+let row = SelectionFormRow(title: "Persons", options: Person.all(), selectedOption: nil, sectionTitles: Person.allGroups(),  cellSelection: nil, valueChanged: { (row) in
+  print(row.value)
+})
+```
+
 ## Create custom cell classes
 ```swift
 class CustomCell: FormCell {
