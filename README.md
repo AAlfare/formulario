@@ -163,6 +163,9 @@ github "AAlfare/Formulario"
 
 ## Changelog
 
+**0.4.4** (*10.05.2016*)
+- Adds ability to group SelectionRow options with section titles
+
 **0.4.3** (*26.04.2016*)
 - Prevents updating wrong (dequeued) cell if it was removed from table
 - Adds LabelFormCell and SubtitleFormCell
