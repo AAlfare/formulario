@@ -44,6 +44,7 @@ public class Form: NSObject {
         PhoneFormCell.self,
         DecimalFormCell.self,
         CurrencyFormCell.self,
+        DatePickerFormCell.self,
         SliderFormCell.self,
         SwitchFormCell.self,
         SelectionFormCell.self,
@@ -188,6 +189,14 @@ public class CurrencyFormRow: TextFieldFormRow {
     override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
         self.cellClass = CurrencyFormCell.self
+    }
+}
+
+public class DatePickerFormRow: FormRow {
+    var datePickerMode: UIDatePickerMode
+    public init(title: String?, value: NSDate?, datePickerMode: UIDatePickerMode = .Date, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+        self.datePickerMode = datePickerMode
+        super.init(title: title, value: value, cellClass: DatePickerFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
 }
 
@@ -426,6 +435,54 @@ public class CurrencyFormCell: TextFieldFormCell {
         } else {
             row?.value = nil
             textField.text = nil
+        }
+    }
+}
+
+public class DatePickerFormCell: TextFieldFormCell {
+    let datePicker = UIDatePicker()
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), forControlEvents: .ValueChanged)
+        textField.inputView = datePicker
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    func datePickerValueChanged(datePicker: UIDatePicker) {
+        print(datePicker.date)
+        row?.value = datePicker.date
+    }
+    
+    public override func configure(row: FormRow) {
+        super.configure(row)
+        if let row = row as? DatePickerFormRow {
+            datePicker.datePickerMode = row.datePickerMode
+        }
+        
+        if let date = row.value as? NSDate {
+            let formatter = NSDateFormatter()
+            var dateStyle = NSDateFormatterStyle.NoStyle
+            var timeStyle = NSDateFormatterStyle.NoStyle
+            switch datePicker.datePickerMode {
+            case .Date:
+                dateStyle = .LongStyle
+            case .Time:
+                timeStyle = .ShortStyle
+            case .DateAndTime:
+                dateStyle = .LongStyle
+                timeStyle = .ShortStyle
+            case .CountDownTimer:
+                timeStyle = .NoStyle
+            }
+            formatter.dateStyle = dateStyle
+            formatter.timeStyle = timeStyle
+            
+            textField.text = formatter.stringFromDate(date)
         }
     }
 }

@@ -109,6 +109,20 @@ class ViewController: FormViewController {
                 })
             ])
         )
+        
+        form.sections.append(
+            FormSection(title: "Date Picker", rows: [
+                DatePickerFormRow(title: "Date", value: nil, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                DatePickerFormRow(title: "Time", value: nil, datePickerMode: .Time, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                DatePickerFormRow(title: "Date & Time", value: nil, datePickerMode: .DateAndTime, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                })
+            ])
+        )
             
         form.sections.append(
             FormSection(title: "Boolean", rows: [
