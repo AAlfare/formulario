@@ -663,6 +663,9 @@ class SelectionFormViewController<T: SelectableOption where T: Equatable>: FormV
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        tableView.selectRowAtIndexPath(selectedOptionIndexPath, animated: false, scrollPosition: .None)
+        
+        dispatch_async(dispatch_get_main_queue()) { 
+            self.tableView.selectRowAtIndexPath(self.selectedOptionIndexPath, animated: false, scrollPosition: .Middle)
+        }
     }
 }
