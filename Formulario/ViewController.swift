@@ -110,15 +110,18 @@ class ViewController: FormViewController {
             ])
         )
         
+        let customDateFormatter = NSDateFormatter()
+        customDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        
         form.sections.append(
             FormSection(title: "Date Picker", rows: [
                 DatePickerFormRow(title: "Date", value: nil, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                DatePickerFormRow(title: "Time", value: nil, datePickerMode: .Time, cellSelection: nil, valueChanged: { (row) in
+                DatePickerFormRow(title: "Time", value: NSDate(), datePickerMode: .Time, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                DatePickerFormRow(title: "Date & Time", value: nil, datePickerMode: .DateAndTime, cellSelection: nil, valueChanged: { (row) in
+                DatePickerFormRow(title: "⌚️", value: nil, dateFormatter: customDateFormatter, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 })
             ])

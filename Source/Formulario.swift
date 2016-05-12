@@ -194,9 +194,32 @@ public class CurrencyFormRow: TextFieldFormRow {
 
 public class DatePickerFormRow: FormRow {
     var datePickerMode: UIDatePickerMode
-    public init(title: String?, value: NSDate?, datePickerMode: UIDatePickerMode = .Date, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    var formatter: NSDateFormatter?
+    
+    class func defaultFormatter(datePickerMode: UIDatePickerMode) -> NSDateFormatter {
+        let formatter = NSDateFormatter()
+        var dateStyle = NSDateFormatterStyle.NoStyle
+        var timeStyle = NSDateFormatterStyle.NoStyle
+        switch datePickerMode {
+        case .Date:
+            dateStyle = .LongStyle
+        case .Time:
+            timeStyle = .ShortStyle
+        case .DateAndTime:
+            dateStyle = .LongStyle
+            timeStyle = .ShortStyle
+        case .CountDownTimer:
+            timeStyle = .NoStyle
+        }
+        formatter.dateStyle = dateStyle
+        formatter.timeStyle = timeStyle
+        return formatter
+    }
+    
+    public init(title: String?, value: NSDate?, datePickerMode: UIDatePickerMode = .Date, dateFormatter: NSDateFormatter? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.datePickerMode = datePickerMode
         super.init(title: title, value: value, cellClass: DatePickerFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
+        self.formatter = dateFormatter
     }
 }
 
@@ -441,21 +464,65 @@ public class CurrencyFormCell: TextFieldFormCell {
 
 public class DatePickerFormCell: TextFieldFormCell {
     let datePicker = UIDatePicker()
+    let dateLabel = UILabel()
+    let clearButton = UIButton()
+    var clearButtonWidthConstraint: NSLayoutConstraint!
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        contentView.removeConstraints(contentView.constraints)
+        
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        dateLabel.textAlignment = .Right
+        contentView.addSubview(dateLabel)
+        
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), forControlEvents: .ValueChanged)
         textField.inputView = datePicker
+        textField.delegate = self
+        textField.hidden = true
+        
+        clearButton.translatesAutoresizingMaskIntoConstraints = false
+        clearButton.setTitle("✕", forState: .Normal)
+        clearButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
+        clearButton.addTarget(self, action: #selector(clearButtonTapped(_:)), forControlEvents: .TouchUpInside)
+        clearButton.contentHorizontalAlignment = .Right
+        contentView.addSubview(clearButton)
+        
+        gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(didSelect(_:)))]
+        
+        let views: [String: AnyObject] = [
+            "textLabel": textLabel!,
+            "dateLabel": dateLabel,
+            "clearButton": clearButton
+        ]
+        self.clearButtonWidthConstraint = NSLayoutConstraint(item: clearButton, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 0)
+        contentView.addConstraint(clearButtonWidthConstraint!)
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-[dateLabel][clearButton]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[dateLabel]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[clearButton]|", options: [], metrics: nil, views: views))
     }
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
-    func datePickerValueChanged(datePicker: UIDatePicker) {
-        print(datePicker.date)
+    func didSelect(gestureRecognizer: UIGestureRecognizer) {
+        textField.becomeFirstResponder()
+    }
+    
+    public func textFieldDidBeginEditing(textField: UITextField) {
         row?.value = datePicker.date
+    }
+    
+    func datePickerValueChanged(datePicker: UIDatePicker) {
+        row?.value = datePicker.date
+    }
+    
+    func clearButtonTapped(sender: AnyObject) {
+        row?.value = nil
+        textField.resignFirstResponder()
     }
     
     public override func configure(row: FormRow) {
@@ -465,25 +532,13 @@ public class DatePickerFormCell: TextFieldFormCell {
         }
         
         if let date = row.value as? NSDate {
-            let formatter = NSDateFormatter()
-            var dateStyle = NSDateFormatterStyle.NoStyle
-            var timeStyle = NSDateFormatterStyle.NoStyle
-            switch datePicker.datePickerMode {
-            case .Date:
-                dateStyle = .LongStyle
-            case .Time:
-                timeStyle = .ShortStyle
-            case .DateAndTime:
-                dateStyle = .LongStyle
-                timeStyle = .ShortStyle
-            case .CountDownTimer:
-                timeStyle = .NoStyle
-            }
-            formatter.dateStyle = dateStyle
-            formatter.timeStyle = timeStyle
-            
-            textField.text = formatter.stringFromDate(date)
+            let formatter = (row as? DatePickerFormRow)?.formatter ?? DatePickerFormRow.defaultFormatter(datePicker.datePickerMode)
+            dateLabel.text = formatter.stringFromDate(date)
+        } else {
+            dateLabel.text = nil
         }
+        clearButtonWidthConstraint.constant = row.value != nil ? 25 : 0
+        contentView.layoutIfNeeded()
     }
 }
 
