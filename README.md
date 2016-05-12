@@ -44,6 +44,7 @@ PasswordFormRow
 PhoneFormRow
 DecimalFormRow
 CurrencyFormRow
+DatePickerFormRow
 SwitchFormRow
 SelectableFormRow
 SelectionFormRow
@@ -162,6 +163,12 @@ github "AAlfare/Formulario"
 ```
 
 ## Changelog
+
+**0.4.6** (*12.05.2016*)
+- Adds DatePickerFormRow and DatePickerFormCell with optional custom NSDateFormatter
+
+**0.4.5** (*11.05.2016*)
+- Scrolls to selected row in SelectionFormViewController
 
 **0.4.4** (*10.05.2016*)
 - Adds ability to group SelectionRow options with section titles
