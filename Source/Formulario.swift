@@ -590,6 +590,7 @@ public class SwitchFormCell: FormCell {
         switchControl.translatesAutoresizingMaskIntoConstraints = false
         switchControl.addTarget(self, action: #selector(SwitchFormCell.switched(_:)), forControlEvents: .ValueChanged)
         switchControl.setContentHuggingPriority(100, forAxis: .Horizontal)
+        switchControl.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
         contentView.addSubview(switchControl)
         
         let views = [
