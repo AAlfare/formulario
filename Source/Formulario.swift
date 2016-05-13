@@ -447,18 +447,23 @@ public class CurrencyFormCell: TextFieldFormCell {
     }
     
     override func textFieldValueChanged(textField: UITextField) {
+        if let centString = textField.text?.componentsSeparatedByCharactersInSet(NSCharacterSet.decimalDigitCharacterSet().invertedSet).joinWithSeparator("") where centString.isEmpty == false {
+            let centValue = (centString as NSString).doubleValue
+            let number = NSDecimalNumber(double: centValue/100.0)
+            row?.value = number
+        } else {
+            row?.value = nil
+        }
+    }
+    
+    public override func configure(row: FormRow) {
+        super.configure(row)
+        
         let formatter = NSNumberFormatter()
         formatter.numberStyle = .CurrencyStyle
         
-        if let centString = textField.text?.componentsSeparatedByCharactersInSet(NSCharacterSet.decimalDigitCharacterSet().invertedSet).joinWithSeparator("") where centString.isEmpty == false {
-            let centValue = (centString as NSString).doubleValue
-            let number = NSNumber(float: Float(centValue)/100.0)
-            row?.value = number.floatValue
-            textField.text = formatter.stringFromNumber(number)
-        } else {
-            row?.value = nil
-            textField.text = nil
-        }
+        let number = row.value as? NSDecimalNumber
+        textField.text = number != nil ? formatter.stringFromNumber(number!) : nil
     }
 }
 

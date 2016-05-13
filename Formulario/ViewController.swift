@@ -104,7 +104,7 @@ class ViewController: FormViewController {
                 DecimalFormRow(title: "Decimal", value: nil, placeholder: "Decimal", cellSelection: nil, valueChanged: { (row) -> Void in
                     print(row.value)
                 }),
-                CurrencyFormRow(title: "Price", value: nil, placeholder: "Price", cellSelection: nil, valueChanged: { (row) -> Void in
+                CurrencyFormRow(title: "Price", value: NSDecimalNumber(double: 99.0), placeholder: "Price", cellSelection: nil, valueChanged: { (row) -> Void in
                     print(row.value)
                 })
             ])
