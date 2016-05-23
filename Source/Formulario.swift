@@ -109,6 +109,11 @@ extension Form: UITableViewDataSource {
         let section = sections[section]
         return section.title
     }
+    
+    public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        let section = sections[indexPath.section]
+        return section.rows[indexPath.row].cellHeight
+    }
 }
 
 public struct FormSection {
@@ -133,6 +138,7 @@ public class FormRow: NSObject {
             valueChanged?(self)
         }
     }
+    public var cellHeight: CGFloat = 44
     weak var cell: FormCell?
     public var cellClass: FormCell.Type
     public var selection: FormCellSelectionClosureType?
