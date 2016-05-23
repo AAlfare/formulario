@@ -92,6 +92,8 @@ class ViewController: FormViewController {
             FormSection(title: "Various text field rows", rows: [
                 TextFieldFormRow(title: "Text", value: nil, placeholder: "Text", cellSelection: nil, valueChanged: { (row) -> Void in
                     print(row.value)
+                }, didEndEditing: { (textField) -> Void in
+                    print("text field did end editing: \(textField.text)")
                 }),
                 EmailFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: { (row) -> Void in
                     print(row.value)

@@ -159,43 +159,46 @@ public class FormRow: NSObject {
 
 public class TextFieldFormRow: FormRow {
     var placeholder: String?
-    public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    var textFieldDidEndEditing: ((UITextField) -> Void)?
+    
+    public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: ((UITextField) -> Void)? = nil) {
         self.placeholder = placeholder
+        self.textFieldDidEndEditing = textFieldDidEndEditing
         super.init(title: title, value: value, cellClass: TextFieldFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
 }
 
 public class EmailFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
-        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: ((UITextField) -> Void)? = nil) {
+        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
         self.cellClass = EmailFormCell.self
     }
 }
 
 public class PasswordFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
-        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: ((UITextField) -> Void)? = nil) {
+        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
         self.cellClass = PasswordFormCell.self
     }
 }
 
 public class PhoneFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
-        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: ((UITextField) -> Void)? = nil) {
+        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
         self.cellClass = PhoneFormCell.self
     }
 }
 
 public class DecimalFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
-        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: ((UITextField) -> Void)? = nil) {
+        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
         self.cellClass = DecimalFormCell.self
     }
 }
 
 public class CurrencyFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
-        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: ((UITextField) -> Void)? = nil) {
+        super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
         self.cellClass = CurrencyFormCell.self
     }
 }
@@ -392,6 +395,7 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
         textLabel?.setContentHuggingPriority(1000, forAxis: .Horizontal)
         
         textField.addTarget(self, action: #selector(TextFieldFormCell.textFieldValueChanged(_:)), forControlEvents: .EditingChanged)
+        textField.delegate = self
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.setContentHuggingPriority(100, forAxis: .Horizontal)
         textField.textAlignment = .Right
@@ -418,6 +422,10 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
     
     func textFieldValueChanged(textField: UITextField) {
         row?.value = textField.text
+    }
+    
+    public func textFieldDidEndEditing(textField: UITextField) {
+        (row as? TextFieldFormRow)?.textFieldDidEndEditing?(textField)
     }
     
     override public func setSelected(selected: Bool, animated: Bool) {
