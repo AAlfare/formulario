@@ -8,6 +8,7 @@
 
 import UIKit
 import Formulario
+import MapKit
 
 enum Animal: SelectableOption {
     case Dog
@@ -156,8 +157,16 @@ class ViewController: FormViewController {
             ])
         )
         
-        delay(3.0) {
+        let mapRow = MapFormRow(coordinate: CLLocationCoordinate2D(latitude: 47.8, longitude: 13.033333), cellHeight: 100, cellSelection: nil, valueChanged: nil)
+        form.sections.append(
+            FormSection(title: "Map", rows: [
+                mapRow
+            ])
+        )
+        
+        delay(5.0) {
             nameRow.value = "Andy"
+            mapRow.value = CLLocationCoordinate2D(latitude: 47.81, longitude: 13.03)
         }
     }
 

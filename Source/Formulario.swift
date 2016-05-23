@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 public class Form: NSObject {
     var formViewController: FormViewController?
@@ -48,7 +49,8 @@ public class Form: NSObject {
         SliderFormCell.self,
         SwitchFormCell.self,
         SelectionFormCell.self,
-        SelectableFormCell.self
+        SelectableFormCell.self,
+        MapFormCell.self
     ]
     
     public class func registerCellClass(cellClass: FormCell.Type) {
@@ -300,6 +302,35 @@ public class SelectableFormRow: FormRow {
     
     public init(title: String?, selected: Bool = false, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: selected, cellClass: SelectableFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
+    }
+}
+
+public struct MapConfiguration {
+    var mapType: MKMapType = .Standard
+    var shouldAnimateInitially = false
+    var shouldAnimateOnCoordinateChange = true
+    var zoomEnabled = false
+    var scrollEnabled = false
+    var pitchEnabled = false
+    var rotateEnabled = false
+}
+
+
+public class MapFormRow: FormRow {
+    var mapConfiguration: MapConfiguration
+    public init(coordinate: CLLocationCoordinate2D?, cellHeight: CGFloat? = nil, mapConfiguration: MapConfiguration? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+        self.mapConfiguration = mapConfiguration ?? MapConfiguration()
+        super.init(title: nil, value: coordinate, cellClass: MapFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
+        if let cellHeight = cellHeight {
+            self.cellHeight = cellHeight
+        }
+    }
+    public init(location: CLLocation?, cellHeight: CGFloat? = nil, mapConfiguration: MapConfiguration? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+        self.mapConfiguration = mapConfiguration ?? MapConfiguration()
+        super.init(title: nil, value: location, cellClass: MapFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
+        if let cellHeight = cellHeight {
+            self.cellHeight = cellHeight
+        }
     }
 }
 
@@ -680,6 +711,95 @@ public class SelectableFormCell: FormCell {
         if let row = row as? SelectableFormRow {
             accessoryType = row.selected == true ? .Checkmark : .None
         }
+    }
+}
+
+public class MapFormPin: NSObject, MKAnnotation {
+    public var coordinate: CLLocationCoordinate2D
+    var color: UIColor
+    
+    init(coordinate: CLLocationCoordinate2D) {
+        self.coordinate = coordinate
+        self.color = UIView().tintColor
+        super.init()
+    }
+}
+
+public class MapFormCell: FormCell, MKMapViewDelegate {
+    var mapView: MKMapView!
+    var mapInitialized = false
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        mapView = MKMapView(frame: CGRectZero)
+        mapView.translatesAutoresizingMaskIntoConstraints = false
+        mapView.delegate = self
+        contentView.addSubview(mapView)
+        
+        let views = [
+            "mapView": mapView
+        ]
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[mapView]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[mapView]|", options: [], metrics: nil, views: views))
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func configure(row: FormRow) {
+        super.configure(row)
+        
+        var shouldAnimateRegionChange = false
+        
+        if let mapConfiguration = (row as? MapFormRow)?.mapConfiguration {
+            mapView.mapType = mapConfiguration.mapType
+            mapView.zoomEnabled = mapConfiguration.zoomEnabled
+            mapView.scrollEnabled = mapConfiguration.scrollEnabled
+            mapView.pitchEnabled = mapConfiguration.pitchEnabled
+            mapView.rotateEnabled = mapConfiguration.rotateEnabled
+            shouldAnimateRegionChange = !mapInitialized ? mapConfiguration.shouldAnimateInitially : mapConfiguration.shouldAnimateOnCoordinateChange
+        }
+        
+        var coordinate: CLLocationCoordinate2D?
+        
+        if let location = row.value as? CLLocation {
+            coordinate = location.coordinate
+        } else if let locationCoordinate = row.value as? CLLocationCoordinate2D {
+            coordinate = locationCoordinate
+        }
+        
+        if let coordinate = coordinate {
+            var span = mapView.region.span
+            span.latitudeDelta = 0.01
+            span.longitudeDelta = 0.01
+            let region = MKCoordinateRegion(center: coordinate, span: span)
+            
+            if coordinate.latitude != mapView.centerCoordinate.latitude && coordinate.longitude != mapView.centerCoordinate.longitude {
+                mapView.removeAnnotations(mapView.annotations)
+                mapView.addAnnotation(MapFormPin(coordinate: coordinate))
+                mapView.setRegion(region, animated: shouldAnimateRegionChange)
+            }
+        }
+        mapInitialized = true
+    }
+    
+    public func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier("pin") as? MKPinAnnotationView
+        if annotationView == nil {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
+        }
+        if let annotation = annotation as? MapFormPin {
+            if #available(iOS 9.0, *) {
+                annotationView?.pinTintColor = annotation.color
+            } else {
+                annotationView?.pinColor = .Red
+            }
+        }
+        annotationView?.annotation = annotation
+        
+        return annotationView
     }
 }
 
