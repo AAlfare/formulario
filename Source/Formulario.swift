@@ -146,10 +146,13 @@ public class FormRow: NSObject {
     public var selection: FormCellSelectionClosureType?
     public var valueChanged: ((FormRow)->Void)?
     
-    public init(title: String?, value: Any?, cellClass: FormCell.Type = LabelFormCell.self, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
+    public init(title: String?, value: Any?, cellClass: FormCell.Type = LabelFormCell.self, cellHeight: CGFloat? = nil, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
         self.value = value
         self.cellClass = cellClass
+        if let cellHeight = cellHeight {
+            self.cellHeight = cellHeight
+        }
         self.selection = cellSelection
         self.valueChanged = valueChanged
         super.init()
