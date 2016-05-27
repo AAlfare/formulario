@@ -312,13 +312,30 @@ public class SelectableFormRow: FormRow {
 }
 
 public struct MapConfiguration {
-    public var mapType: MKMapType = .Standard
-    public var shouldAnimateInitially = false
-    public var shouldAnimateOnCoordinateChange = true
-    public var zoomEnabled = false
-    public var scrollEnabled = false
-    public var pitchEnabled = false
-    public var rotateEnabled = false
+    public var mapType: MKMapType
+    public var shouldAnimateInitially: Bool
+    public var shouldAnimateOnCoordinateChange: Bool
+    public var zoomEnabled: Bool
+    public var scrollEnabled: Bool
+    public var pitchEnabled: Bool
+    public var rotateEnabled: Bool
+    
+    public init(mapType: MKMapType = .Standard,
+         shouldAnimateInitially: Bool = false,
+         shouldAnimateOnCoordinateChange: Bool = true,
+         zoomEnabled: Bool = false,
+         scrollEnabled: Bool = false,
+         pitchEnabled: Bool = false,
+         rotateEnabled: Bool = false)
+    {
+        self.mapType = mapType
+        self.shouldAnimateInitially = shouldAnimateInitially
+        self.shouldAnimateOnCoordinateChange = shouldAnimateOnCoordinateChange
+        self.zoomEnabled = zoomEnabled
+        self.scrollEnabled = scrollEnabled
+        self.pitchEnabled = pitchEnabled
+        self.rotateEnabled = rotateEnabled
+    }
 }
 
 
