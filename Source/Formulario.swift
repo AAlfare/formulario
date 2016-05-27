@@ -312,13 +312,13 @@ public class SelectableFormRow: FormRow {
 }
 
 public struct MapConfiguration {
-    var mapType: MKMapType = .Standard
-    var shouldAnimateInitially = false
-    var shouldAnimateOnCoordinateChange = true
-    var zoomEnabled = false
-    var scrollEnabled = false
-    var pitchEnabled = false
-    var rotateEnabled = false
+    public var mapType: MKMapType = .Standard
+    public var shouldAnimateInitially = false
+    public var shouldAnimateOnCoordinateChange = true
+    public var zoomEnabled = false
+    public var scrollEnabled = false
+    public var pitchEnabled = false
+    public var rotateEnabled = false
 }
 
 
