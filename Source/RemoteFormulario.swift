@@ -119,6 +119,10 @@ public class RemoteFormViewController: FormViewController {
         super.init()
     }
     
+    public override init(style: UITableViewStyle) {
+        super.init(style: style)
+    }
+    
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
