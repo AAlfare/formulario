@@ -61,7 +61,7 @@ public class RemoteForm: Form {
                             }))
                         }
                     }
-                    sections.append(Formulario.FormSection(title: section["label"] as? String, rows: rows))
+                    sections.append(Formulario.FormSection(title: section["title"] as? String, rows: rows))
                 }
                 self.sections = sections
                 
@@ -114,6 +114,15 @@ public class RemoteFormViewController: FormViewController {
             }
         }
     }
+    
+    public override init() {
+        super.init()
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
