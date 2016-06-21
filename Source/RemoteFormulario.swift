@@ -19,6 +19,21 @@ public class RemoteForm: Form {
     var action: String?
     var parameters = [String: AnyObject]()
     
+    private static var registeredRowsForTypes = [
+        "label": FormRow.self,
+        "textField": TextFieldFormRow.self,
+        "email": EmailFormRow.self,
+        "password": PasswordFormRow.self,
+        "phone": PhoneFormRow.self,
+        "decimal": DecimalFormRow.self,
+        "switch": SwitchFormRow.self,
+        "currency": CurrencyFormRow.self
+    ]
+    
+    public class func register(row: FormRow.Type, forType type: String) {
+        registeredRowsForTypes[type] = row
+    }
+    
     public init(formUrl: String) {
         self.formUrl = formUrl
         super.init(sections: [])
@@ -37,6 +52,7 @@ public class RemoteForm: Form {
                 guard let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [String: AnyObject] else {
                     return
                 }
+                
                 self.title = json["title"] as? String
                 self.responseUrl = json["responseUrl"] as? String
                 self.action = json["action"] as? String
@@ -54,11 +70,17 @@ public class RemoteForm: Form {
                             if let name = name, let oldValue = self.parameters[name] as? String {
                                 value = oldValue
                             }
-                            rows.append(TextFieldFormRow(title: row["label"] as? String, value: value, placeholder: row["placeholder"] as? String, cellSelection: nil, valueChanged: { r in
-                                if let name = name {
-                                    self.parameters[name] = r.value as? AnyObject
+                            let rowType = RemoteForm.registeredRowsForTypes[row["type"] as! String]
+                            print(rowType)
+                            if let formRow = rowType?.init(remoteConfig: row) {
+                                formRow.value = value
+                                formRow.valueChanged = { r in
+                                    if let name = name {
+                                        self.parameters[name] = r.value as? AnyObject
+                                    }
                                 }
-                            }))
+                                rows.append(formRow)
+                            }
                         }
                     }
                     sections.append(Formulario.FormSection(title: section["title"] as? String, rows: rows))
@@ -84,12 +106,10 @@ public class RemoteForm: Form {
         let request = NSMutableURLRequest(URL: NSURL(string: responseUrl)!)
         request.HTTPMethod = action ?? "GET"
         
-        print(parameters)
-        
         var paramString = ""
         for (key, value) in parameters {
             let escapedKey = key.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())
-            let escapedValue = value.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())
+            let escapedValue = value.stringValue?.stringByAddingPercentEncodingWithAllowedCharacters(.URLQueryAllowedCharacterSet())
             paramString += "\(escapedKey)=\(escapedValue)&"
         }
         

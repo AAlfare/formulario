@@ -132,6 +132,13 @@ public class FormRow: NSObject {
     public var selection: ((FormCell)->Void)?
     public var valueChanged: ((FormRow)->Void)?
     
+    public required init(remoteConfig config: [String: AnyObject]) {
+        self.cellClass = LabelFormCell.self
+        self.value = config["value"] as? String
+        self.title = config["label"] as? String
+        super.init()
+    }
+    
     public init(title: String?, value: Any?, cellClass: FormCell.Type? = nil, cellSelection: ((FormCell) -> Void)? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
         self.value = value
@@ -148,11 +155,22 @@ public class TextFieldFormRow: FormRow {
         self.placeholder = placeholder
         super.init(title: title, value: value, cellClass: TextFieldFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
+    
+    public required init(remoteConfig config: [String : AnyObject]) {
+        super.init(remoteConfig: config)
+        self.placeholder = config["placeholder"] as? String
+        self.cellClass = TextFieldFormCell.self
+    }
 }
 
 public class EmailFormRow: TextFieldFormRow {
     override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
+        self.cellClass = EmailFormCell.self
+    }
+    
+    public required init(remoteConfig config: [String : AnyObject]) {
+        super.init(remoteConfig: config)
         self.cellClass = EmailFormCell.self
     }
 }
@@ -162,11 +180,21 @@ public class PasswordFormRow: TextFieldFormRow {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
         self.cellClass = PasswordFormCell.self
     }
+    
+    public required init(remoteConfig config: [String : AnyObject]) {
+        super.init(remoteConfig: config)
+        self.cellClass = PasswordFormCell.self
+    }
 }
 
 public class PhoneFormRow: TextFieldFormRow {
     override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
+        self.cellClass = PhoneFormCell.self
+    }
+    
+    public required init(remoteConfig config: [String : AnyObject]) {
+        super.init(remoteConfig: config)
         self.cellClass = PhoneFormCell.self
     }
 }
@@ -176,6 +204,11 @@ public class DecimalFormRow: TextFieldFormRow {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
         self.cellClass = DecimalFormCell.self
     }
+    
+    public required init(remoteConfig config: [String : AnyObject]) {
+        super.init(remoteConfig: config)
+        self.cellClass = DecimalFormCell.self
+    }
 }
 
 public class CurrencyFormRow: TextFieldFormRow {
@@ -183,11 +216,21 @@ public class CurrencyFormRow: TextFieldFormRow {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged)
         self.cellClass = CurrencyFormCell.self
     }
+    
+    public required init(remoteConfig config: [String : AnyObject]) {
+        super.init(remoteConfig: config)
+        self.cellClass = CurrencyFormCell.self
+    }
 }
 
 public class SwitchFormRow: FormRow {
     public init(title: String?, value: Bool, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: value, cellClass: SwitchFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
+    }
+    
+    public required init(remoteConfig config: [String : AnyObject]) {
+        super.init(remoteConfig: config)
+        self.cellClass = SwitchFormCell.self
     }
 }
 
@@ -245,6 +288,10 @@ public class SelectableFormRow: FormRow {
     
     public init(title: String?, selected: Bool = false, cellSelection: ((FormCell) -> Void)?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: selected, cellClass: SelectableFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
+    }
+    
+    public required init(remoteConfig: [String : AnyObject]) {
+        fatalError("init(remoteConfig:) has not been implemented")
     }
 }
 

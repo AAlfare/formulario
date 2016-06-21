@@ -13,7 +13,7 @@ class RemoteFormExampleViewController: RemoteFormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        remoteForm = RemoteForm(formUrl: "https://gist.githubusercontent.com/AAlfare/855be7aac70506854ee9b860f14fce18/raw/remoteForm.json")
+        remoteForm = RemoteForm(formUrl: "https://gist.github.com/AAlfare/855be7aac70506854ee9b860f14fce18/raw")
     }
     
     override func viewWillAppear(animated: Bool) {
