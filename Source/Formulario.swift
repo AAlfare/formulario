@@ -463,7 +463,7 @@ public class SubtitleFormCell: FormCell {
 }
 
 public class TextFieldFormCell: FormCell, UITextFieldDelegate {
-    var textField = UITextField()
+    public var textField = UITextField()
     
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
