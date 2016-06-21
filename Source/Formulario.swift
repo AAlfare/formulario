@@ -465,7 +465,7 @@ public class SubtitleFormCell: FormCell {
 public class TextFieldFormCell: FormCell, UITextFieldDelegate {
     var textField = UITextField()
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
         
         textLabel?.translatesAutoresizingMaskIntoConstraints = false
