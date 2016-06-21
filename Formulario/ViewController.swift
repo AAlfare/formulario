@@ -8,6 +8,7 @@
 
 import UIKit
 import Formulario
+import MapKit
 
 enum Animal: SelectableOption {
     case Dog
@@ -27,21 +28,44 @@ enum Animal: SelectableOption {
     }
 }
 
+
+
 class Person: NSObject, SelectableOption {
     var title: String
-    init(title: String) {
+    var group: String
+    init(title: String, group: String) {
         self.title = title
+        self.group = group
         super.init()
     }
+    
+    class func all() -> [Person] {
+        return [
+            Person(title: "👮", group: "1️⃣"),
+            Person(title: "🎅", group: "2️⃣"),
+            Person(title: "👷", group: "1️⃣"),
+            Person(title: "🕵", group: "3️⃣")
+        ]
+    }
+    
+    class func allGroups() -> [String] {
+        return ["1️⃣", "2️⃣", "3️⃣"]
+    }
+    
     func selectableOptionTitle() -> String {
         return title
     }
-    class func all() -> [Person] {
-        return [
-            Person(title: "👮"),
-            Person(title: "🎅"),
-            Person(title: "👷")
-        ]
+    
+    func selectableOptionSectionTitle() -> String {
+        return group
+    }
+    
+    override func isEqual(object: AnyObject?) -> Bool {
+        guard let object = object as? Person else {
+            return false
+        }
+        
+        return self.title == object.title && self.group == object.group
     }
 }
 
@@ -68,6 +92,8 @@ class ViewController: FormViewController {
             FormSection(title: "Various text field rows", rows: [
                 TextFieldFormRow(title: "Text", value: nil, placeholder: "Text", cellSelection: nil, valueChanged: { (row) -> Void in
                     print(row.value)
+                }, didEndEditing: {
+                    print("text field did end editing")
                 }),
                 EmailFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: { (row) -> Void in
                     print(row.value)
@@ -81,7 +107,24 @@ class ViewController: FormViewController {
                 DecimalFormRow(title: "Decimal", value: nil, placeholder: "Decimal", cellSelection: nil, valueChanged: { (row) -> Void in
                     print(row.value)
                 }),
-                CurrencyFormRow(title: "Price", value: nil, placeholder: "Price", cellSelection: nil, valueChanged: { (row) -> Void in
+                CurrencyFormRow(title: "Price", value: NSDecimalNumber(double: 99.0), placeholder: "Price", cellSelection: nil, valueChanged: { (row) -> Void in
+                    print(row.value)
+                })
+            ])
+        )
+        
+        let customDateFormatter = NSDateFormatter()
+        customDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        
+        form.sections.append(
+            FormSection(title: "Date Picker", rows: [
+                DatePickerFormRow(title: "Date", value: nil, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                DatePickerFormRow(title: "Time", value: NSDate(), datePickerMode: .Time, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                DatePickerFormRow(title: "⌚️", value: nil, dateFormatter: customDateFormatter, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 })
             ])
@@ -104,17 +147,28 @@ class ViewController: FormViewController {
                     print(row.value)
                 }),
                 
-                SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: nil, cellSelection: nil, valueChanged: { (row) in
+                SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: Animal.Dog, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
                 SelectionFormRow(title: "🙃", options: Person.all(), selectedOption: Person.all().first, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                SelectionFormRow(title: "🙃 Grouped", options: Person.all(), selectedOption: Person.all().last, sectionTitles: Person.allGroups(), cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 })
             ])
         )
         
-        delay(3.0) {
+        let mapRow = MapFormRow(coordinate: CLLocationCoordinate2D(latitude: 47.8, longitude: 13.033333), cellHeight: 100, cellSelection: nil, valueChanged: nil)
+        form.sections.append(
+            FormSection(title: "Map", rows: [
+                mapRow
+            ])
+        )
+        
+        delay(5.0) {
             nameRow.value = "Andy"
+            mapRow.value = CLLocationCoordinate2D(latitude: 47.81, longitude: 13.03)
         }
     }
 

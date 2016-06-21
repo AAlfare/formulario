@@ -44,6 +44,7 @@ PasswordFormRow
 PhoneFormRow
 DecimalFormRow
 CurrencyFormRow
+DatePickerFormRow
 SwitchFormRow
 SelectableFormRow
 SelectionFormRow
@@ -71,6 +72,52 @@ enum Animal: SelectableOption {
 }
 
 let row = SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: Animal.all().first,  cellSelection: nil, valueChanged: { (row) in
+  print(row.value)
+})
+```
+
+### Group options with section titles
+```swift
+class Person: NSObject, SelectableOption {
+  var title: String
+  var group: String
+  
+  init(title: String, group: String) {
+    self.title = title
+    self.group = group
+    super.init()
+  }
+  
+  class func all() -> [Person] {
+    return [
+      Person(title: "👮", group: "1️⃣"),
+      Person(title: "🎅", group: "2️⃣"),
+      Person(title: "👷", group: "1️⃣"),
+      Person(title: "🕵", group: "3️⃣")
+    ]
+  }
+  
+  class func allGroups() -> [String] {
+    return ["1️⃣", "2️⃣", "3️⃣"]
+  }
+  
+  func selectableOptionTitle() -> String {
+    return title
+  }
+  
+  func selectableOptionSectionTitle() -> String {
+    return group
+  }
+  
+  override func isEqual(object: AnyObject?) -> Bool {
+    guard let object = object as? Person else {
+      return false
+    }
+    return self.title == object.title && self.group == object.group
+  }
+}
+
+let row = SelectionFormRow(title: "Persons", options: Person.all(), selectedOption: nil, sectionTitles: Person.allGroups(),  cellSelection: nil, valueChanged: { (row) in
   print(row.value)
 })
 ```
@@ -116,6 +163,15 @@ github "AAlfare/Formulario"
 ```
 
 ## Changelog
+
+**0.4.6** (*12.05.2016*)
+- Adds DatePickerFormRow and DatePickerFormCell with optional custom NSDateFormatter
+
+**0.4.5** (*11.05.2016*)
+- Scrolls to selected row in SelectionFormViewController
+
+**0.4.4** (*10.05.2016*)
+- Adds ability to group SelectionRow options with section titles
 
 **0.4.3** (*26.04.2016*)
 - Prevents updating wrong (dequeued) cell if it was removed from table

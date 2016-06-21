@@ -21,6 +21,7 @@
 		E1CDF1421CDA264000BD4A66 /* RemoteFormulario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CDF1411CDA264000BD4A66 /* RemoteFormulario.swift */; };
 		E1DEA9C41C843390001D0DF0 /* CustomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA9C31C843390001D0DF0 /* CustomViewController.swift */; };
 		E1DEA9C91C8438BE001D0DF0 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DEA9C81C8438BE001D0DF0 /* CustomCell.swift */; };
+		E1F545E11CDCC5B900E3993A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E117A7411C80AAFB00B00A28 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -301,6 +302,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1F545E11CDCC5B900E3993A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,7 +477,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Formulario/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "it.alfare.Formulario-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -490,7 +492,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Formulario/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "it.alfare.Formulario-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -531,6 +533,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = Formulario/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -553,6 +556,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = Formulario/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
