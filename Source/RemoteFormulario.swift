@@ -71,7 +71,6 @@ public class RemoteForm: Form {
                                 value = oldValue
                             }
                             let rowType = RemoteForm.registeredRowsForTypes[row["type"] as! String]
-                            print(rowType)
                             if let formRow = rowType?.init(remoteConfig: row) {
                                 formRow.value = value
                                 formRow.valueChanged = { r in

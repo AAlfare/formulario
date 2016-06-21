@@ -275,7 +275,9 @@ public class DatePickerFormRow: FormRow {
     }
     
     public required init(remoteConfig config: [String : AnyObject]) {
-        fatalError("init(remoteConfig:) has not been implemented")
+        self.datePickerMode = .Date
+        super.init(remoteConfig: config)
+        self.cellClass = DatePickerFormCell.self
     }
 }
 
