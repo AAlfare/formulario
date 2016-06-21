@@ -273,6 +273,10 @@ public class DatePickerFormRow: FormRow {
         super.init(title: title, value: value, cellClass: DatePickerFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
         self.formatter = dateFormatter
     }
+    
+    public required init(remoteConfig config: [String : AnyObject]) {
+        fatalError("init(remoteConfig:) has not been implemented")
+    }
 }
 
 public class SwitchFormRow: FormRow {
@@ -353,8 +357,8 @@ public class SelectableFormRow: FormRow {
         super.init(title: title, value: selected, cellClass: SelectableFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
     
-    public required init(remoteConfig: [String : AnyObject]) {
-        fatalError("init(remoteConfig:) has not been implemented")
+    public required init(remoteConfig config: [String : AnyObject]) {
+        super.init(remoteConfig: config)
     }
 }
 
@@ -385,7 +389,6 @@ public struct MapConfiguration {
     }
 }
 
-
 public class MapFormRow: FormRow {
     var mapConfiguration: MapConfiguration
     public init(coordinate: CLLocationCoordinate2D?, cellHeight: CGFloat? = nil, mapConfiguration: MapConfiguration? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
@@ -401,6 +404,11 @@ public class MapFormRow: FormRow {
         if let cellHeight = cellHeight {
             self.cellHeight = cellHeight
         }
+    }
+    
+    public required init(remoteConfig config: [String : AnyObject]) {
+        self.mapConfiguration = MapConfiguration()
+        super.init(remoteConfig: config)
     }
 }
 
