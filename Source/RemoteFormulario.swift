@@ -129,7 +129,7 @@ public class RemoteFormViewController: FormViewController {
             return form as? RemoteForm
         }
         set {
-            if let newValue = newValue{
+            if let newValue = newValue {
                 form = newValue
             }
         }
