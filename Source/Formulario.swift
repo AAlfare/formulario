@@ -590,12 +590,12 @@ public class CurrencyFormCell: TextFieldFormCell {
 }
 
 public class DatePickerFormCell: TextFieldFormCell {
-    let datePicker = UIDatePicker()
-    let dateLabel = UILabel()
-    let clearButton = UIButton()
-    var clearButtonWidthConstraint: NSLayoutConstraint!
+    public let datePicker = UIDatePicker()
+    public let dateLabel = UILabel()
+    public let clearButton = UIButton()
+    public var clearButtonWidthConstraint: NSLayoutConstraint!
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         contentView.removeConstraints(contentView.constraints)
