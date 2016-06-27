@@ -513,7 +513,7 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
 }
 
 public class EmailFormCell: TextFieldFormCell {
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         textField.keyboardType = .EmailAddress
         textField.autocapitalizationType = .None
@@ -526,7 +526,7 @@ public class EmailFormCell: TextFieldFormCell {
 }
 
 public class PasswordFormCell: TextFieldFormCell {
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         textField.secureTextEntry = true
     }
@@ -537,7 +537,7 @@ public class PasswordFormCell: TextFieldFormCell {
 }
 
 public class PhoneFormCell: TextFieldFormCell {
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         textField.keyboardType = .PhonePad
     }
@@ -548,7 +548,7 @@ public class PhoneFormCell: TextFieldFormCell {
 }
 
 public class DecimalFormCell: TextFieldFormCell {
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         textField.keyboardType = .DecimalPad
     }
@@ -559,7 +559,7 @@ public class DecimalFormCell: TextFieldFormCell {
 }
 
 public class CurrencyFormCell: TextFieldFormCell {
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         textField.keyboardType = .NumberPad
     }
@@ -595,7 +595,7 @@ public class DatePickerFormCell: TextFieldFormCell {
     public let clearButton = UIButton()
     public var clearButtonWidthConstraint: NSLayoutConstraint!
     
-    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         contentView.removeConstraints(contentView.constraints)
@@ -672,7 +672,7 @@ public class DatePickerFormCell: TextFieldFormCell {
 public class SliderFormCell: FormCell {
     var slider = UISlider()
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         textLabel!.translatesAutoresizingMaskIntoConstraints = false
@@ -708,7 +708,7 @@ public class SliderFormCell: FormCell {
 
 public class SwitchFormCell: FormCell {
     var switchControl = UISwitch()
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         textLabel!.translatesAutoresizingMaskIntoConstraints = false
@@ -757,7 +757,7 @@ public class SelectionFormCell: FormCell {
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    public override func configure(row: FormRow) {
+    override public func configure(row: FormRow) {
         super.configure(row)
         
         if let option = row.value as? SelectableOption {
@@ -788,7 +788,7 @@ public class SelectableFormCell: FormCell {
         }
     }
     
-    public override func configure(row: FormRow) {
+    override public func configure(row: FormRow) {
         super.configure(row)
         textLabel?.text = row.title
         detailTextLabel?.text = nil
@@ -803,7 +803,7 @@ public class MapFormPin: NSObject, MKAnnotation {
     public var coordinate: CLLocationCoordinate2D
     var color: UIColor
     
-    init(coordinate: CLLocationCoordinate2D) {
+    public init(coordinate: CLLocationCoordinate2D) {
         self.coordinate = coordinate
         self.color = UIView().tintColor
         super.init()
@@ -814,7 +814,7 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
     var mapView: MKMapView!
     var mapInitialized = false
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         mapView = MKMapView(frame: CGRectZero)
@@ -833,7 +833,7 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func configure(row: FormRow) {
+    override public func configure(row: FormRow) {
         super.configure(row)
         
         var shouldAnimateRegionChange = false
