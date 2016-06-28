@@ -9,15 +9,15 @@
 import UIKit
 
 public class RemoteForm: Form {
-    var formUrl: String {
+    public var formUrl: String {
         didSet {
             parameters.removeAll()
         }
     }
-    var title: String?
-    var responseUrl: String?
-    var action: String?
-    var parameters = [String: AnyObject]()
+    public var title: String?
+    public var responseUrl: String?
+    public var action: String?
+    public var parameters = [String: AnyObject]()
     
     private static var registeredRowsForTypes = [
         "label": FormRow.self,
