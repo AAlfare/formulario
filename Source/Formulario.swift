@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 
 public class Form: NSObject {
-    var formViewController: FormViewController?
+    public var formViewController: UIViewController?
     var tableStyle: UITableViewStyle = .Plain
     
     public var sections: [FormSection] {
