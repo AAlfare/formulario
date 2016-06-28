@@ -39,7 +39,7 @@ public class RemoteForm: Form {
         super.init(sections: [])
     }
     
-    func loadForm() {
+    public func loadForm() {
         guard let url = NSURL(string: formUrl) else {
             return
         }
