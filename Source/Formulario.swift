@@ -50,6 +50,7 @@ public class Form: NSObject {
         SwitchFormCell.self,
         SelectionFormCell.self,
         SelectableFormCell.self,
+        DropdownFormCell.self,
         MapFormCell.self
     ]
     
@@ -364,6 +365,40 @@ public class SelectableFormRow: FormRow {
     }
 }
 
+public class DropdownFormRow<T: SelectableOption where T: Equatable>: OptionsFormRow<T>, UIPickerViewDataSource, UIPickerViewDelegate {
+    override var cell: FormCell? {
+        didSet {
+            let dropdownCell = cell as? DropdownFormCell
+            dropdownCell?.picker.dataSource = self
+            dropdownCell?.picker.delegate = self
+            
+            if let selectedOption = selectedOption, let selectedOptionIndex = options.indexOf(selectedOption) {
+                dropdownCell?.picker.selectRow(selectedOptionIndex, inComponent: 0, animated: false)
+            }
+        }
+    }
+    public override init(title: String?, options: [T], selectedOption: T?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+        super.init(title: title, options: options, selectedOption: selectedOption, cellSelection: cellSelection, valueChanged: valueChanged)
+        self.cellClass = DropdownFormCell.self
+    }
+    
+    public func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    public func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return options.count
+    }
+    
+    public func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return options[row].selectableOptionTitle()
+    }
+    
+    public func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        selectedOption = options[row]
+    }
+}
+
 public struct MapConfiguration {
     public var mapType: MKMapType
     public var shouldAnimateInitially: Bool
@@ -666,6 +701,60 @@ public class DatePickerFormCell: TextFieldFormCell {
         }
         clearButtonWidthConstraint.constant = row.value != nil ? 25 : 0
         contentView.layoutIfNeeded()
+    }
+}
+
+public class DropdownFormCell: TextFieldFormCell {
+    public let picker = UIPickerView()
+    public let valueLabel = UILabel()
+    
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        contentView.removeConstraints(contentView.constraints)
+        
+        valueLabel.translatesAutoresizingMaskIntoConstraints = false
+        valueLabel.textAlignment = .Right
+        contentView.addSubview(valueLabel)
+        
+        textField.inputView = picker
+        textField.delegate = self
+        textField.hidden = true
+        
+        
+        gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(didSelect(_:)))]
+        
+        let views: [String: AnyObject] = [
+            "textLabel": textLabel!,
+            "valueLabel": valueLabel
+        ]
+        
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-[valueLabel]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[valueLabel]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    func didSelect(gestureRecognizer: UIGestureRecognizer) {
+        textField.becomeFirstResponder()
+    }
+    
+    public func textFieldDidBeginEditing(textField: UITextField) {
+        
+    }
+    
+    func clearButtonTapped(sender: AnyObject) {
+        row?.value = nil
+        textField.resignFirstResponder()
+    }
+    
+    public override func configure(row: FormRow) {
+        super.configure(row)
+        
+        valueLabel.text = (row.value as? SelectableOption)?.selectableOptionTitle()
     }
 }
 

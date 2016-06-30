@@ -146,7 +146,6 @@ class ViewController: FormViewController {
                 SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], selectedOption: nil, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                
                 SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: Animal.Dog, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
@@ -154,6 +153,9 @@ class ViewController: FormViewController {
                     print(row.value)
                 }),
                 SelectionFormRow(title: "🙃 Grouped", options: Person.all(), selectedOption: Person.all().last, sectionTitles: Person.allGroups(), cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                DropdownFormRow(title: "Dropdown", options: Animal.all(), selectedOption: Animal.Sheep, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 })
             ])
