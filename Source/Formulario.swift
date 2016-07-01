@@ -759,11 +759,6 @@ public class DropdownFormCell: TextFieldFormCell {
         
     }
     
-    func clearButtonTapped(sender: AnyObject) {
-        row?.value = nil
-        textField.resignFirstResponder()
-    }
-    
     public override func configure(row: FormRow) {
         super.configure(row)
         
