@@ -311,8 +311,8 @@ extension String: SelectableOption {
 }
 
 public class OptionsFormRow<T: SelectableOption>: FormRow {
-    var options: [T]
-    var selectedOption: T? {
+    public var options: [T]
+    public var selectedOption: T? {
         get {
             return value as? T
         }
