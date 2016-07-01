@@ -665,7 +665,8 @@ public class DatePickerFormCell: TextFieldFormCell {
         let views: [String: AnyObject] = [
             "textLabel": textLabel!,
             "dateLabel": dateLabel,
-            "clearButton": clearButton
+            "clearButton": clearButton,
+            "textField": textField
         ]
         self.clearButtonWidthConstraint = NSLayoutConstraint(item: clearButton, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 0)
         contentView.addConstraint(clearButtonWidthConstraint!)
@@ -673,6 +674,7 @@ public class DatePickerFormCell: TextFieldFormCell {
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[dateLabel]|", options: [], metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[clearButton]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textField]|", options: [], metrics: nil, views: views))
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -735,12 +737,14 @@ public class DropdownFormCell: TextFieldFormCell {
         
         let views: [String: AnyObject] = [
             "textLabel": textLabel!,
-            "valueLabel": valueLabel
+            "valueLabel": valueLabel,
+            "textField": textField
         ]
         
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-[valueLabel]-|", options: [], metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[valueLabel]|", options: [], metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textField]|", options: [], metrics: nil, views: views))
     }
     
     required public init?(coder aDecoder: NSCoder) {
