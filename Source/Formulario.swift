@@ -326,8 +326,12 @@ public class OptionsFormRow<T: SelectableOption>: FormRow {
         super.init(title: title, value: nil, cellClass: FormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
         self.selectedOption = selectedOption
     }
+    
+    public required init(remoteConfig config: [String : AnyObject]) {
+        self.options = config["options"] as? [T] ?? [T]()
+        super.init(remoteConfig: config)
+    }
 }
-
 
 public class SelectionFormRow<T: SelectableOption where T: Equatable>: OptionsFormRow<T> {
     var sectionTitles: [String]?
@@ -379,6 +383,11 @@ public class DropdownFormRow<T: SelectableOption where T: Equatable>: OptionsFor
     }
     public override init(title: String?, options: [T], selectedOption: T?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, options: options, selectedOption: selectedOption, cellSelection: cellSelection, valueChanged: valueChanged)
+        self.cellClass = DropdownFormCell.self
+    }
+    
+    public required init(remoteConfig config: [String : AnyObject]) {
+        super.init(remoteConfig: config)
         self.cellClass = DropdownFormCell.self
     }
     
