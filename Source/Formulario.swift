@@ -133,7 +133,7 @@ public struct FormSection {
 public typealias FormCellSelectionClosureType = FormCell -> Void
 
 public class FormRow: NSObject {
-    weak var form: Form?
+    weak public var form: Form?
     public var title: String?
     public var value: Any? {
         didSet {
