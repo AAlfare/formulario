@@ -122,6 +122,17 @@ public class RemoteForm: Form {
     }
 }
 
+// MARK: - Rows
+
+public protocol RemoteFormRow {
+    var parameterName: String { get set }
+    var parameterValue: String { get set }
+    // TODO: validation
+    init(remoteConfig config: [String : AnyObject])
+}
+
+// MARK: - RemoteFormViewController
+
 public class RemoteFormViewController: FormViewController {
     public var remoteForm: RemoteForm? {
         get {
