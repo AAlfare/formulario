@@ -917,6 +917,7 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
         mapView = MKMapView(frame: CGRectZero)
         mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.delegate = self
+        mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didSelectMap(_:))))
         contentView.addSubview(mapView)
         
         let views = [
@@ -982,6 +983,10 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
         annotationView?.annotation = annotation
         
         return annotationView
+    }
+    
+    func didSelectMap(recognizer: UITapGestureRecognizer) {
+        row?.selection?(self)
     }
 }
 
