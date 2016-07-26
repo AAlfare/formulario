@@ -130,7 +130,7 @@ public struct FormSection {
 
 // MARK: - Rows
 
-public typealias FormCellSelectionClosureType = FormCell -> Void
+public typealias FormCellSelectionClosureType = (FormCell -> Void)
 
 public class FormRow: NSObject {
     weak public var form: Form?
@@ -142,7 +142,7 @@ public class FormRow: NSObject {
         }
     }
     public var cellHeight: CGFloat = 44
-    weak var cell: FormCell?
+    public weak var cell: FormCell?
     public var cellClass: FormCell.Type
     public var selection: FormCellSelectionClosureType?
     public var valueChanged: ((FormRow)->Void)?
