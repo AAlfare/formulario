@@ -370,7 +370,7 @@ public class SelectableFormRow: FormRow {
 }
 
 public class DropdownFormRow<T: SelectableOption where T: Equatable>: OptionsFormRow<T>, UIPickerViewDataSource, UIPickerViewDelegate {
-    override var cell: FormCell? {
+    override public var cell: FormCell? {
         didSet {
             let dropdownCell = cell as? DropdownFormCell
             dropdownCell?.picker.dataSource = self
