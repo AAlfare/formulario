@@ -953,7 +953,7 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
             coordinate = locationCoordinate
         }
         
-        if let coordinate = coordinate {
+        if let coordinate = coordinate where CLLocationCoordinate2DIsValid(coordinate) {
             var span = mapView.region.span
             span.latitudeDelta = 0.01
             span.longitudeDelta = 0.01
