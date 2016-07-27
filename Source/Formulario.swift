@@ -38,6 +38,7 @@ public class Form: NSObject {
     private static var registeredCellClasses = [
         FormCell.self,
         LabelFormCell.self,
+        MultiLineLabelFormCell.self,
         SubtitleFormCell.self,
         TextFieldFormCell.self,
         EmailFormCell.self,
@@ -491,6 +492,49 @@ public class LabelFormCell: FormCell {
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+}
+
+public class MultiLineLabelFormCell: LabelFormCell {
+    var multiLineTextLabel: UILabel!
+    
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setup()
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setup()
+    }
+    
+    func setup() {
+        multiLineTextLabel = UILabel()
+        multiLineTextLabel.translatesAutoresizingMaskIntoConstraints = false
+        multiLineTextLabel.numberOfLines = 0
+        multiLineTextLabel.setContentHuggingPriority(100, forAxis: .Horizontal)
+        multiLineTextLabel.textAlignment = .Right
+        multiLineTextLabel.textColor = detailTextLabel?.textColor
+        contentView.addSubview(multiLineTextLabel)
+        
+        let views = [
+            "textLabel": textLabel!,
+            "multiLineTextLabel": multiLineTextLabel
+        ]
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-[multiLineTextLabel]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[multiLineTextLabel]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
+    }
+    
+    public override func configure(row: FormRow) {
+        textLabel?.text = row.title
+        multiLineTextLabel.text = row.value as? String
+    }
+    
+    override public func prepareForReuse() {
+        super.prepareForReuse()
+        
+        multiLineTextLabel.text = nil
     }
 }
 

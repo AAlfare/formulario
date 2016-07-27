@@ -84,7 +84,8 @@ class ViewController: FormViewController {
                 }),
                 FormRow(title: "Land", value: "🇦🇹 Austria", cellClass: SubtitleFormCell.self),
                 FormRow(title: "Telefon", value: "+43 1 53422"),
-                FormRow(title: "Email", value: "hello@example.com")
+                FormRow(title: "Email", value: "hello@example.com"),
+                FormRow(title: "Address", value: "Salzburg\nÖsterreich", cellClass: MultiLineLabelFormCell.self, cellHeight: 60)
             ])
         ]
         
