@@ -148,13 +148,6 @@ public class FormRow: NSObject {
     public var selection: FormCellSelectionClosureType?
     public var valueChanged: ((FormRow)->Void)?
     
-    public required init(remoteConfig config: [String: AnyObject]) {
-        self.cellClass = LabelFormCell.self
-        self.value = config["value"] as? String
-        self.title = config["label"] as? String
-        super.init()
-    }
-    
     public init(title: String?, value: Any?, cellClass: FormCell.Type = LabelFormCell.self, cellHeight: CGFloat? = nil, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
         self.value = value
@@ -178,22 +171,11 @@ public class TextFieldFormRow: FormRow {
         self.textFieldDidEndEditing = textFieldDidEndEditing
         super.init(title: title, value: value, cellClass: TextFieldFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
-    
-    public required init(remoteConfig config: [String : AnyObject]) {
-        super.init(remoteConfig: config)
-        self.placeholder = config["placeholder"] as? String
-        self.cellClass = TextFieldFormCell.self
-    }
 }
 
 public class EmailFormRow: TextFieldFormRow {
     override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
-        self.cellClass = EmailFormCell.self
-    }
-    
-    public required init(remoteConfig config: [String : AnyObject]) {
-        super.init(remoteConfig: config)
         self.cellClass = EmailFormCell.self
     }
 }
@@ -203,21 +185,11 @@ public class PasswordFormRow: TextFieldFormRow {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
         self.cellClass = PasswordFormCell.self
     }
-    
-    public required init(remoteConfig config: [String : AnyObject]) {
-        super.init(remoteConfig: config)
-        self.cellClass = PasswordFormCell.self
-    }
 }
 
 public class PhoneFormRow: TextFieldFormRow {
     override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
-        self.cellClass = PhoneFormCell.self
-    }
-    
-    public required init(remoteConfig config: [String : AnyObject]) {
-        super.init(remoteConfig: config)
         self.cellClass = PhoneFormCell.self
     }
 }
@@ -227,21 +199,11 @@ public class DecimalFormRow: TextFieldFormRow {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
         self.cellClass = DecimalFormCell.self
     }
-    
-    public required init(remoteConfig config: [String : AnyObject]) {
-        super.init(remoteConfig: config)
-        self.cellClass = DecimalFormCell.self
-    }
 }
 
 public class CurrencyFormRow: TextFieldFormRow {
     override public init(title: String?, value: AnyObject?, placeholder: String?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
-        self.cellClass = CurrencyFormCell.self
-    }
-    
-    public required init(remoteConfig config: [String : AnyObject]) {
-        super.init(remoteConfig: config)
         self.cellClass = CurrencyFormCell.self
     }
 }
@@ -275,22 +237,11 @@ public class DatePickerFormRow: FormRow {
         super.init(title: title, value: value, cellClass: DatePickerFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
         self.formatter = dateFormatter
     }
-    
-    public required init(remoteConfig config: [String : AnyObject]) {
-        self.datePickerMode = .Date
-        super.init(remoteConfig: config)
-        self.cellClass = DatePickerFormCell.self
-    }
 }
 
 public class SwitchFormRow: FormRow {
     public init(title: String?, value: Bool, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: value, cellClass: SwitchFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
-    }
-    
-    public required init(remoteConfig config: [String : AnyObject]) {
-        super.init(remoteConfig: config)
-        self.cellClass = SwitchFormCell.self
     }
 }
 
@@ -327,11 +278,6 @@ public class OptionsFormRow<T: SelectableOption>: FormRow {
         super.init(title: title, value: nil, cellClass: FormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
         self.selectedOption = selectedOption
     }
-    
-    public required init(remoteConfig config: [String : AnyObject]) {
-        self.options = config["options"] as? [T] ?? [T]()
-        super.init(remoteConfig: config)
-    }
 }
 
 public class SelectionFormRow<T: SelectableOption where T: Equatable>: OptionsFormRow<T> {
@@ -364,10 +310,6 @@ public class SelectableFormRow: FormRow {
     public init(title: String?, selected: Bool = false, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: selected, cellClass: SelectableFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
-    
-    public required init(remoteConfig config: [String : AnyObject]) {
-        super.init(remoteConfig: config)
-    }
 }
 
 public class DropdownFormRow<T: SelectableOption where T: Equatable>: OptionsFormRow<T>, UIPickerViewDataSource, UIPickerViewDelegate {
@@ -384,11 +326,6 @@ public class DropdownFormRow<T: SelectableOption where T: Equatable>: OptionsFor
     }
     public override init(title: String?, options: [T], selectedOption: T?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, options: options, selectedOption: selectedOption, cellSelection: cellSelection, valueChanged: valueChanged)
-        self.cellClass = DropdownFormCell.self
-    }
-    
-    public required init(remoteConfig config: [String : AnyObject]) {
-        super.init(remoteConfig: config)
         self.cellClass = DropdownFormCell.self
     }
     
@@ -451,11 +388,6 @@ public class MapFormRow: FormRow {
         if let cellHeight = cellHeight {
             self.cellHeight = cellHeight
         }
-    }
-    
-    public required init(remoteConfig config: [String : AnyObject]) {
-        self.mapConfiguration = MapConfiguration()
-        super.init(remoteConfig: config)
     }
 }
 

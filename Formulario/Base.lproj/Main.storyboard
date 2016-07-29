@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="5lQ-4M-JXI">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="5lQ-4M-JXI">
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
@@ -54,7 +53,6 @@
                     <connections>
                         <segue destination="g8c-1h-sRt" kind="relationship" relationship="viewControllers" id="BrW-hS-2GV"/>
                         <segue destination="ZLD-9V-DWS" kind="relationship" relationship="viewControllers" id="Ctx-Ew-HMz"/>
-                        <segue destination="SzN-bd-Ewv" kind="relationship" relationship="viewControllers" id="UDU-rq-bfo"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rbL-FX-Bkb" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -78,23 +76,6 @@
             </objects>
             <point key="canvasLocation" x="-721" y="906"/>
         </scene>
-        <!--RemoteForm-->
-        <scene sceneID="v4T-eS-MSm">
-            <objects>
-                <navigationController id="SzN-bd-Ewv" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="RemoteForm" id="tpz-Xh-fYh"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="5Pd-LR-85I">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <connections>
-                        <segue destination="dWz-ek-kbi" kind="relationship" relationship="rootViewController" id="A06-7A-2tU"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6u9-Jx-UOS" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-721" y="1686"/>
-        </scene>
         <!--Custom View Controller-->
         <scene sceneID="98Z-WI-MLe">
             <objects>
@@ -113,25 +94,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="03m-ex-Vcq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="43" y="906"/>
-        </scene>
-        <!--Remote Form Example View Controller-->
-        <scene sceneID="ZD1-aL-6Sl">
-            <objects>
-                <tableViewController id="dWz-ek-kbi" customClass="RemoteFormExampleViewController" customModule="Formulario_Example" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="R7g-MZ-DLJ">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
-                        <connections>
-                            <outlet property="dataSource" destination="dWz-ek-kbi" id="GOQ-j0-HLl"/>
-                            <outlet property="delegate" destination="dWz-ek-kbi" id="5he-a8-FvL"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" id="DZd-hq-Oad"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ScC-3G-AjZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="43" y="1686"/>
         </scene>
     </scenes>
 </document>
