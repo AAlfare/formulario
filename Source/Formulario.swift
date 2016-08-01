@@ -121,8 +121,8 @@ extension Form: UITableViewDataSource {
 }
 
 public struct FormSection {
-    var rows: [FormRow]
-    var title: String?
+    public var rows: [FormRow]
+    public var title: String?
     public init(title: String? = nil, rows: [FormRow] = []) {
         self.title = title
         self.rows = rows
