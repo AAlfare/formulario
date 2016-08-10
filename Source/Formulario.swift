@@ -105,6 +105,12 @@ extension Form: UITableViewDataSource {
     }
     
     public func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        guard indexPath.section < sections.count  else {
+            return
+        }
+        guard indexPath.row < sections[indexPath.section].rows.count else {
+            return
+        }
         let row = sections[indexPath.section].rows[indexPath.row]
         row.cell = nil
     }
