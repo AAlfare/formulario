@@ -10,6 +10,7 @@ import UIKit
 import MapKit
 
 public class Form: NSObject {
+    public var title: String?
     public var formViewController: UIViewController?
     var tableStyle: UITableViewStyle = .Plain
     
@@ -1010,6 +1011,7 @@ public class FormViewController: UITableViewController {
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        title = form.title
         tableView.reloadData()
     }
     

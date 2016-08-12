@@ -74,6 +74,8 @@ class ViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        form.title = "Formulario"
+        
         let nameRow = FormRow(title: "Vorname", value: "Andreas")
         
         form.sections = [
