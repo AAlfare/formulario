@@ -13,6 +13,7 @@ public class Form: NSObject {
     public var title: String?
     public var formViewController: UIViewController?
     var tableStyle: UITableViewStyle = .Plain
+    public var minimalRowHeight: CGFloat = 44.5
     
     public var sections: [FormSection] {
         didSet {
@@ -403,6 +404,9 @@ public class FormCell: UITableViewCell {
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .None
+        
+        contentView.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
+        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: row?.form?.minimalRowHeight ?? 44.5))
     }
 
     required public init?(coder aDecoder: NSCoder) {
