@@ -172,7 +172,7 @@ public class FormRow: NSObject {
 }
 
 public class TextFieldFormRow: FormRow {
-    var placeholder: String?
+    public var placeholder: String?
     var textFieldDidEndEditing: (() -> Void)?
     
     public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: FormCell.Type = TextFieldFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
