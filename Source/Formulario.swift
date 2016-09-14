@@ -29,6 +29,8 @@ public class Form: NSObject {
             tableView?.dataSource = self
             tableView?.delegate = self
             tableView?.keyboardDismissMode = .OnDrag
+            tableView?.rowHeight = UITableViewAutomaticDimension
+            tableView?.estimatedRowHeight = 50
             
             for cellClass in Form.registeredCellClasses {
                 tableView?.registerClass(cellClass, forCellReuseIdentifier: cellClass.cellIdentifier())
@@ -121,10 +123,10 @@ extension Form: UITableViewDataSource {
         return section.title
     }
     
-    public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let section = sections[indexPath.section]
-        return section.rows[indexPath.row].cellHeight
-    }
+//    public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+//        let section = sections[indexPath.section]
+//        return section.rows[indexPath.row].cellHeight
+//    }
 }
 
 public struct FormSection {
@@ -443,10 +445,14 @@ public class MultiLineLabelFormCell: LabelFormCell {
     }
     
     func setup() {
+        textLabel?.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Horizontal)
+        textLabel?.translatesAutoresizingMaskIntoConstraints = false
+        textLabel?.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
+        
         multiLineTextLabel = UILabel()
         multiLineTextLabel.translatesAutoresizingMaskIntoConstraints = false
         multiLineTextLabel.numberOfLines = 0
-        multiLineTextLabel.setContentHuggingPriority(100, forAxis: .Horizontal)
+//        multiLineTextLabel.setContentHuggingPriority(100, forAxis: .Horizontal)
         multiLineTextLabel.textAlignment = .Right
         multiLineTextLabel.textColor = detailTextLabel?.textColor
         contentView.addSubview(multiLineTextLabel)

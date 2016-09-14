@@ -85,6 +85,7 @@ class ViewController: FormViewController {
                     print("cell selected")
                 }),
                 FormRow(title: "Land", value: "🇦🇹 Austria", cellClass: SubtitleFormCell.self),
+                FormRow(title: "Land", value: "The quick brown fox jumps over the lazy dog", cellClass: MultiLineLabelFormCell.self),
                 FormRow(title: "Telefon", value: "+43 1 53422"),
                 FormRow(title: "Email", value: "hello@example.com"),
                 FormRow(title: "Address", value: "Salzburg\nÖsterreich", cellClass: MultiLineLabelFormCell.self, cellHeight: 60)
