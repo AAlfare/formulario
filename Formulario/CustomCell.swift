@@ -10,33 +10,28 @@ import UIKit
 import Formulario
 
 class CustomCell: FormCell {
-    var slider = UISlider()
+    var segmentedControl = UISegmentedControl(items: ["Weiblich", "Männlich"])
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func setupUI() {
+        super.setupUI()
         
-        slider.translatesAutoresizingMaskIntoConstraints = false
-        slider.addTarget(self, action: #selector(CustomCell.sliderChanged(_:)), forControlEvents: .ValueChanged)
-        contentView.addSubview(slider)
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        segmentedControl.addTarget(self, action: #selector(valueChanged(_:)), forControlEvents: .ValueChanged)
+        fieldContainer.addSubview(segmentedControl)
         
         let views = [
-            "textLabel": textLabel!,
-            "slider": slider
+            "segmentedControl": segmentedControl
         ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[slider]-16-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[slider]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[segmentedControl]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[segmentedControl]-|", options: [], metrics: nil, views: views))
     }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    
     override func configure(row: FormRow) {
         super.configure(row)
-        if let value = row.value as? Float {
-            slider.value = value
-        }
+        
     }
-    func sliderChanged(slider: UISlider) {
-        row?.value = slider.value
+    
+    func valueChanged(segmentedControl: UISegmentedControl) {
+        row?.value = segmentedControl.selectedSegmentIndex
     }
 }

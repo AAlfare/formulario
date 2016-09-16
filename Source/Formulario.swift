@@ -416,7 +416,7 @@ public class FormCell: UITableViewCell {
         setupUI()
     }
     
-    func setupUI() {
+    public func setupUI() {
         
         selectionStyle = .None
         
@@ -471,7 +471,7 @@ public class FormCell: UITableViewCell {
 public class LabelFormCell: FormCell {
     var label: UILabel!
     
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         fieldContainer.layoutMargins.top = 10
@@ -502,7 +502,7 @@ public class LabelFormCell: FormCell {
 }
 
 public class MultiLineLabelFormCell: LabelFormCell {
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         label.numberOfLines = 0
@@ -567,7 +567,7 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
 }
 
 public class EmailFormCell: TextFieldFormCell {
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         textField.keyboardType = .EmailAddress
@@ -577,7 +577,7 @@ public class EmailFormCell: TextFieldFormCell {
 }
 
 public class PasswordFormCell: TextFieldFormCell {
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         textField.secureTextEntry = true
@@ -585,7 +585,7 @@ public class PasswordFormCell: TextFieldFormCell {
 }
 
 public class PhoneFormCell: TextFieldFormCell {
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         textField.keyboardType = .PhonePad
@@ -593,7 +593,7 @@ public class PhoneFormCell: TextFieldFormCell {
 }
 
 public class DecimalFormCell: TextFieldFormCell {
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         textField.keyboardType = .DecimalPad
@@ -601,7 +601,7 @@ public class DecimalFormCell: TextFieldFormCell {
 }
 
 public class CurrencyFormCell: TextFieldFormCell {
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         textField.keyboardType = .NumberPad
@@ -634,7 +634,7 @@ public class DatePickerFormCell: TextFieldFormCell {
     public let clearButton = UIButton()
     public var clearButtonWidthConstraint: NSLayoutConstraint!
     
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), forControlEvents: .ValueChanged)
@@ -707,7 +707,7 @@ public class DropdownFormCell: TextFieldFormCell {
     public let picker = UIPickerView()
     public let valueLabel = UILabel()
     
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -748,7 +748,7 @@ public class DropdownFormCell: TextFieldFormCell {
 public class SliderFormCell: FormCell {
     var slider = UISlider()
     
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         slider.translatesAutoresizingMaskIntoConstraints = false
@@ -777,7 +777,7 @@ public class SliderFormCell: FormCell {
 public class SwitchFormCell: FormCell {
     var switchControl = UISwitch()
     
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         switchControl.translatesAutoresizingMaskIntoConstraints = false
@@ -805,7 +805,7 @@ public class SwitchFormCell: FormCell {
 }
 
 public class SelectionFormCell: LabelFormCell {
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         selectionStyle = .Default
@@ -829,7 +829,7 @@ public class SelectionFormCell: LabelFormCell {
 }
 
 public class SelectableFormCell: FormCell {
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(SelectionFormCell.didSelect(_:)))]
@@ -870,7 +870,7 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
     var mapView: MKMapView!
     var mapInitialized = false
     
-    override func setupUI() {
+    override public func setupUI() {
         super.setupUI()
         
         contentView.layoutMargins = UIEdgeInsets()
