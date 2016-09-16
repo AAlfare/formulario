@@ -9,6 +9,26 @@
 import UIKit
 import Formulario
 
+class CustomizedTextFieldCell: TextFieldFormCell {
+    override func configure(row: FormRow) {
+        super.configure(row)
+        
+        // Add custom margins and colors to views
+        contentView.layoutMargins.bottom = 15
+        contentView.backgroundColor = UIColor.darkGrayColor()
+        container.backgroundColor = UIColor.whiteColor()
+        container.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        container.preservesSuperviewLayoutMargins = false
+        container.layer.cornerRadius = 2.5
+        container.layer.masksToBounds = true
+        fieldContainer.backgroundColor = UIColor.groupTableViewBackgroundColor()
+        fieldContainer.layer.cornerRadius = 2.5
+        fieldContainer.layer.masksToBounds = true
+        fieldContainer.layoutMargins = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
+        textField.textAlignment = .Left
+    }
+}
+
 class CustomViewController: UIViewController {
     var tableView = UITableView()
     var form = Form()
@@ -26,10 +46,11 @@ class CustomViewController: UIViewController {
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[tableView]|", options: [], metrics: nil, views: views))
         
         form.tableView = tableView
+        form.layoutAxis = .Vertical
         form.sections.append(FormSection(title: "Servus", rows: [
             FormRow(title: "Hallo", value: "Otto"),
-            FormRow(title: "Geschwindigkeit", value: 0.6, cellClass: SliderFormCell.self, cellSelection: nil, valueChanged: nil),
-            FormRow(title: nil, value: 0.0, cellClass: SliderFormCell.self, cellSelection: nil, valueChanged: nil),
+            FormRow(title: "Vorname", value: nil, cellClass: CustomizedTextFieldCell.self, cellSelection: nil, valueChanged: nil),
+            FormRow(title: "Nachname", value: "", cellClass: CustomizedTextFieldCell.self, cellSelection: nil, valueChanged: nil),
             FormRow(title: nil, value: 0.3, cellClass: CustomCell.self, cellSelection: nil, valueChanged: { (row) -> Void in
                 print("Slider changed: \(row.value)")
             }),

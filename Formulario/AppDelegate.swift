@@ -28,6 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // register custom cell classes
         Form.registerCellClass(CustomCell.self)
+        Form.registerCellClass(CustomizedTextFieldCell.self)
         
         return true
     }

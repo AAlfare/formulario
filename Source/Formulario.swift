@@ -14,6 +14,7 @@ public class Form: NSObject {
     public var formViewController: UIViewController?
     var tableStyle: UITableViewStyle = .Plain
     public var minimalRowHeight: CGFloat = 44.5
+    public var layoutAxis: UILayoutConstraintAxis = .Horizontal
     
     public var sections: [FormSection] {
         didSet {
@@ -157,16 +158,14 @@ public class FormRow: NSObject {
     public var cellClass: FormCell.Type
     public var selection: FormCellSelectionClosureType?
     public var valueChanged: ((FormRow)->Void)?
-    public var layoutAxis: UILayoutConstraintAxis
     
-    public init(title: String?, value: Any?, cellClass: FormCell.Type = LabelFormCell.self, cellHeight: CGFloat? = nil, layoutAxis: UILayoutConstraintAxis = .Horizontal, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
+    public init(title: String?, value: Any?, cellClass: FormCell.Type = LabelFormCell.self, cellHeight: CGFloat? = nil, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
         self.value = value
         self.cellClass = cellClass
         if let cellHeight = cellHeight {
             self.cellHeight = cellHeight
         }
-        self.layoutAxis = layoutAxis
         self.selection = cellSelection
         self.valueChanged = valueChanged
         super.init()
@@ -403,6 +402,7 @@ public class MapFormRow: FormRow {
 public class FormCell: UITableViewCell {
     public var row: FormRow?
     public var container: UIView!
+    public var titleContainer: UIView!
     public var titleLabel: UILabel!
     public var fieldContainer: UIView!
     
@@ -418,55 +418,101 @@ public class FormCell: UITableViewCell {
         setupUI()
     }
     
-    public func setupUI() {
-        
-        selectionStyle = .None
-        
-        contentView.layoutMargins = UIEdgeInsets(top: 0, left: 15.5, bottom: 0, right: 15)
-        contentView.preservesSuperviewLayoutMargins = false
-        contentView.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
-        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: row?.form?.minimalRowHeight ?? 44.5))
-        
-        container = UIView()
-        container.translatesAutoresizingMaskIntoConstraints = false
-        container.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
-        container.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
-        contentView.addSubview(container)
-        
-        titleLabel = UILabel()
-        titleLabel.font = textLabel?.font
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Horizontal)
-        titleLabel.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
-        container.addSubview(titleLabel)
-        
-        fieldContainer = UIView()
-        fieldContainer.translatesAutoresizingMaskIntoConstraints = false
-        fieldContainer.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
-        fieldContainer.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 0)
-        fieldContainer.preservesSuperviewLayoutMargins = false
-        container.addSubview(fieldContainer)
-        
-        let views = [
-            "contentView": contentView,
-            "container": container,
-            "titleLabel": titleLabel,
-            "fieldContainer": fieldContainer
-        ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[container]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[container]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[titleLabel][fieldContainer]|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[titleLabel]|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[fieldContainer]|", options: [], metrics: nil, views: views))
-    }
-    
     class func cellIdentifier() -> String {
         return String.fromCString(class_getName(self)) ?? "FormCell"
     }
     
+    public func setupUI() {
+        
+        selectionStyle = .None
+        
+        container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.preservesSuperviewLayoutMargins = false
+        contentView.addSubview(container)
+        
+        titleContainer = UIView()
+        titleContainer.translatesAutoresizingMaskIntoConstraints = false
+        titleContainer.preservesSuperviewLayoutMargins = false
+        container.addSubview(titleContainer)
+        
+        titleLabel = UILabel()
+        titleLabel.font = textLabel?.font
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleContainer.addSubview(titleLabel)
+        
+        fieldContainer = UIView()
+        fieldContainer.translatesAutoresizingMaskIntoConstraints = false
+        fieldContainer.preservesSuperviewLayoutMargins = false
+        container.addSubview(fieldContainer)
+    }
+    
+    public override func updateConstraints() {
+        guard let row = row else {
+            return
+        }
+        
+        let views = [
+            "contentView": contentView,
+            "container": container,
+            "titleContainer": titleContainer,
+            "titleLabel": titleLabel,
+            "fieldContainer": fieldContainer
+        ]
+        
+        contentView.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
+        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: row.form?.minimalRowHeight ?? 44.5))
+        
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[container]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[container]-|", options: [], metrics: nil, views: views))
+        
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[titleLabel]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[titleLabel]-|", options: [], metrics: nil, views: views))
+        
+        switch row.form?.layoutAxis {
+        case .Horizontal?:
+            container.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
+            container.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
+            
+            titleLabel.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Horizontal)
+            titleLabel.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
+            
+            fieldContainer.setContentHuggingPriority(UILayoutPriorityDefaultHigh, forAxis: .Vertical)
+            
+            contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[titleContainer][fieldContainer]-|", options: [], metrics: nil, views: views))
+            contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[titleContainer]-|", options: [], metrics: nil, views: views))
+            contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[fieldContainer]-|", options: [], metrics: nil, views: views))
+        case .Vertical?:
+            container.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
+            container.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
+            
+            contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[titleContainer]-|", options: [], metrics: nil, views: views))
+            contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[fieldContainer]-|", options: [], metrics: nil, views: views))
+            contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[titleContainer][fieldContainer]-|", options: [], metrics: nil, views: views))
+        default: ()
+        }
+        
+        super.updateConstraints()
+    }
+    
     public func configure(row: FormRow) {
-        self.titleLabel.text = row.title
-        fieldContainer.layoutMargins.left = row.title == nil ? 0 : 10 // fixes left layout margin if no title is set
+        setNeedsUpdateConstraints()
+        
+        container.layoutMargins = UIEdgeInsets()
+        titleContainer.layoutMargins = UIEdgeInsets()
+        fieldContainer.layoutMargins = UIEdgeInsets()
+        
+        titleLabel.text = row.title
+        
+        if let layoutAxis = row.form?.layoutAxis {
+            titleLabel.font = UIFont.systemFontOfSize(layoutAxis == .Vertical ? 14 : 17)
+            switch layoutAxis {
+            case .Horizontal:
+                titleContainer.layoutMargins.right = row.title == nil ? 0 : 10
+            case .Vertical:
+                titleContainer.layoutMargins.bottom = row.title == nil ? 0 : 5
+            }
+        }
     }
 }
 
@@ -494,6 +540,8 @@ public class LabelFormCell: FormCell {
     public override func configure(row: FormRow) {
         super.configure(row)
         
+        label.textAlignment = row.form?.layoutAxis == .Horizontal ? .Right : .Left
+        
         if let attributedString = row.value as? NSAttributedString {
             label.attributedText = attributedString
         } else {
@@ -508,7 +556,6 @@ public class MultiLineLabelFormCell: LabelFormCell {
         super.setupUI()
         
         label.numberOfLines = 0
-        label.textAlignment = .Right
     }
 }
 
@@ -533,7 +580,6 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
         textField.addTarget(self, action: #selector(TextFieldFormCell.textFieldValueChanged(_:)), forControlEvents: .EditingChanged)
         textField.delegate = self
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.textAlignment = .Right
         fieldContainer.addSubview(textField)
         
         let views = [
@@ -549,6 +595,8 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
     
     override public func configure(row: FormRow) {
         super.configure(row)
+        
+        textField.textAlignment = row.form?.layoutAxis == .Horizontal ? .Right : .Left
         textField.text = row.value as? String
         textField.placeholder = (row as? TextFieldFormRow)?.placeholder
     }
@@ -690,6 +738,8 @@ public class DatePickerFormCell: TextFieldFormCell {
     public override func configure(row: FormRow) {
         super.configure(row)
         
+        dateLabel.textAlignment = row.form?.layoutAxis == .Horizontal ? .Right : .Left
+        
         if let row = row as? DatePickerFormRow {
             datePicker.datePickerMode = row.datePickerMode
         }
@@ -707,14 +757,14 @@ public class DatePickerFormCell: TextFieldFormCell {
 
 public class DropdownFormCell: TextFieldFormCell {
     public let picker = UIPickerView()
-    public let valueLabel = UILabel()
+    public let label = UILabel()
     
     override public func setupUI() {
         super.setupUI()
         
-        valueLabel.translatesAutoresizingMaskIntoConstraints = false
-        valueLabel.textAlignment = .Right
-        fieldContainer.addSubview(valueLabel)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .Right
+        fieldContainer.addSubview(label)
         
         textField.inputView = picker
         textField.delegate = self
@@ -724,12 +774,11 @@ public class DropdownFormCell: TextFieldFormCell {
         gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(didSelect(_:)))]
         
         let views: [String: AnyObject] = [
-            "valueLabel": valueLabel,
-            "textField": textField
+            "label": label
         ]
         
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[valueLabel]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[valueLabel]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[label]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[label]-|", options: [], metrics: nil, views: views))
     }
     
     func didSelect(gestureRecognizer: UIGestureRecognizer) {
@@ -743,7 +792,8 @@ public class DropdownFormCell: TextFieldFormCell {
     public override func configure(row: FormRow) {
         super.configure(row)
         
-        valueLabel.text = (row.value as? SelectableOption)?.selectableOptionTitle()
+        label.textAlignment = row.form?.layoutAxis == .Horizontal ? .Right : .Left
+        label.text = (row.value as? SelectableOption)?.selectableOptionTitle()
     }
 }
 
@@ -761,7 +811,7 @@ public class SliderFormCell: FormCell {
             "slider": slider
         ]
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[slider]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[slider]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[slider]-|", options: [], metrics: nil, views: views))
     }
     
     override public func configure(row: FormRow) {
@@ -875,8 +925,6 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
     override public func setupUI() {
         super.setupUI()
         
-        contentView.layoutMargins = UIEdgeInsets()
-        
         mapView = MKMapView(frame: CGRectZero)
         mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.delegate = self
@@ -886,12 +934,18 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
         let views = [
             "mapView": mapView
         ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[mapView]|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[mapView]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[mapView]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[mapView]-|", options: [], metrics: nil, views: views))
     }
     
     override public func configure(row: FormRow) {
         super.configure(row)
+        
+        layoutMargins = UIEdgeInsets()
+        preservesSuperviewLayoutMargins = false
+        contentView.layoutMargins = UIEdgeInsets()
+        container.layoutMargins = UIEdgeInsets()
+        fieldContainer.layoutMargins = UIEdgeInsets()
         
         var shouldAnimateRegionChange = false
         
