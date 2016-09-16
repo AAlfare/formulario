@@ -400,17 +400,62 @@ public class MapFormRow: FormRow {
 
 public class FormCell: UITableViewCell {
     public var row: FormRow?
+    public var container: UIView!
+    public var titleLabel: UILabel!
+    public var fieldContainer: UIView!
     
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        selectionStyle = .None
         
-        contentView.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
-        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: row?.form?.minimalRowHeight ?? 44.5))
+        setupUI()
     }
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        
+        setupUI()
+    }
+    
+    func setupUI() {
+        
+        selectionStyle = .None
+        
+        contentView.layoutMargins = UIEdgeInsets(top: 0, left: 15.5, bottom: 0, right: 15)
+        contentView.preservesSuperviewLayoutMargins = false
+        contentView.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
+        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: row?.form?.minimalRowHeight ?? 44.5))
+        
+        container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
+        container.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
+        contentView.addSubview(container)
+        
+        titleLabel = UILabel()
+        titleLabel.font = textLabel?.font
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Horizontal)
+        titleLabel.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
+        container.addSubview(titleLabel)
+        
+        fieldContainer = UIView()
+        fieldContainer.translatesAutoresizingMaskIntoConstraints = false
+        fieldContainer.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
+        fieldContainer.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 0)
+        fieldContainer.preservesSuperviewLayoutMargins = false
+        container.addSubview(fieldContainer)
+        
+        let views = [
+            "contentView": contentView,
+            "container": container,
+            "titleLabel": titleLabel,
+            "fieldContainer": fieldContainer
+        ]
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[container]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[container]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[titleLabel][fieldContainer]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[titleLabel]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[fieldContainer]|", options: [], metrics: nil, views: views))
     }
     
     class func cellIdentifier() -> String {
@@ -418,67 +463,50 @@ public class FormCell: UITableViewCell {
     }
     
     public func configure(row: FormRow) {
-        self.textLabel?.text = row.title ?? row.value as? String
-        self.detailTextLabel?.text = row.title != nil ? row.value as? String : nil
+        self.titleLabel.text = row.title
+        fieldContainer.layoutMargins.left = row.title == nil ? 0 : 10 // fixes left layout margin if no title is set
     }
 }
 
 public class LabelFormCell: FormCell {
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
+    var label: UILabel!
+    
+    override func setupUI() {
+        super.setupUI()
         
-        selectionStyle = .None
+        fieldContainer.layoutMargins.top = 10
+        fieldContainer.layoutMargins.bottom = 10
+        
+        label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = UIColor.grayColor()
+        fieldContainer.addSubview(label)
+        
+        let views = [
+            "label": label
+        ]
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[label]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[label]-|", options: [], metrics: nil, views: views))
     }
     
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    public override func configure(row: FormRow) {
+        super.configure(row)
+        
+        if let attributedString = row.value as? NSAttributedString {
+            label.attributedText = attributedString
+        } else {
+            label.text = row.value as? String
+        }
+        
     }
 }
 
 public class MultiLineLabelFormCell: LabelFormCell {
-    var multiLineTextLabel: UILabel!
-    
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setup()
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
-    }
-    
-    func setup() {
-        textLabel?.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Horizontal)
-        textLabel?.translatesAutoresizingMaskIntoConstraints = false
-        textLabel?.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
+    override func setupUI() {
+        super.setupUI()
         
-        multiLineTextLabel = UILabel()
-        multiLineTextLabel.translatesAutoresizingMaskIntoConstraints = false
-        multiLineTextLabel.numberOfLines = 0
-//        multiLineTextLabel.setContentHuggingPriority(100, forAxis: .Horizontal)
-        multiLineTextLabel.textAlignment = .Right
-        multiLineTextLabel.textColor = detailTextLabel?.textColor
-        contentView.addSubview(multiLineTextLabel)
-        
-        let views = [
-            "textLabel": textLabel!,
-            "multiLineTextLabel": multiLineTextLabel
-        ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-[multiLineTextLabel]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[multiLineTextLabel]|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
-    }
-    
-    public override func configure(row: FormRow) {
-        textLabel?.text = row.title
-        multiLineTextLabel.text = row.value as? String
-    }
-    
-    override public func prepareForReuse() {
-        super.prepareForReuse()
-        
-        multiLineTextLabel.text = nil
+        label.numberOfLines = 0
+        label.textAlignment = .Right
     }
 }
 
@@ -500,23 +528,17 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
         
-        textLabel?.translatesAutoresizingMaskIntoConstraints = false
-        textLabel?.setContentHuggingPriority(1000, forAxis: .Horizontal)
-        
         textField.addTarget(self, action: #selector(TextFieldFormCell.textFieldValueChanged(_:)), forControlEvents: .EditingChanged)
         textField.delegate = self
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.setContentHuggingPriority(100, forAxis: .Horizontal)
         textField.textAlignment = .Right
-        contentView.addSubview(textField)
+        fieldContainer.addSubview(textField)
         
         let views = [
-            "textLabel": textLabel!,
             "textField": textField
         ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-[textField]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textField]|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textField]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[textField]-|", options: [], metrics: nil, views: views))
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -524,7 +546,7 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
     }
     
     override public func configure(row: FormRow) {
-        textLabel?.text = row.title
+        super.configure(row)
         textField.text = row.value as? String
         textField.placeholder = (row as? TextFieldFormRow)?.placeholder
     }
@@ -545,59 +567,44 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
 }
 
 public class EmailFormCell: TextFieldFormCell {
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func setupUI() {
+        super.setupUI()
+        
         textField.keyboardType = .EmailAddress
         textField.autocapitalizationType = .None
         textField.autocorrectionType = .No
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
 }
 
 public class PasswordFormCell: TextFieldFormCell {
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func setupUI() {
+        super.setupUI()
+        
         textField.secureTextEntry = true
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
 }
 
 public class PhoneFormCell: TextFieldFormCell {
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func setupUI() {
+        super.setupUI()
+        
         textField.keyboardType = .PhonePad
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
 }
 
 public class DecimalFormCell: TextFieldFormCell {
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func setupUI() {
+        super.setupUI()
+        
         textField.keyboardType = .DecimalPad
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
 }
 
 public class CurrencyFormCell: TextFieldFormCell {
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func setupUI() {
+        super.setupUI()
+        
         textField.keyboardType = .NumberPad
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
     
     override func textFieldValueChanged(textField: UITextField) {
@@ -627,26 +634,24 @@ public class DatePickerFormCell: TextFieldFormCell {
     public let clearButton = UIButton()
     public var clearButtonWidthConstraint: NSLayoutConstraint!
     
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        contentView.removeConstraints(contentView.constraints)
-        
-        dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.textAlignment = .Right
-        contentView.addSubview(dateLabel)
+    override func setupUI() {
+        super.setupUI()
         
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), forControlEvents: .ValueChanged)
         textField.inputView = datePicker
         textField.delegate = self
         textField.hidden = true
         
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        dateLabel.textAlignment = .Right
+        fieldContainer.addSubview(dateLabel)
+        
         clearButton.translatesAutoresizingMaskIntoConstraints = false
         clearButton.setTitle("✕", forState: .Normal)
         clearButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
         clearButton.addTarget(self, action: #selector(clearButtonTapped(_:)), forControlEvents: .TouchUpInside)
         clearButton.contentHorizontalAlignment = .Right
-        contentView.addSubview(clearButton)
+        fieldContainer.addSubview(clearButton)
         
         gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(didSelect(_:)))]
         
@@ -658,15 +663,9 @@ public class DatePickerFormCell: TextFieldFormCell {
         ]
         self.clearButtonWidthConstraint = NSLayoutConstraint(item: clearButton, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 0)
         contentView.addConstraint(clearButtonWidthConstraint!)
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-[dateLabel][clearButton]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[dateLabel]|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[clearButton]|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textField]|", options: [], metrics: nil, views: views))
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[dateLabel][clearButton]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[dateLabel]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[clearButton]-|", options: [], metrics: nil, views: views))
     }
     
     func didSelect(gestureRecognizer: UIGestureRecognizer) {
@@ -688,6 +687,7 @@ public class DatePickerFormCell: TextFieldFormCell {
     
     public override func configure(row: FormRow) {
         super.configure(row)
+        
         if let row = row as? DatePickerFormRow {
             datePicker.datePickerMode = row.datePickerMode
         }
@@ -707,14 +707,12 @@ public class DropdownFormCell: TextFieldFormCell {
     public let picker = UIPickerView()
     public let valueLabel = UILabel()
     
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        contentView.removeConstraints(contentView.constraints)
+    override func setupUI() {
+        super.setupUI()
         
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
         valueLabel.textAlignment = .Right
-        contentView.addSubview(valueLabel)
+        fieldContainer.addSubview(valueLabel)
         
         textField.inputView = picker
         textField.delegate = self
@@ -724,19 +722,12 @@ public class DropdownFormCell: TextFieldFormCell {
         gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(didSelect(_:)))]
         
         let views: [String: AnyObject] = [
-            "textLabel": textLabel!,
             "valueLabel": valueLabel,
             "textField": textField
         ]
         
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-[valueLabel]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[valueLabel]|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textField]|", options: [], metrics: nil, views: views))
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[valueLabel]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[valueLabel]-|", options: [], metrics: nil, views: views))
     }
     
     func didSelect(gestureRecognizer: UIGestureRecognizer) {
@@ -757,35 +748,27 @@ public class DropdownFormCell: TextFieldFormCell {
 public class SliderFormCell: FormCell {
     var slider = UISlider()
     
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        textLabel!.translatesAutoresizingMaskIntoConstraints = false
-        textLabel!.setContentHuggingPriority(1000, forAxis: .Horizontal)
+    override func setupUI() {
+        super.setupUI()
         
         slider.translatesAutoresizingMaskIntoConstraints = false
         slider.addTarget(self, action: #selector(SliderFormCell.sliderChanged(_:)), forControlEvents: .ValueChanged)
-        slider.setContentHuggingPriority(100, forAxis: .Horizontal)
-        contentView.addSubview(slider)
+        fieldContainer.addSubview(slider)
         
         let views = [
-            "textLabel": textLabel!,
             "slider": slider
         ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-[slider]-16-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[slider]-|", options: [], metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[slider]|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
     }
     
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
     override public func configure(row: FormRow) {
         super.configure(row)
         if let value = row.value as? Float {
             slider.value = value
         }
     }
+    
     func sliderChanged(slider: UISlider) {
         row?.value = slider.value
     }
@@ -793,73 +776,63 @@ public class SliderFormCell: FormCell {
 
 public class SwitchFormCell: FormCell {
     var switchControl = UISwitch()
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        textLabel!.translatesAutoresizingMaskIntoConstraints = false
-        textLabel!.setContentHuggingPriority(1000, forAxis: .Horizontal)
+    
+    override func setupUI() {
+        super.setupUI()
         
         switchControl.translatesAutoresizingMaskIntoConstraints = false
         switchControl.addTarget(self, action: #selector(SwitchFormCell.switched(_:)), forControlEvents: .ValueChanged)
-        switchControl.setContentHuggingPriority(100, forAxis: .Horizontal)
-        switchControl.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
-        contentView.addSubview(switchControl)
+        fieldContainer.addSubview(switchControl)
         
         let views = [
             "textLabel": textLabel!,
             "switchControl": switchControl
         ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textLabel]-(>=15)-[switchControl]-16-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[switchControl]-|", options: [], metrics: nil, views: views))
         contentView.addConstraint(NSLayoutConstraint(item: switchControl, attribute: .CenterY, relatedBy: .Equal, toItem: contentView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textLabel]|", options: [], metrics: nil, views: views))
     }
     
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
     override public func configure(row: FormRow) {
         super.configure(row)
         if let value = row.value as? Bool {
             switchControl.on = value
         }
     }
+    
     func switched(control: UISwitch) {
         row?.value = control.on
     }
 }
 
-public class SelectionFormCell: FormCell {
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
+public class SelectionFormCell: LabelFormCell {
+    override func setupUI() {
+        super.setupUI()
         
         selectionStyle = .Default
         accessoryType = .DisclosureIndicator
         gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(SelectionFormCell.didSelect(_:)))]
+        
+        contentView.layoutMargins.right = 0
     }
+    
     func didSelect(gestureRecognizer: UIGestureRecognizer) {
         row?.selection?(self)
     }
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
+    
     override public func configure(row: FormRow) {
         super.configure(row)
         
         if let option = row.value as? SelectableOption {
-            detailTextLabel?.text = option.selectableOptionTitle()
+            label.text = option.selectableOptionTitle()
         }
     }
 }
 
 public class SelectableFormCell: FormCell {
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func setupUI() {
+        super.setupUI()
         
         gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(SelectionFormCell.didSelect(_:)))]
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
     }
     
     func didSelect(gestureRecognizer: UIGestureRecognizer) {
@@ -875,8 +848,6 @@ public class SelectableFormCell: FormCell {
     
     override public func configure(row: FormRow) {
         super.configure(row)
-        textLabel?.text = row.title
-        detailTextLabel?.text = nil
         
         if let row = row as? SelectableFormRow {
             accessoryType = row.selected == true ? .Checkmark : .None
@@ -899,24 +870,22 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
     var mapView: MKMapView!
     var mapInitialized = false
     
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override func setupUI() {
+        super.setupUI()
+        
+        contentView.layoutMargins = UIEdgeInsets()
         
         mapView = MKMapView(frame: CGRectZero)
         mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.delegate = self
         mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didSelectMap(_:))))
-        contentView.addSubview(mapView)
+        fieldContainer.addSubview(mapView)
         
         let views = [
             "mapView": mapView
         ]
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[mapView]|", options: [], metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[mapView]|", options: [], metrics: nil, views: views))
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     override public func configure(row: FormRow) {
