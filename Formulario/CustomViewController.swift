@@ -13,9 +13,12 @@ class CustomizedTextFieldCell: TextFieldFormCell {
     override func configure(row: FormRow) {
         super.configure(row)
         
+        titleLabel.text = row.form?.layoutAxis == .Vertical ? row.title?.uppercaseString : row.title
+        
         // Add custom margins and colors to views
         contentView.layoutMargins.bottom = 15
         contentView.backgroundColor = UIColor.darkGrayColor()
+        titleContainer.layoutMargins.left = row.form?.layoutAxis == .Vertical ? 9 : 0
         container.backgroundColor = UIColor.whiteColor()
         container.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         container.preservesSuperviewLayoutMargins = false
@@ -24,7 +27,7 @@ class CustomizedTextFieldCell: TextFieldFormCell {
         fieldContainer.backgroundColor = UIColor.groupTableViewBackgroundColor()
         fieldContainer.layer.cornerRadius = 2.5
         fieldContainer.layer.masksToBounds = true
-        fieldContainer.layoutMargins = UIEdgeInsets(top: 10, left: 15, bottom: 10, right: 15)
+        fieldContainer.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         textField.textAlignment = .Left
     }
 }
@@ -51,7 +54,7 @@ class CustomViewController: UIViewController {
             FormRow(title: "Hallo", value: "Otto"),
             FormRow(title: "Vorname", value: nil, cellClass: CustomizedTextFieldCell.self, cellSelection: nil, valueChanged: nil),
             FormRow(title: "Nachname", value: "", cellClass: CustomizedTextFieldCell.self, cellSelection: nil, valueChanged: nil),
-            FormRow(title: nil, value: 0.3, cellClass: CustomCell.self, cellSelection: nil, valueChanged: { (row) -> Void in
+            FormRow(title: "Geschlecht", value: 0.3, cellClass: CustomCell.self, cellSelection: nil, valueChanged: { (row) -> Void in
                 print("Slider changed: \(row.value)")
             }),
             
