@@ -40,7 +40,7 @@ public class Form: NSObject {
         }
     }
     
-    private static var registeredCellClasses = [
+    private static var registeredCellClasses: [Cell.Type] = [
         Cell.self,
         FormCell.self,
         LabelFormCell.self,
@@ -61,7 +61,7 @@ public class Form: NSObject {
         MapFormCell.self
     ]
     
-    public class func registerCellClass(cellClass: FormCell.Type) {
+    public class func registerCellClass(cellClass: Cell.Type) {
         registeredCellClasses.append(cellClass)
     }
     
