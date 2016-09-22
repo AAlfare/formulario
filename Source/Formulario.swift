@@ -216,8 +216,8 @@ public class CurrencyFormRow: TextFieldFormRow {
 }
 
 public class DatePickerFormRow: FormRow {
-    var datePickerMode: UIDatePickerMode
-    var formatter: NSDateFormatter?
+    public var datePickerMode: UIDatePickerMode
+    public var formatter: NSDateFormatter?
     
     class func defaultFormatter(datePickerMode: UIDatePickerMode) -> NSDateFormatter {
         let formatter = NSDateFormatter()
