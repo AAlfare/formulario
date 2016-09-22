@@ -16,14 +16,13 @@ class CustomizedTextFieldCell: TextFieldFormCell {
         titleLabel.text = row.form?.layoutAxis == .Vertical ? row.title?.uppercaseString : row.title
         
         // Add custom margins and colors to views
-        contentView.layoutMargins.bottom = 15
+        contentView.layoutMargins = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+        contentView.preservesSuperviewLayoutMargins = false
         contentView.backgroundColor = UIColor.darkGrayColor()
         titleContainer.layoutMargins.left = row.form?.layoutAxis == .Vertical ? 9 : 0
         container.backgroundColor = UIColor.whiteColor()
         container.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         container.preservesSuperviewLayoutMargins = false
-        container.layer.cornerRadius = 2.5
-        container.layer.masksToBounds = true
         fieldContainer.backgroundColor = UIColor.groupTableViewBackgroundColor()
         fieldContainer.layer.cornerRadius = 2.5
         fieldContainer.layer.masksToBounds = true

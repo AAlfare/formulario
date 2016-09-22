@@ -142,7 +142,7 @@ class ViewController: FormViewController {
             
         form.sections.append(
             FormSection(title: "Boolean", rows: [
-                SwitchFormRow(title: "Lights on", value: true, cellSelection: nil, valueChanged: { (row) in
+                SwitchFormRow(title: "Lights on", value: false, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
                 SelectableFormRow(title: "Happy?", selected: true, cellSelection: nil, valueChanged: { (row) in
