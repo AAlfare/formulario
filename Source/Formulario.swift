@@ -41,6 +41,7 @@ public class Form: NSObject {
     }
     
     private static var registeredCellClasses = [
+        Cell.self,
         FormCell.self,
         LabelFormCell.self,
         MultiLineLabelFormCell.self,
@@ -77,7 +78,7 @@ public class Form: NSObject {
 extension Form: UITableViewDelegate {
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let row = sections[indexPath.section].rows[indexPath.row]
-        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? FormCell {
+        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? Cell {
             row.selection?(cell)
         }
     }
@@ -97,7 +98,7 @@ extension Form: UITableViewDataSource {
         row.form = self
         
         let cell = tableView.dequeueReusableCellWithIdentifier(row.cellClass.cellIdentifier(), forIndexPath: indexPath)
-        if let cell = cell as? FormCell {
+        if let cell = cell as? Cell {
             cell.row = row
             cell.configure(row)
         }
@@ -106,7 +107,7 @@ extension Form: UITableViewDataSource {
     
     public func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         let row = sections[indexPath.section].rows[indexPath.row]
-        row.cell = cell as? FormCell
+        row.cell = cell as? Cell
     }
     
     public func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -142,7 +143,7 @@ public struct FormSection {
 
 // MARK: - Rows
 
-public typealias FormCellSelectionClosureType = (FormCell -> Void)
+public typealias FormCellSelectionClosureType = (Cell -> Void)
 
 public class FormRow: NSObject {
     weak public var form: Form?
@@ -154,12 +155,12 @@ public class FormRow: NSObject {
         }
     }
     public var cellHeight: CGFloat = 44
-    public weak var cell: FormCell?
-    public var cellClass: FormCell.Type
+    public weak var cell: Cell?
+    public var cellClass: Cell.Type
     public var selection: FormCellSelectionClosureType?
     public var valueChanged: ((FormRow)->Void)?
     
-    public init(title: String?, value: Any?, cellClass: FormCell.Type = LabelFormCell.self, cellHeight: CGFloat? = nil, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
+    public init(title: String?, value: Any?, cellClass: Cell.Type = LabelFormCell.self, cellHeight: CGFloat? = nil, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
         self.value = value
         self.cellClass = cellClass
@@ -177,7 +178,7 @@ public class TextFieldFormRow: FormRow {
     public var placeholder: String?
     var textFieldDidEndEditing: (() -> Void)?
     
-    public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: FormCell.Type = TextFieldFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = TextFieldFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         self.placeholder = placeholder
         self.textFieldDidEndEditing = textFieldDidEndEditing
         super.init(title: title, value: value, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged)
@@ -185,31 +186,31 @@ public class TextFieldFormRow: FormRow {
 }
 
 public class EmailFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: FormCell.Type = EmailFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = EmailFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 public class PasswordFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: FormCell.Type = PasswordFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = PasswordFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 public class PhoneFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: FormCell.Type = PhoneFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = PhoneFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 public class DecimalFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: FormCell.Type = DecimalFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = DecimalFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 public class CurrencyFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: FormCell.Type = CurrencyFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = CurrencyFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
@@ -319,7 +320,7 @@ public class SelectableFormRow: FormRow {
 }
 
 public class DropdownFormRow<T: SelectableOption where T: Equatable>: OptionsFormRow<T>, UIPickerViewDataSource, UIPickerViewDelegate {
-    override public var cell: FormCell? {
+    override public var cell: Cell? {
         didSet {
             let dropdownCell = cell as? DropdownFormCell
             dropdownCell?.picker.dataSource = self
@@ -399,8 +400,20 @@ public class MapFormRow: FormRow {
 
 // MARK: - Cells
 
-public class FormCell: UITableViewCell {
+public class Cell: UITableViewCell {
     public var row: FormRow?
+    
+    class func cellIdentifier() -> String {
+        return String.fromCString(class_getName(self)) ?? "Cell"
+    }
+    
+    public func configure(row: FormRow) {
+        
+    }
+}
+
+public class FormCell: Cell {
+    
     public var container: UIView!
     public var titleContainer: UIView!
     public var titleLabel: UILabel!
@@ -416,10 +429,6 @@ public class FormCell: UITableViewCell {
         super.init(coder: aDecoder)
         
         setupUI()
-    }
-    
-    class func cellIdentifier() -> String {
-        return String.fromCString(class_getName(self)) ?? "FormCell"
     }
     
     public func setupUI() {
@@ -495,7 +504,7 @@ public class FormCell: UITableViewCell {
         super.updateConstraints()
     }
     
-    public func configure(row: FormRow) {
+    public override func configure(row: FormRow) {
         setNeedsUpdateConstraints()
         
         container.layoutMargins = UIEdgeInsets()
