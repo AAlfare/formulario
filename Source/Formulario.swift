@@ -176,7 +176,7 @@ public class FormRow: NSObject {
 
 public class TextFieldFormRow: FormRow {
     public var placeholder: String?
-    var textFieldDidEndEditing: (() -> Void)?
+    public var textFieldDidEndEditing: (() -> Void)?
     
     public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = TextFieldFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         self.placeholder = placeholder
