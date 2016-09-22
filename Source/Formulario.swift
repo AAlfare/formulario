@@ -219,7 +219,7 @@ public class DatePickerFormRow: FormRow {
     public var datePickerMode: UIDatePickerMode
     public var formatter: NSDateFormatter?
     
-    class func defaultFormatter(datePickerMode: UIDatePickerMode) -> NSDateFormatter {
+    public class func defaultFormatter(datePickerMode: UIDatePickerMode) -> NSDateFormatter {
         let formatter = NSDateFormatter()
         var dateStyle = NSDateFormatterStyle.NoStyle
         var timeStyle = NSDateFormatterStyle.NoStyle
