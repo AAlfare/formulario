@@ -243,6 +243,7 @@
 					E117A7361C80AAFB00B00A28 = {
 						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = 97GVFND44R;
+						LastSwiftMigration = 0800;
 					};
 					E117A74A1C80AAFB00B00A28 = {
 						CreatedOnToolsVersion = 7.2.1;
@@ -251,6 +252,7 @@
 					E16291551C849B4B00FECC90 = {
 						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = 97GVFND44R;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -474,6 +476,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "it.alfare.Formulario-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -489,6 +492,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "it.alfare.Formulario-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
@@ -533,6 +537,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = it.alfare.Formulario;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -556,6 +561,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = it.alfare.Formulario;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 2.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
