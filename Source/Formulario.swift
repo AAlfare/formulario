@@ -526,7 +526,7 @@ public class FormCell: Cell {
 }
 
 public class LabelFormCell: FormCell {
-    var label: UILabel!
+    public var label: UILabel!
     
     override public func setupUI() {
         super.setupUI()
