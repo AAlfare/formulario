@@ -90,11 +90,11 @@ extension Form: UITableViewDataSource {
     }
     
     public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].rows.count ?? 0
+        return sections[section].visibleRows.count ?? 0
     }
     
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let row = sections[indexPath.section].rows[indexPath.row]
+        let row = sections[indexPath.section].visibleRows[indexPath.row]
         row.form = self
         
         let cell = tableView.dequeueReusableCellWithIdentifier(row.cellClass.cellIdentifier(), forIndexPath: indexPath)
@@ -106,18 +106,18 @@ extension Form: UITableViewDataSource {
     }
     
     public func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        let row = sections[indexPath.section].rows[indexPath.row]
+        let row = sections[indexPath.section].visibleRows[indexPath.row]
         row.cell = cell as? Cell
     }
     
     public func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        guard indexPath.section < sections.count  else {
+        guard indexPath.section < sections.count else {
             return
         }
-        guard indexPath.row < sections[indexPath.section].rows.count else {
+        guard indexPath.row < sections[indexPath.section].visibleRows.count else {
             return
         }
-        let row = sections[indexPath.section].rows[indexPath.row]
+        let row = sections[indexPath.section].visibleRows[indexPath.row]
         row.cell = nil
     }
     
@@ -134,6 +134,9 @@ extension Form: UITableViewDataSource {
 
 public struct FormSection {
     public var rows: [FormRow]
+    public var visibleRows: [FormRow] {
+        return rows.filter({ $0.hidden == false })
+    }
     public var title: String?
     public init(title: String? = nil, rows: [FormRow] = []) {
         self.title = title
@@ -159,6 +162,7 @@ public class FormRow: NSObject {
     public var cellClass: Cell.Type
     public var selection: FormCellSelectionClosureType?
     public var valueChanged: ((FormRow)->Void)?
+    public var hidden: Bool = false
     
     public init(title: String?, value: Any?, cellClass: Cell.Type = LabelFormCell.self, cellHeight: CGFloat? = nil, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
