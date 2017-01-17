@@ -9,20 +9,20 @@
 import UIKit
 import MapKit
 
-public class Form: NSObject {
-    public var title: String?
-    public var formViewController: UIViewController?
-    var tableStyle: UITableViewStyle = .Plain
-    public var minimalRowHeight: CGFloat = 44.5
-    public var layoutAxis: UILayoutConstraintAxis = .Horizontal
+open class Form: NSObject {
+    open var title: String?
+    open var formViewController: UIViewController?
+    var tableStyle: UITableViewStyle = .plain
+    open var minimalRowHeight: CGFloat = 44.5
+    open var layoutAxis: UILayoutConstraintAxis = .horizontal
     
-    public var sections: [FormSection] {
+    open var sections: [FormSection] {
         didSet {
             tableView?.reloadData()
         }
     }
     
-    public var tableView: UITableView? {
+    open var tableView: UITableView? {
         willSet {
             tableView?.dataSource = nil
             tableView?.delegate = nil
@@ -30,17 +30,17 @@ public class Form: NSObject {
         didSet {
             tableView?.dataSource = self
             tableView?.delegate = self
-            tableView?.keyboardDismissMode = .OnDrag
+            tableView?.keyboardDismissMode = .onDrag
             tableView?.rowHeight = UITableViewAutomaticDimension
             tableView?.estimatedRowHeight = 50
             
             for cellClass in Form.registeredCellClasses {
-                tableView?.registerClass(cellClass, forCellReuseIdentifier: cellClass.cellIdentifier())
+                tableView?.register(cellClass, forCellReuseIdentifier: cellClass.cellIdentifier())
             }
         }
     }
     
-    private static var registeredCellClasses: [Cell.Type] = [
+    fileprivate static var registeredCellClasses: [Cell.Type] = [
         Cell.self,
         FormCell.self,
         LabelFormCell.self,
@@ -61,7 +61,7 @@ public class Form: NSObject {
         MapFormCell.self
     ]
     
-    public class func registerCellClass(cellClass: Cell.Type) {
+    open class func registerCellClass(_ cellClass: Cell.Type) {
         registeredCellClasses.append(cellClass)
     }
     
@@ -76,28 +76,28 @@ public class Form: NSObject {
 }
 
 extension Form: UITableViewDelegate {
-    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let row = sections[indexPath.section].rows[indexPath.row]
-        if let cell = tableView.cellForRowAtIndexPath(indexPath) as? Cell {
+        if let cell = tableView.cellForRow(at: indexPath) as? Cell {
             row.selection?(cell)
         }
     }
 }
 
 extension Form: UITableViewDataSource {
-    public func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return sections.count ?? 0
+    public func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
     }
     
-    public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].visibleRows.count ?? 0
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return sections[section].visibleRows.count
     }
     
-    public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].visibleRows[indexPath.row]
         row.form = self
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(row.cellClass.cellIdentifier(), forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.cellClass.cellIdentifier(), for: indexPath)
         if let cell = cell as? Cell {
             cell.row = row
             cell.configure(row)
@@ -105,12 +105,12 @@ extension Form: UITableViewDataSource {
         return cell
     }
     
-    public func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let row = sections[indexPath.section].visibleRows[indexPath.row]
         row.cell = cell as? Cell
     }
     
-    public func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    public func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard indexPath.section < sections.count else {
             return
         }
@@ -121,7 +121,7 @@ extension Form: UITableViewDataSource {
         row.cell = nil
     }
     
-    public func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let section = sections[section]
         return section.title
     }
@@ -146,23 +146,23 @@ public struct FormSection {
 
 // MARK: - Rows
 
-public typealias FormCellSelectionClosureType = (Cell -> Void)
+public typealias FormCellSelectionClosureType = ((Cell) -> Void)
 
-public class FormRow: NSObject {
-    weak public var form: Form?
-    public var title: String?
-    public var value: Any? {
+open class FormRow: NSObject {
+    weak open var form: Form?
+    open var title: String?
+    open var value: Any? {
         didSet {
             cell?.configure(self)
             valueChanged?(self)
         }
     }
-    public var cellHeight: CGFloat = 44
-    public weak var cell: Cell?
-    public var cellClass: Cell.Type
-    public var selection: FormCellSelectionClosureType?
-    public var valueChanged: ((FormRow)->Void)?
-    public var hidden: Bool = false
+    open var cellHeight: CGFloat = 44
+    open weak var cell: Cell?
+    open var cellClass: Cell.Type
+    open var selection: FormCellSelectionClosureType?
+    open var valueChanged: ((FormRow)->Void)?
+    open var hidden: Bool = false
     
     public init(title: String?, value: Any?, cellClass: Cell.Type = LabelFormCell.self, cellHeight: CGFloat? = nil, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
@@ -178,9 +178,9 @@ public class FormRow: NSObject {
     
 }
 
-public class TextFieldFormRow: FormRow {
-    public var placeholder: String?
-    public var textFieldDidEndEditing: (() -> Void)?
+open class TextFieldFormRow: FormRow {
+    open var placeholder: String?
+    open var textFieldDidEndEditing: (() -> Void)?
     
     public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = TextFieldFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         self.placeholder = placeholder
@@ -189,68 +189,68 @@ public class TextFieldFormRow: FormRow {
     }
 }
 
-public class EmailFormRow: TextFieldFormRow {
+open class EmailFormRow: TextFieldFormRow {
     override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = EmailFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
-public class PasswordFormRow: TextFieldFormRow {
+open class PasswordFormRow: TextFieldFormRow {
     override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = PasswordFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
-public class PhoneFormRow: TextFieldFormRow {
+open class PhoneFormRow: TextFieldFormRow {
     override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = PhoneFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
-public class DecimalFormRow: TextFieldFormRow {
+open class DecimalFormRow: TextFieldFormRow {
     override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = DecimalFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
-public class CurrencyFormRow: TextFieldFormRow {
+open class CurrencyFormRow: TextFieldFormRow {
     override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = CurrencyFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
-public class DatePickerFormRow: FormRow {
-    public var datePickerMode: UIDatePickerMode
-    public var formatter: NSDateFormatter?
+open class DatePickerFormRow: FormRow {
+    open var datePickerMode: UIDatePickerMode
+    open var formatter: DateFormatter?
     
-    public class func defaultFormatter(datePickerMode: UIDatePickerMode) -> NSDateFormatter {
-        let formatter = NSDateFormatter()
-        var dateStyle = NSDateFormatterStyle.NoStyle
-        var timeStyle = NSDateFormatterStyle.NoStyle
+    open class func defaultFormatter(_ datePickerMode: UIDatePickerMode) -> DateFormatter {
+        let formatter = DateFormatter()
+        var dateStyle = DateFormatter.Style.none
+        var timeStyle = DateFormatter.Style.none
         switch datePickerMode {
-        case .Date:
-            dateStyle = .LongStyle
-        case .Time:
-            timeStyle = .ShortStyle
-        case .DateAndTime:
-            dateStyle = .LongStyle
-            timeStyle = .ShortStyle
-        case .CountDownTimer:
-            timeStyle = .NoStyle
+        case .date:
+            dateStyle = .long
+        case .time:
+            timeStyle = .short
+        case .dateAndTime:
+            dateStyle = .long
+            timeStyle = .short
+        case .countDownTimer:
+            timeStyle = .none
         }
         formatter.dateStyle = dateStyle
         formatter.timeStyle = timeStyle
         return formatter
     }
     
-    public init(title: String?, value: NSDate?, datePickerMode: UIDatePickerMode = .Date, dateFormatter: NSDateFormatter? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, value: Date?, datePickerMode: UIDatePickerMode = .date, dateFormatter: DateFormatter? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.datePickerMode = datePickerMode
         super.init(title: title, value: value, cellClass: DatePickerFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
         self.formatter = dateFormatter
     }
 }
 
-public class SwitchFormRow: FormRow {
+open class SwitchFormRow: FormRow {
     public init(title: String?, value: Bool, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: value, cellClass: SwitchFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
@@ -273,9 +273,9 @@ extension String: SelectableOption {
     }
 }
 
-public class OptionsFormRow<T: SelectableOption>: FormRow {
-    public var options: [T]
-    public var selectedOption: T? {
+open class OptionsFormRow<T: SelectableOption>: FormRow {
+    open var options: [T]
+    open var selectedOption: T? {
         get {
             return value as? T
         }
@@ -291,11 +291,11 @@ public class OptionsFormRow<T: SelectableOption>: FormRow {
     }
 }
 
-public class SelectionFormRow<T: SelectableOption where T: Equatable>: OptionsFormRow<T> {
+open class SelectionFormRow<T: SelectableOption>: OptionsFormRow<T> where T: Equatable {
     var sectionTitles: [String]?
     var tableStyle: UITableViewStyle
     
-    public init(title: String?, options: [T], selectedOption: T?, sectionTitles: [String]? = nil, tableStyle: UITableViewStyle = .Plain, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, options: [T], selectedOption: T?, sectionTitles: [String]? = nil, tableStyle: UITableViewStyle = .plain, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.tableStyle = tableStyle
         super.init(title: title, options: options, selectedOption: selectedOption, cellSelection: nil, valueChanged: valueChanged)
         self.sectionTitles = sectionTitles
@@ -308,7 +308,7 @@ public class SelectionFormRow<T: SelectableOption where T: Equatable>: OptionsFo
     }
 }
 
-public class SelectableFormRow: FormRow {
+open class SelectableFormRow: FormRow {
     var selected: Bool {
         get {
             return value as? Bool ?? false
@@ -323,14 +323,14 @@ public class SelectableFormRow: FormRow {
     }
 }
 
-public class DropdownFormRow<T: SelectableOption where T: Equatable>: OptionsFormRow<T>, UIPickerViewDataSource, UIPickerViewDelegate {
-    override public var cell: Cell? {
+open class DropdownFormRow<T: SelectableOption>: OptionsFormRow<T>, UIPickerViewDataSource, UIPickerViewDelegate where T: Equatable {
+    override open var cell: Cell? {
         didSet {
             let dropdownCell = cell as? DropdownFormCell
             dropdownCell?.picker.dataSource = self
             dropdownCell?.picker.delegate = self
             
-            if let selectedOption = selectedOption, let selectedOptionIndex = options.indexOf(selectedOption) {
+            if let selectedOption = selectedOption, let selectedOptionIndex = options.index(of: selectedOption) {
                 dropdownCell?.picker.selectRow(selectedOptionIndex, inComponent: 0, animated: false)
             }
         }
@@ -340,19 +340,19 @@ public class DropdownFormRow<T: SelectableOption where T: Equatable>: OptionsFor
         self.cellClass = DropdownFormCell.self
     }
     
-    public func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    open func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    public func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    open func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return options.count
     }
     
-    public func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    open func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return options[row].selectableOptionTitle()
     }
     
-    public func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    open func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         selectedOption = options[row]
     }
 }
@@ -366,7 +366,7 @@ public struct MapConfiguration {
     public var pitchEnabled: Bool
     public var rotateEnabled: Bool
     
-    public init(mapType: MKMapType = .Standard,
+    public init(mapType: MKMapType = .standard,
          shouldAnimateInitially: Bool = false,
          shouldAnimateOnCoordinateChange: Bool = true,
          zoomEnabled: Bool = false,
@@ -384,7 +384,7 @@ public struct MapConfiguration {
     }
 }
 
-public class MapFormRow: FormRow {
+open class MapFormRow: FormRow {
     var mapConfiguration: MapConfiguration
     public init(coordinate: CLLocationCoordinate2D?, cellHeight: CGFloat? = nil, mapConfiguration: MapConfiguration? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.mapConfiguration = mapConfiguration ?? MapConfiguration()
@@ -404,24 +404,24 @@ public class MapFormRow: FormRow {
 
 // MARK: - Cells
 
-public class Cell: UITableViewCell {
-    public var row: FormRow?
+open class Cell: UITableViewCell {
+    open var row: FormRow?
     
     class func cellIdentifier() -> String {
-        return String.fromCString(class_getName(self)) ?? "Cell"
+        return String(cString: class_getName(self))
     }
     
-    public func configure(row: FormRow) {
+    open func configure(_ row: FormRow) {
         
     }
 }
 
-public class FormCell: Cell {
+open class FormCell: Cell {
     
-    public var container: UIView!
-    public var titleContainer: UIView!
-    public var titleLabel: UILabel!
-    public var fieldContainer: UIView!
+    open var container: UIView!
+    open var titleContainer: UIView!
+    open var titleLabel: UILabel!
+    open var fieldContainer: UIView!
     
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -435,9 +435,9 @@ public class FormCell: Cell {
         setupUI()
     }
     
-    public func setupUI() {
+    open func setupUI() {
         
-        selectionStyle = .None
+        selectionStyle = .none
         
         container = UIView()
         container.translatesAutoresizingMaskIntoConstraints = false
@@ -460,7 +460,7 @@ public class FormCell: Cell {
         container.addSubview(fieldContainer)
     }
     
-    public override func updateConstraints() {
+    open override func updateConstraints() {
         guard let row = row else {
             return
         }
@@ -473,42 +473,42 @@ public class FormCell: Cell {
             "fieldContainer": fieldContainer
         ]
         
-        contentView.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
-        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: row.form?.minimalRowHeight ?? 44.5))
+        contentView.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .vertical)
+        contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .height, relatedBy: .greaterThanOrEqual, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: row.form?.minimalRowHeight ?? 44.5))
         
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[container]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[container]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[container]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[container]-|", options: [], metrics: nil, views: views))
         
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[titleLabel]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[titleLabel]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[titleLabel]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[titleLabel]-|", options: [], metrics: nil, views: views))
         
         switch row.form?.layoutAxis {
-        case .Horizontal?:
-            container.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
-            container.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
+        case .horizontal?:
+            container.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .vertical)
+            container.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .vertical)
             
-            titleLabel.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Horizontal)
-            titleLabel.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
+            titleLabel.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .horizontal)
+            titleLabel.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .vertical)
             
-            fieldContainer.setContentHuggingPriority(UILayoutPriorityDefaultHigh, forAxis: .Vertical)
+            fieldContainer.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .vertical)
             
-            contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[titleContainer][fieldContainer]-|", options: [], metrics: nil, views: views))
-            contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[titleContainer]-|", options: [], metrics: nil, views: views))
-            contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[fieldContainer]-|", options: [], metrics: nil, views: views))
-        case .Vertical?:
-            container.setContentCompressionResistancePriority(UILayoutPriorityRequired, forAxis: .Vertical)
-            container.setContentHuggingPriority(UILayoutPriorityDefaultLow, forAxis: .Vertical)
+            contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[titleContainer][fieldContainer]-|", options: [], metrics: nil, views: views))
+            contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[titleContainer]-|", options: [], metrics: nil, views: views))
+            contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[fieldContainer]-|", options: [], metrics: nil, views: views))
+        case .vertical?:
+            container.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .vertical)
+            container.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .vertical)
             
-            contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[titleContainer]-|", options: [], metrics: nil, views: views))
-            contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[fieldContainer]-|", options: [], metrics: nil, views: views))
-            contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[titleContainer][fieldContainer]-|", options: [], metrics: nil, views: views))
+            contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[titleContainer]-|", options: [], metrics: nil, views: views))
+            contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[fieldContainer]-|", options: [], metrics: nil, views: views))
+            contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[titleContainer][fieldContainer]-|", options: [], metrics: nil, views: views))
         default: ()
         }
         
         super.updateConstraints()
     }
     
-    public override func configure(row: FormRow) {
+    open override func configure(_ row: FormRow) {
         setNeedsUpdateConstraints()
         
         container.layoutMargins = UIEdgeInsets()
@@ -518,21 +518,21 @@ public class FormCell: Cell {
         titleLabel.text = row.title
         
         if let layoutAxis = row.form?.layoutAxis {
-            titleLabel.font = UIFont.systemFontOfSize(layoutAxis == .Vertical ? 14 : 17)
+            titleLabel.font = UIFont.systemFont(ofSize: layoutAxis == .vertical ? 14 : 17)
             switch layoutAxis {
-            case .Horizontal:
+            case .horizontal:
                 titleContainer.layoutMargins.right = row.title == nil ? 0 : 10
-            case .Vertical:
+            case .vertical:
                 titleContainer.layoutMargins.bottom = row.title == nil ? 0 : 5
             }
         }
     }
 }
 
-public class LabelFormCell: FormCell {
-    public var label: UILabel!
+open class LabelFormCell: FormCell {
+    open var label: UILabel!
     
-    override public func setupUI() {
+    override open func setupUI() {
         super.setupUI()
         
         fieldContainer.layoutMargins.top = 10
@@ -540,20 +540,20 @@ public class LabelFormCell: FormCell {
         
         label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = UIColor.grayColor()
+        label.textColor = UIColor.gray
         fieldContainer.addSubview(label)
         
         let views = [
             "label": label
         ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[label]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[label]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[label]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[label]-|", options: [], metrics: nil, views: views))
     }
     
-    public override func configure(row: FormRow) {
+    open override func configure(_ row: FormRow) {
         super.configure(row)
         
-        label.textAlignment = row.form?.layoutAxis == .Horizontal ? .Right : .Left
+        label.textAlignment = row.form?.layoutAxis == .horizontal ? .right : .left
         
         if let attributedString = row.value as? NSAttributedString {
             label.attributedText = attributedString
@@ -564,19 +564,19 @@ public class LabelFormCell: FormCell {
     }
 }
 
-public class MultiLineLabelFormCell: LabelFormCell {
-    override public func setupUI() {
+open class MultiLineLabelFormCell: LabelFormCell {
+    override open func setupUI() {
         super.setupUI()
         
         label.numberOfLines = 0
     }
 }
 
-public class SubtitleFormCell: FormCell {
+open class SubtitleFormCell: FormCell {
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: .Subtitle, reuseIdentifier: reuseIdentifier)
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         
-        selectionStyle = .None
+        selectionStyle = .none
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -584,13 +584,13 @@ public class SubtitleFormCell: FormCell {
     }
 }
 
-public class TextFieldFormCell: FormCell, UITextFieldDelegate {
-    public var textField = UITextField()
+open class TextFieldFormCell: FormCell, UITextFieldDelegate {
+    open var textField = UITextField()
     
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: .Value1, reuseIdentifier: reuseIdentifier)
+        super.init(style: .value1, reuseIdentifier: reuseIdentifier)
         
-        textField.addTarget(self, action: #selector(TextFieldFormCell.textFieldValueChanged(_:)), forControlEvents: .EditingChanged)
+        textField.addTarget(self, action: #selector(TextFieldFormCell.textFieldValueChanged(_:)), for: .editingChanged)
         textField.delegate = self
         textField.translatesAutoresizingMaskIntoConstraints = false
         fieldContainer.addSubview(textField)
@@ -598,122 +598,122 @@ public class TextFieldFormCell: FormCell, UITextFieldDelegate {
         let views = [
             "textField": textField
         ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[textField]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[textField]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[textField]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[textField]-|", options: [], metrics: nil, views: views))
     }
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
-    override public func configure(row: FormRow) {
+    override open func configure(_ row: FormRow) {
         super.configure(row)
         
-        textField.textAlignment = row.form?.layoutAxis == .Horizontal ? .Right : .Left
+        textField.textAlignment = row.form?.layoutAxis == .horizontal ? .right : .left
         textField.text = row.value as? String
         textField.placeholder = (row as? TextFieldFormRow)?.placeholder
     }
     
-    func textFieldValueChanged(textField: UITextField) {
+    func textFieldValueChanged(_ textField: UITextField) {
         row?.value = textField.text
     }
     
-    public func textFieldDidEndEditing(textField: UITextField) {
+    open func textFieldDidEndEditing(_ textField: UITextField) {
         (row as? TextFieldFormRow)?.textFieldDidEndEditing?()
     }
     
-    override public func setSelected(selected: Bool, animated: Bool) {
+    override open func setSelected(_ selected: Bool, animated: Bool) {
         if selected {
             textField.becomeFirstResponder()
         }
     }
 }
 
-public class EmailFormCell: TextFieldFormCell {
-    override public func setupUI() {
+open class EmailFormCell: TextFieldFormCell {
+    override open func setupUI() {
         super.setupUI()
         
-        textField.keyboardType = .EmailAddress
-        textField.autocapitalizationType = .None
-        textField.autocorrectionType = .No
+        textField.keyboardType = .emailAddress
+        textField.autocapitalizationType = .none
+        textField.autocorrectionType = .no
     }
 }
 
-public class PasswordFormCell: TextFieldFormCell {
-    override public func setupUI() {
+open class PasswordFormCell: TextFieldFormCell {
+    override open func setupUI() {
         super.setupUI()
         
-        textField.secureTextEntry = true
+        textField.isSecureTextEntry = true
     }
 }
 
-public class PhoneFormCell: TextFieldFormCell {
-    override public func setupUI() {
+open class PhoneFormCell: TextFieldFormCell {
+    override open func setupUI() {
         super.setupUI()
         
-        textField.keyboardType = .PhonePad
+        textField.keyboardType = .phonePad
     }
 }
 
-public class DecimalFormCell: TextFieldFormCell {
-    override public func setupUI() {
+open class DecimalFormCell: TextFieldFormCell {
+    override open func setupUI() {
         super.setupUI()
         
-        textField.keyboardType = .DecimalPad
+        textField.keyboardType = .decimalPad
     }
 }
 
-public class CurrencyFormCell: TextFieldFormCell {
-    override public func setupUI() {
+open class CurrencyFormCell: TextFieldFormCell {
+    override open func setupUI() {
         super.setupUI()
         
-        textField.keyboardType = .NumberPad
+        textField.keyboardType = .numberPad
     }
     
-    override func textFieldValueChanged(textField: UITextField) {
-        if let centString = textField.text?.componentsSeparatedByCharactersInSet(NSCharacterSet.decimalDigitCharacterSet().invertedSet).joinWithSeparator("") where centString.isEmpty == false {
+    override func textFieldValueChanged(_ textField: UITextField) {
+        if let centString = textField.text?.components(separatedBy: CharacterSet.decimalDigits.inverted).joined(separator: ""), centString.isEmpty == false {
             let centValue = (centString as NSString).doubleValue
-            let number = NSDecimalNumber(double: centValue/100.0)
+            let number = NSDecimalNumber(value: centValue/100.0 as Double)
             row?.value = number
         } else {
             row?.value = nil
         }
     }
     
-    public override func configure(row: FormRow) {
+    open override func configure(_ row: FormRow) {
         super.configure(row)
         
-        let formatter = NSNumberFormatter()
-        formatter.numberStyle = .CurrencyStyle
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
         
         let number = row.value as? NSDecimalNumber
-        textField.text = number != nil ? formatter.stringFromNumber(number!) : nil
+        textField.text = number != nil ? formatter.string(from: number!) : nil
     }
 }
 
-public class DatePickerFormCell: TextFieldFormCell {
-    public let datePicker = UIDatePicker()
-    public let dateLabel = UILabel()
-    public let clearButton = UIButton()
-    public var clearButtonWidthConstraint: NSLayoutConstraint!
+open class DatePickerFormCell: TextFieldFormCell {
+    open let datePicker = UIDatePicker()
+    open let dateLabel = UILabel()
+    open let clearButton = UIButton()
+    open var clearButtonWidthConstraint: NSLayoutConstraint!
     
-    override public func setupUI() {
+    override open func setupUI() {
         super.setupUI()
         
-        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), forControlEvents: .ValueChanged)
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         textField.inputView = datePicker
         textField.delegate = self
-        textField.hidden = true
+        textField.isHidden = true
         
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.textAlignment = .Right
+        dateLabel.textAlignment = .right
         fieldContainer.addSubview(dateLabel)
         
         clearButton.translatesAutoresizingMaskIntoConstraints = false
-        clearButton.setTitle("✕", forState: .Normal)
-        clearButton.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
-        clearButton.addTarget(self, action: #selector(clearButtonTapped(_:)), forControlEvents: .TouchUpInside)
-        clearButton.contentHorizontalAlignment = .Right
+        clearButton.setTitle("✕", for: UIControlState())
+        clearButton.setTitleColor(UIColor.lightGray, for: UIControlState())
+        clearButton.addTarget(self, action: #selector(clearButtonTapped(_:)), for: .touchUpInside)
+        clearButton.contentHorizontalAlignment = .right
         fieldContainer.addSubview(clearButton)
         
         gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(didSelect(_:)))]
@@ -724,42 +724,42 @@ public class DatePickerFormCell: TextFieldFormCell {
             "clearButton": clearButton,
             "textField": textField
         ]
-        self.clearButtonWidthConstraint = NSLayoutConstraint(item: clearButton, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 0)
+        self.clearButtonWidthConstraint = NSLayoutConstraint(item: clearButton, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 0)
         contentView.addConstraint(clearButtonWidthConstraint!)
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[dateLabel][clearButton]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[dateLabel]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[clearButton]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[dateLabel][clearButton]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[clearButton]-|", options: [], metrics: nil, views: views))
     }
     
-    func didSelect(gestureRecognizer: UIGestureRecognizer) {
+    func didSelect(_ gestureRecognizer: UIGestureRecognizer) {
         textField.becomeFirstResponder()
     }
     
-    public func textFieldDidBeginEditing(textField: UITextField) {
+    open func textFieldDidBeginEditing(_ textField: UITextField) {
         row?.value = datePicker.date
     }
     
-    func datePickerValueChanged(datePicker: UIDatePicker) {
+    func datePickerValueChanged(_ datePicker: UIDatePicker) {
         row?.value = datePicker.date
     }
     
-    func clearButtonTapped(sender: AnyObject) {
+    func clearButtonTapped(_ sender: AnyObject) {
         row?.value = nil
         textField.resignFirstResponder()
     }
     
-    public override func configure(row: FormRow) {
+    open override func configure(_ row: FormRow) {
         super.configure(row)
         
-        dateLabel.textAlignment = row.form?.layoutAxis == .Horizontal ? .Right : .Left
+        dateLabel.textAlignment = row.form?.layoutAxis == .horizontal ? .right : .left
         
         if let row = row as? DatePickerFormRow {
             datePicker.datePickerMode = row.datePickerMode
         }
         
-        if let date = row.value as? NSDate {
+        if let date = row.value as? Date {
             let formatter = (row as? DatePickerFormRow)?.formatter ?? DatePickerFormRow.defaultFormatter(datePicker.datePickerMode)
-            dateLabel.text = formatter.stringFromDate(date)
+            dateLabel.text = formatter.string(from: date)
         } else {
             dateLabel.text = nil
         }
@@ -768,20 +768,20 @@ public class DatePickerFormCell: TextFieldFormCell {
     }
 }
 
-public class DropdownFormCell: TextFieldFormCell {
-    public let picker = UIPickerView()
-    public let label = UILabel()
+open class DropdownFormCell: TextFieldFormCell {
+    open let picker = UIPickerView()
+    open let label = UILabel()
     
-    override public func setupUI() {
+    override open func setupUI() {
         super.setupUI()
         
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .Right
+        label.textAlignment = .right
         fieldContainer.addSubview(label)
         
         textField.inputView = picker
         textField.delegate = self
-        textField.hidden = true
+        textField.isHidden = true
         
         
         gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(didSelect(_:)))]
@@ -790,101 +790,101 @@ public class DropdownFormCell: TextFieldFormCell {
             "label": label
         ]
         
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[label]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[label]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[label]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[label]-|", options: [], metrics: nil, views: views))
     }
     
-    func didSelect(gestureRecognizer: UIGestureRecognizer) {
+    func didSelect(_ gestureRecognizer: UIGestureRecognizer) {
         textField.becomeFirstResponder()
     }
     
-    public func textFieldDidBeginEditing(textField: UITextField) {
+    open func textFieldDidBeginEditing(_ textField: UITextField) {
         
     }
     
-    public override func configure(row: FormRow) {
+    open override func configure(_ row: FormRow) {
         super.configure(row)
         
-        label.textAlignment = row.form?.layoutAxis == .Horizontal ? .Right : .Left
+        label.textAlignment = row.form?.layoutAxis == .horizontal ? .right : .left
         label.text = (row.value as? SelectableOption)?.selectableOptionTitle()
     }
 }
 
-public class SliderFormCell: FormCell {
+open class SliderFormCell: FormCell {
     var slider = UISlider()
     
-    override public func setupUI() {
+    override open func setupUI() {
         super.setupUI()
         
         slider.translatesAutoresizingMaskIntoConstraints = false
-        slider.addTarget(self, action: #selector(SliderFormCell.sliderChanged(_:)), forControlEvents: .ValueChanged)
+        slider.addTarget(self, action: #selector(SliderFormCell.sliderChanged(_:)), for: .valueChanged)
         fieldContainer.addSubview(slider)
         
         let views = [
             "slider": slider
         ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[slider]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[slider]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[slider]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[slider]-|", options: [], metrics: nil, views: views))
     }
     
-    override public func configure(row: FormRow) {
+    override open func configure(_ row: FormRow) {
         super.configure(row)
         if let value = row.value as? Float {
             slider.value = value
         }
     }
     
-    func sliderChanged(slider: UISlider) {
+    func sliderChanged(_ slider: UISlider) {
         row?.value = slider.value
     }
 }
 
-public class SwitchFormCell: FormCell {
+open class SwitchFormCell: FormCell {
     var switchControl = UISwitch()
     
-    override public func setupUI() {
+    override open func setupUI() {
         super.setupUI()
         
         switchControl.translatesAutoresizingMaskIntoConstraints = false
-        switchControl.addTarget(self, action: #selector(SwitchFormCell.switched(_:)), forControlEvents: .ValueChanged)
+        switchControl.addTarget(self, action: #selector(SwitchFormCell.switched(_:)), for: .valueChanged)
         fieldContainer.addSubview(switchControl)
         
         let views = [
             "textLabel": textLabel!,
             "switchControl": switchControl
-        ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[switchControl]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraint(NSLayoutConstraint(item: switchControl, attribute: .CenterY, relatedBy: .Equal, toItem: contentView, attribute: .CenterY, multiplier: 1.0, constant: 0.0))
+        ] as [String : Any]
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[switchControl]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraint(NSLayoutConstraint(item: switchControl, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0.0))
     }
     
-    override public func configure(row: FormRow) {
+    override open func configure(_ row: FormRow) {
         super.configure(row)
         if let value = row.value as? Bool {
-            switchControl.on = value
+            switchControl.isOn = value
         }
     }
     
-    func switched(control: UISwitch) {
-        row?.value = control.on
+    func switched(_ control: UISwitch) {
+        row?.value = control.isOn
     }
 }
 
-public class SelectionFormCell: LabelFormCell {
-    override public func setupUI() {
+open class SelectionFormCell: LabelFormCell {
+    override open func setupUI() {
         super.setupUI()
         
-        selectionStyle = .Default
-        accessoryType = .DisclosureIndicator
+        selectionStyle = .default
+        accessoryType = .disclosureIndicator
         gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(SelectionFormCell.didSelect(_:)))]
         
         contentView.layoutMargins.right = 0
     }
     
-    func didSelect(gestureRecognizer: UIGestureRecognizer) {
+    func didSelect(_ gestureRecognizer: UIGestureRecognizer) {
         row?.selection?(self)
     }
     
-    override public func configure(row: FormRow) {
+    override open func configure(_ row: FormRow) {
         super.configure(row)
         
         if let option = row.value as? SelectableOption {
@@ -893,14 +893,14 @@ public class SelectionFormCell: LabelFormCell {
     }
 }
 
-public class SelectableFormCell: FormCell {
-    override public func setupUI() {
+open class SelectableFormCell: FormCell {
+    override open func setupUI() {
         super.setupUI()
         
         gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(SelectionFormCell.didSelect(_:)))]
     }
     
-    func didSelect(gestureRecognizer: UIGestureRecognizer) {
+    func didSelect(_ gestureRecognizer: UIGestureRecognizer) {
         guard let selected = (row as? SelectableFormRow)?.selected else {
             return
         }
@@ -911,17 +911,17 @@ public class SelectableFormCell: FormCell {
         }
     }
     
-    override public func configure(row: FormRow) {
+    override open func configure(_ row: FormRow) {
         super.configure(row)
         
         if let row = row as? SelectableFormRow {
-            accessoryType = row.selected == true ? .Checkmark : .None
+            accessoryType = row.selected == true ? .checkmark : .none
         }
     }
 }
 
-public class MapFormPin: NSObject, MKAnnotation {
-    public var coordinate: CLLocationCoordinate2D
+open class MapFormPin: NSObject, MKAnnotation {
+    open var coordinate: CLLocationCoordinate2D
     var color: UIColor
     
     public init(coordinate: CLLocationCoordinate2D) {
@@ -931,14 +931,14 @@ public class MapFormPin: NSObject, MKAnnotation {
     }
 }
 
-public class MapFormCell: FormCell, MKMapViewDelegate {
+open class MapFormCell: FormCell, MKMapViewDelegate {
     var mapView: MKMapView!
     var mapInitialized = false
     
-    override public func setupUI() {
+    override open func setupUI() {
         super.setupUI()
         
-        mapView = MKMapView(frame: CGRectZero)
+        mapView = MKMapView(frame: CGRect.zero)
         mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.delegate = self
         mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didSelectMap(_:))))
@@ -947,11 +947,11 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
         let views = [
             "mapView": mapView
         ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[mapView]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[mapView]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[mapView]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[mapView]-|", options: [], metrics: nil, views: views))
     }
     
-    override public func configure(row: FormRow) {
+    override open func configure(_ row: FormRow) {
         super.configure(row)
         
         layoutMargins = UIEdgeInsets()
@@ -964,10 +964,10 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
         
         if let mapConfiguration = (row as? MapFormRow)?.mapConfiguration {
             mapView.mapType = mapConfiguration.mapType
-            mapView.zoomEnabled = mapConfiguration.zoomEnabled
-            mapView.scrollEnabled = mapConfiguration.scrollEnabled
-            mapView.pitchEnabled = mapConfiguration.pitchEnabled
-            mapView.rotateEnabled = mapConfiguration.rotateEnabled
+            mapView.isZoomEnabled = mapConfiguration.zoomEnabled
+            mapView.isScrollEnabled = mapConfiguration.scrollEnabled
+            mapView.isPitchEnabled = mapConfiguration.pitchEnabled
+            mapView.isRotateEnabled = mapConfiguration.rotateEnabled
             shouldAnimateRegionChange = !mapInitialized ? mapConfiguration.shouldAnimateInitially : mapConfiguration.shouldAnimateOnCoordinateChange
         }
         
@@ -979,7 +979,7 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
             coordinate = locationCoordinate
         }
         
-        if let coordinate = coordinate where CLLocationCoordinate2DIsValid(coordinate) {
+        if let coordinate = coordinate, CLLocationCoordinate2DIsValid(coordinate) {
             var span = mapView.region.span
             span.latitudeDelta = 0.01
             span.longitudeDelta = 0.01
@@ -994,8 +994,8 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
         mapInitialized = true
     }
     
-    public func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-        var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier("pin") as? MKPinAnnotationView
+    open func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: "pin") as? MKPinAnnotationView
         if annotationView == nil {
             annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
         }
@@ -1003,7 +1003,7 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
             if #available(iOS 9.0, *) {
                 annotationView?.pinTintColor = annotation.color
             } else {
-                annotationView?.pinColor = .Red
+                annotationView?.pinColor = .red
             }
         }
         annotationView?.annotation = annotation
@@ -1011,15 +1011,15 @@ public class MapFormCell: FormCell, MKMapViewDelegate {
         return annotationView
     }
     
-    func didSelectMap(recognizer: UITapGestureRecognizer) {
+    func didSelectMap(_ recognizer: UITapGestureRecognizer) {
         row?.selection?(self)
     }
 }
 
 // MARK: - FormViewController
 
-public class FormViewController: UITableViewController {
-    public var form = Form() {
+open class FormViewController: UITableViewController {
+    open var form = Form() {
         willSet {
             form.tableView = nil
             form.formViewController = nil
@@ -1049,29 +1049,29 @@ public class FormViewController: UITableViewController {
         super.init(coder: aDecoder)
     }
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
         form.tableView = tableView
         form.formViewController = self
     }
     
-    public override func viewWillAppear(animated: Bool) {
+    open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         title = form.title
         tableView.reloadData()
     }
     
-    override public func didReceiveMemoryWarning() {
+    override open func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 }
 
-class SelectionFormViewController<T: SelectableOption where T: Equatable>: FormViewController {
+class SelectionFormViewController<T: SelectableOption>: FormViewController where T: Equatable {
     var selectionRow: SelectionFormRow<T>
-    var selectedOptionIndexPath: NSIndexPath?
+    var selectedOptionIndexPath: IndexPath?
     var allowsMultipleSelection = false
     
     init(selectionRow: SelectionFormRow<T>) {
@@ -1100,18 +1100,18 @@ class SelectionFormViewController<T: SelectableOption where T: Equatable>: FormV
         }
         
         let sectionTitles = selectionRow.sectionTitles ?? groupedOptions.map({ (sectionTitle, options) in sectionTitle })
-        for (sectionIndex, sectionTitle) in sectionTitles.enumerate() {
+        for (sectionIndex, sectionTitle) in sectionTitles.enumerated() {
             var section = FormSection(title: sectionTitle)
             if let options = groupedOptions[sectionTitle] {
-                for (rowIndex, option) in options.enumerate() {
+                for (rowIndex, option) in options.enumerated() {
                     section.rows.append(SelectableFormRow(title: option.selectableOptionTitle(), selected: self.selectionRow.selectedOption == option, cellSelection: { (cell) in
                         self.selectionRow.selectedOption = option
                         if self.allowsMultipleSelection == false {
-                            self.navigationController?.popViewControllerAnimated(true)
+                            self.navigationController?.popViewController(animated: true)
                         }
                     }, valueChanged: nil))
                     if self.selectionRow.selectedOption == option {
-                        self.selectedOptionIndexPath = NSIndexPath(forRow: rowIndex, inSection: sectionIndex)
+                        self.selectedOptionIndexPath = IndexPath(row: rowIndex, section: sectionIndex)
                     }
                 }
             }
@@ -1119,11 +1119,11 @@ class SelectionFormViewController<T: SelectableOption where T: Equatable>: FormV
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        dispatch_async(dispatch_get_main_queue()) { 
-            self.tableView.selectRowAtIndexPath(self.selectedOptionIndexPath, animated: false, scrollPosition: .Middle)
+        DispatchQueue.main.async { 
+            self.tableView.selectRow(at: self.selectedOptionIndexPath, animated: false, scrollPosition: .middle)
         }
     }
 }

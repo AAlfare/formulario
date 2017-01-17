@@ -11,19 +11,19 @@ import Formulario
 import MapKit
 
 enum Animal: SelectableOption {
-    case Dog
-    case Cow
-    case Sheep
+    case dog
+    case cow
+    case sheep
     
     static func all() -> [Animal] {
-        return [.Cow, .Dog, .Sheep]
+        return [.cow, .dog, .sheep]
     }
     
     func selectableOptionTitle() -> String {
         switch self {
-        case .Cow: return "Cow"
-        case .Dog: return "Dog"
-        case .Sheep: return "Sheep"
+        case .cow: return "Cow"
+        case .dog: return "Dog"
+        case .sheep: return "Sheep"
         }
     }
 }
@@ -60,7 +60,7 @@ class Person: NSObject, SelectableOption {
         return group
     }
     
-    override func isEqual(object: AnyObject?) -> Bool {
+    override func isEqual(_ object: Any?) -> Bool {
         guard let object = object as? Person else {
             return false
         }
@@ -79,7 +79,7 @@ class ViewController: FormViewController {
         let nameRow = FormRow(title: "Vorname", value: "Andreas")
         
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .Left
+        paragraphStyle.alignment = .left
         
         let multiLineText = NSMutableAttributedString(string: "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.", attributes: [ NSParagraphStyleAttributeName: paragraphStyle ])
         
@@ -117,13 +117,13 @@ class ViewController: FormViewController {
                 DecimalFormRow(title: "Decimal", value: nil, placeholder: "Decimal", cellSelection: nil, valueChanged: { (row) -> Void in
                     print(row.value)
                 }),
-                CurrencyFormRow(title: "Price", value: NSDecimalNumber(double: 99.0), placeholder: "Price", cellSelection: nil, valueChanged: { (row) -> Void in
+                CurrencyFormRow(title: "Price", value: NSDecimalNumber(value: 99.0 as Double), placeholder: "Price", cellSelection: nil, valueChanged: { (row) -> Void in
                     print(row.value)
                 })
             ])
         )
         
-        let customDateFormatter = NSDateFormatter()
+        let customDateFormatter = DateFormatter()
         customDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         
         form.sections.append(
@@ -131,7 +131,7 @@ class ViewController: FormViewController {
                 DatePickerFormRow(title: "Date", value: nil, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                DatePickerFormRow(title: "Time", value: NSDate(), datePickerMode: .Time, cellSelection: nil, valueChanged: { (row) in
+                DatePickerFormRow(title: "Time", value: Date(), datePickerMode: .time, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
                 DatePickerFormRow(title: "⌚️", value: nil, dateFormatter: customDateFormatter, cellSelection: nil, valueChanged: { (row) in
@@ -160,7 +160,7 @@ class ViewController: FormViewController {
                 SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], selectedOption: nil, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: Animal.Dog, cellSelection: nil, valueChanged: { (row) in
+                SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: Animal.dog, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
                 SelectionFormRow(title: "🙃", options: Person.all(), selectedOption: Person.all().first, cellSelection: nil, valueChanged: { (row) in
@@ -169,7 +169,7 @@ class ViewController: FormViewController {
                 SelectionFormRow(title: "🙃 Grouped", options: Person.all(), selectedOption: Person.all().last, sectionTitles: Person.allGroups(), cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                DropdownFormRow(title: "Dropdown", options: Animal.all(), selectedOption: Animal.Sheep, cellSelection: nil, valueChanged: { (row) in
+                DropdownFormRow(title: "Dropdown", options: Animal.all(), selectedOption: Animal.sheep, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 })
             ])

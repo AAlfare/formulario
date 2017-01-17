@@ -16,22 +16,22 @@ class CustomCell: FormCell {
         super.setupUI()
         
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
-        segmentedControl.addTarget(self, action: #selector(valueChanged(_:)), forControlEvents: .ValueChanged)
+        segmentedControl.addTarget(self, action: #selector(valueChanged(_:)), for: .valueChanged)
         fieldContainer.addSubview(segmentedControl)
         
         let views = [
             "segmentedControl": segmentedControl
         ]
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-[segmentedControl]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-[segmentedControl]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[segmentedControl]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[segmentedControl]-|", options: [], metrics: nil, views: views))
     }
     
-    override func configure(row: FormRow) {
+    override func configure(_ row: FormRow) {
         super.configure(row)
         
     }
     
-    func valueChanged(segmentedControl: UISegmentedControl) {
+    func valueChanged(_ segmentedControl: UISegmentedControl) {
         row?.value = segmentedControl.selectedSegmentIndex
     }
 }

@@ -10,24 +10,24 @@ import UIKit
 import Formulario
 
 class CustomizedTextFieldCell: TextFieldFormCell {
-    override func configure(row: FormRow) {
+    override func configure(_ row: FormRow) {
         super.configure(row)
         
-        titleLabel.text = row.form?.layoutAxis == .Vertical ? row.title?.uppercaseString : row.title
+        titleLabel.text = row.form?.layoutAxis == .vertical ? row.title?.uppercased() : row.title
         
         // Add custom margins and colors to views
         contentView.layoutMargins = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
         contentView.preservesSuperviewLayoutMargins = false
-        contentView.backgroundColor = UIColor.darkGrayColor()
-        titleContainer.layoutMargins.left = row.form?.layoutAxis == .Vertical ? 9 : 0
-        container.backgroundColor = UIColor.whiteColor()
+        contentView.backgroundColor = UIColor.darkGray
+        titleContainer.layoutMargins.left = row.form?.layoutAxis == .vertical ? 9 : 0
+        container.backgroundColor = UIColor.white
         container.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         container.preservesSuperviewLayoutMargins = false
-        fieldContainer.backgroundColor = UIColor.groupTableViewBackgroundColor()
+        fieldContainer.backgroundColor = UIColor.groupTableViewBackground
         fieldContainer.layer.cornerRadius = 2.5
         fieldContainer.layer.masksToBounds = true
         fieldContainer.layoutMargins = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        textField.textAlignment = .Left
+        textField.textAlignment = .left
     }
 }
 
@@ -44,11 +44,11 @@ class CustomViewController: UIViewController {
         let views = [
             "tableView": tableView
         ]
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[tableView]|", options: [], metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[tableView]|", options: [], metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|[tableView]|", options: [], metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[tableView]|", options: [], metrics: nil, views: views))
         
         form.tableView = tableView
-        form.layoutAxis = .Vertical
+        form.layoutAxis = .vertical
         form.sections.append(FormSection(title: "Servus", rows: [
             FormRow(title: "Hallo", value: "Otto"),
             FormRow(title: "Vorname", value: nil, cellClass: CustomizedTextFieldCell.self, cellSelection: nil, valueChanged: nil),
