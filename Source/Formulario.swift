@@ -65,11 +65,11 @@ open class Form: NSObject {
         registeredCellClasses.append(cellClass)
     }
     
-    open convenience override init() {
+    public convenience override init() {
         self.init(sections: [])
     }
     
-    open init(sections: [FormSection]) {
+    public init(sections: [FormSection]) {
         self.sections = sections
         super.init()
     }
@@ -164,7 +164,7 @@ open class FormRow: NSObject {
     open var valueChanged: ((FormRow)->Void)?
     open var hidden: Bool = false
     
-    open init(title: String?, value: Any?, cellClass: Cell.Type = LabelFormCell.self, cellHeight: CGFloat? = nil, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
+    public init(title: String?, value: Any?, cellClass: Cell.Type = LabelFormCell.self, cellHeight: CGFloat? = nil, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
         self.value = value
         self.cellClass = cellClass
@@ -182,7 +182,7 @@ open class TextFieldFormRow: FormRow {
     open var placeholder: String?
     open var textFieldDidEndEditing: (() -> Void)?
     
-    open init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = TextFieldFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = TextFieldFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         self.placeholder = placeholder
         self.textFieldDidEndEditing = textFieldDidEndEditing
         super.init(title: title, value: value, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged)
@@ -190,31 +190,31 @@ open class TextFieldFormRow: FormRow {
 }
 
 open class EmailFormRow: TextFieldFormRow {
-    override open init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = EmailFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = EmailFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 open class PasswordFormRow: TextFieldFormRow {
-    override open init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = PasswordFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = PasswordFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 open class PhoneFormRow: TextFieldFormRow {
-    override open init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = PhoneFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = PhoneFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 open class DecimalFormRow: TextFieldFormRow {
-    override open init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = DecimalFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = DecimalFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 open class CurrencyFormRow: TextFieldFormRow {
-    override open init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = CurrencyFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = CurrencyFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
@@ -243,7 +243,7 @@ open class DatePickerFormRow: FormRow {
         return formatter
     }
     
-    open init(title: String?, value: Date?, datePickerMode: UIDatePickerMode = .date, dateFormatter: DateFormatter? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, value: Date?, datePickerMode: UIDatePickerMode = .date, dateFormatter: DateFormatter? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.datePickerMode = datePickerMode
         super.init(title: title, value: value, cellClass: DatePickerFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
         self.formatter = dateFormatter
@@ -251,7 +251,7 @@ open class DatePickerFormRow: FormRow {
 }
 
 open class SwitchFormRow: FormRow {
-    open init(title: String?, value: Bool, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, value: Bool, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: value, cellClass: SwitchFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
 }
@@ -262,13 +262,13 @@ public protocol SelectableOption {
 }
 
 extension SelectableOption {
-    open func selectableOptionSectionTitle() -> String {
+    public func selectableOptionSectionTitle() -> String {
         return ""
     }
 }
 
 extension String: SelectableOption {
-    open func selectableOptionTitle() -> String {
+    public func selectableOptionTitle() -> String {
         return self
     }
 }
@@ -284,7 +284,7 @@ open class OptionsFormRow<T: SelectableOption>: FormRow {
         }
     }
     
-    open init(title: String?, options: [T], selectedOption: T?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, options: [T], selectedOption: T?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.options = options
         super.init(title: title, value: nil, cellClass: FormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
         self.selectedOption = selectedOption
@@ -295,7 +295,7 @@ open class SelectionFormRow<T: SelectableOption>: OptionsFormRow<T> where T: Equ
     var sectionTitles: [String]?
     var tableStyle: UITableViewStyle
     
-    open init(title: String?, options: [T], selectedOption: T?, sectionTitles: [String]? = nil, tableStyle: UITableViewStyle = .plain, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, options: [T], selectedOption: T?, sectionTitles: [String]? = nil, tableStyle: UITableViewStyle = .plain, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.tableStyle = tableStyle
         super.init(title: title, options: options, selectedOption: selectedOption, cellSelection: nil, valueChanged: valueChanged)
         self.sectionTitles = sectionTitles
@@ -318,7 +318,7 @@ open class SelectableFormRow: FormRow {
         }
     }
     
-    open init(title: String?, selected: Bool = false, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, selected: Bool = false, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, value: selected, cellClass: SelectableFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
 }
@@ -335,7 +335,7 @@ open class DropdownFormRow<T: SelectableOption>: OptionsFormRow<T>, UIPickerView
             }
         }
     }
-    open override init(title: String?, options: [T], selectedOption: T?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public override init(title: String?, options: [T], selectedOption: T?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         super.init(title: title, options: options, selectedOption: selectedOption, cellSelection: cellSelection, valueChanged: valueChanged)
         self.cellClass = DropdownFormCell.self
     }
@@ -386,14 +386,14 @@ public struct MapConfiguration {
 
 open class MapFormRow: FormRow {
     var mapConfiguration: MapConfiguration
-    open init(coordinate: CLLocationCoordinate2D?, cellHeight: CGFloat? = nil, mapConfiguration: MapConfiguration? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(coordinate: CLLocationCoordinate2D?, cellHeight: CGFloat? = nil, mapConfiguration: MapConfiguration? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.mapConfiguration = mapConfiguration ?? MapConfiguration()
         super.init(title: nil, value: coordinate, cellClass: MapFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
         if let cellHeight = cellHeight {
             self.cellHeight = cellHeight
         }
     }
-    open init(location: CLLocation?, cellHeight: CGFloat? = nil, mapConfiguration: MapConfiguration? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(location: CLLocation?, cellHeight: CGFloat? = nil, mapConfiguration: MapConfiguration? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.mapConfiguration = mapConfiguration ?? MapConfiguration()
         super.init(title: nil, value: location, cellClass: MapFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
         if let cellHeight = cellHeight {
@@ -423,13 +423,13 @@ open class FormCell: Cell {
     open var titleLabel: UILabel!
     open var fieldContainer: UIView!
     
-    override open init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setupUI()
     }
 
-    required open init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
         setupUI()
@@ -573,13 +573,13 @@ open class MultiLineLabelFormCell: LabelFormCell {
 }
 
 open class SubtitleFormCell: FormCell {
-    override open init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = .none
     }
     
-    required open init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 }
@@ -587,7 +587,7 @@ open class SubtitleFormCell: FormCell {
 open class TextFieldFormCell: FormCell, UITextFieldDelegate {
     open var textField = UITextField()
     
-    override open init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .value1, reuseIdentifier: reuseIdentifier)
         
         textField.addTarget(self, action: #selector(TextFieldFormCell.textFieldValueChanged(_:)), for: .editingChanged)
@@ -602,7 +602,7 @@ open class TextFieldFormCell: FormCell, UITextFieldDelegate {
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[textField]-|", options: [], metrics: nil, views: views))
     }
     
-    required open init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -1032,20 +1032,20 @@ open class FormViewController: UITableViewController {
     
     // MARK: - Initialization
     
-    open convenience init(form: Form) {
+    public convenience init(form: Form) {
         self.init(style: form.tableStyle)
         self.form = form
     }
     
-    open init() {
+    public init() {
         super.init(style: form.tableStyle)
     }
     
-    open override init(style: UITableViewStyle) {
+    public override init(style: UITableViewStyle) {
         super.init(style: style)
     }
 
-    required open init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
