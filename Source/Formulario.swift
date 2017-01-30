@@ -465,7 +465,7 @@ open class FormCell: Cell {
             return
         }
         
-        let views = [
+        let views: [String: Any] = [
             "contentView": contentView,
             "container": container,
             "titleContainer": titleContainer,
@@ -543,7 +543,7 @@ open class LabelFormCell: FormCell {
         label.textColor = UIColor.gray
         fieldContainer.addSubview(label)
         
-        let views = [
+        let views: [String: Any] = [
             "label": label
         ]
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[label]-|", options: [], metrics: nil, views: views))
@@ -595,7 +595,7 @@ open class TextFieldFormCell: FormCell, UITextFieldDelegate {
         textField.translatesAutoresizingMaskIntoConstraints = false
         fieldContainer.addSubview(textField)
         
-        let views = [
+        let views: [String: Any] = [
             "textField": textField
         ]
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[textField]-|", options: [], metrics: nil, views: views))
@@ -718,7 +718,7 @@ open class DatePickerFormCell: TextFieldFormCell {
         
         gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(didSelect(_:)))]
         
-        let views: [String: AnyObject] = [
+        let views: [String: Any] = [
             "textLabel": textLabel!,
             "dateLabel": dateLabel,
             "clearButton": clearButton,
@@ -783,10 +783,9 @@ open class DropdownFormCell: TextFieldFormCell {
         textField.delegate = self
         textField.isHidden = true
         
-        
         gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(didSelect(_:)))]
         
-        let views: [String: AnyObject] = [
+        let views: [String: Any] = [
             "label": label
         ]
         
@@ -820,7 +819,7 @@ open class SliderFormCell: FormCell {
         slider.addTarget(self, action: #selector(SliderFormCell.sliderChanged(_:)), for: .valueChanged)
         fieldContainer.addSubview(slider)
         
-        let views = [
+        let views: [String: Any] = [
             "slider": slider
         ]
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[slider]-|", options: [], metrics: nil, views: views))
@@ -849,10 +848,10 @@ open class SwitchFormCell: FormCell {
         switchControl.addTarget(self, action: #selector(SwitchFormCell.switched(_:)), for: .valueChanged)
         fieldContainer.addSubview(switchControl)
         
-        let views = [
+        let views: [String: Any] = [
             "textLabel": textLabel!,
             "switchControl": switchControl
-        ] as [String : Any]
+        ]
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[switchControl]-|", options: [], metrics: nil, views: views))
         contentView.addConstraint(NSLayoutConstraint(item: switchControl, attribute: .centerY, relatedBy: .equal, toItem: contentView, attribute: .centerY, multiplier: 1.0, constant: 0.0))
     }
@@ -944,7 +943,7 @@ open class MapFormCell: FormCell, MKMapViewDelegate {
         mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didSelectMap(_:))))
         fieldContainer.addSubview(mapView)
         
-        let views = [
+        let views: [String: Any] = [
             "mapView": mapView
         ]
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[mapView]-|", options: [], metrics: nil, views: views))
