@@ -182,7 +182,7 @@ open class TextFieldFormRow: FormRow {
     open var placeholder: String?
     open var textFieldDidEndEditing: (() -> Void)?
     
-    public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = TextFieldFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = TextFieldFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         self.placeholder = placeholder
         self.textFieldDidEndEditing = textFieldDidEndEditing
         super.init(title: title, value: value, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged)
@@ -190,31 +190,31 @@ open class TextFieldFormRow: FormRow {
 }
 
 open class EmailFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = EmailFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = EmailFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 open class PasswordFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = PasswordFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = PasswordFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 open class PhoneFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = PhoneFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = PhoneFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 open class DecimalFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = DecimalFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = DecimalFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 open class CurrencyFormRow: TextFieldFormRow {
-    override public init(title: String?, value: AnyObject?, placeholder: String?, cellClass: Cell.Type = CurrencyFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    override public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = CurrencyFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
