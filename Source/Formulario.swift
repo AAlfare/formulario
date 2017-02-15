@@ -1085,8 +1085,6 @@ class SelectionFormViewController<T: SelectableOption>: FormViewController where
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = selectionRow.title
-        
         var groupedOptions: [String: [T]] = [String: [T]]()
         for option in selectionRow.options {
             let sectionTitle = selectionRow.sectionTitles != nil ? option.selectableOptionSectionTitle() : ""
@@ -1120,6 +1118,8 @@ class SelectionFormViewController<T: SelectableOption>: FormViewController where
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        title = selectionRow.title
         
         DispatchQueue.main.async { 
             self.tableView.selectRow(at: self.selectedOptionIndexPath, animated: false, scrollPosition: .middle)
