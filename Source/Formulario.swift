@@ -73,6 +73,12 @@ public class Form: NSObject {
         self.sections = sections
         super.init()
     }
+    
+    public func update(updateClosure: ()->Void) {
+        tableView?.beginUpdates()
+        updateClosure()
+        tableView?.endUpdates()
+    }
 }
 
 extension Form: UITableViewDelegate {
@@ -96,6 +102,7 @@ extension Form: UITableViewDataSource {
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].visibleRows[indexPath.row]
         row.form = self
+        row.indexPath = indexPath
         
         let cell = tableView.dequeueReusableCellWithIdentifier(row.cellClass.cellIdentifier(), forIndexPath: indexPath)
         if let cell = cell as? Cell {
@@ -162,7 +169,21 @@ public class FormRow: NSObject {
     public var cellClass: Cell.Type
     public var selection: FormCellSelectionClosureType?
     public var valueChanged: ((FormRow)->Void)?
-    public var hidden: Bool = false
+    var indexPath: NSIndexPath?
+    public var hidden: Bool = false {
+        didSet {
+            guard let tableView = self.form?.tableView, let indexPath = indexPath else {
+                return
+            }
+            tableView.beginUpdates()
+            if oldValue == false && hidden == true {
+                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
+            } else if oldValue == true && hidden == false {
+                tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Bottom)
+            }
+            tableView.endUpdates()
+        }
+    }
     
     public init(title: String?, value: Any?, cellClass: Cell.Type = LabelFormCell.self, cellHeight: CGFloat? = nil, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title

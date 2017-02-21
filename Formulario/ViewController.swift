@@ -142,16 +142,22 @@ class ViewController: FormViewController {
         let happyRow = SelectableFormRow(title: "Happy?", selected: true, cellSelection: nil, valueChanged: { (row) in
             print(row.value)
         })
+        let switchRow = SwitchFormRow(title: "Power mode", value: false, cellSelection: nil) { (row) in
+            print(row.value)
+        }
         form.sections.append(
             FormSection(title: "Boolean", rows: [
-                SwitchFormRow(title: "Hide next row?", value: false, cellSelection: nil, valueChanged: { (row) in
+                SwitchFormRow(title: "Hide next rows?", value: false, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
-                    if let bool = row.value as? Bool {
-                        happyRow.hidden = bool
+                    if let hidden = row.value as? Bool {
+                        self.form.update {
+                            happyRow.hidden = hidden
+                            switchRow.hidden = hidden
+                        }
                     }
-                    self.tableView.reloadData()
                 }),
-                happyRow
+                happyRow,
+                switchRow
             ])
         )
         
