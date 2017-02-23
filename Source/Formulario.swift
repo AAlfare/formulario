@@ -18,6 +18,13 @@ public class Form: NSObject {
     
     public var sections: [FormSection] {
         didSet {
+            for section in sections {
+                section.form = self
+                for row in section.rows {
+                    row.section = section
+                    row.form = self
+                }
+            }
             tableView?.reloadData()
         }
     }
@@ -73,12 +80,6 @@ public class Form: NSObject {
         self.sections = sections
         super.init()
     }
-    
-    public func update(updateClosure: ()->Void) {
-        tableView?.beginUpdates()
-        updateClosure()
-        tableView?.endUpdates()
-    }
 }
 
 extension Form: UITableViewDelegate {
@@ -102,8 +103,6 @@ extension Form: UITableViewDataSource {
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let section = sections[indexPath.section]
         let row = section.visibleRows[indexPath.row]
-        row.form = self
-        row.section = section
         
         let cell = tableView.dequeueReusableCellWithIdentifier(row.cellClass.cellIdentifier(), forIndexPath: indexPath)
         if let cell = cell as? Cell {
@@ -142,6 +141,7 @@ extension Form: UITableViewDataSource {
 
 public class FormSection: NSObject {
     public var rows: [FormRow]
+    public weak var form: Form?
     public var visibleRows: [FormRow] {
         return rows.filter({ $0.hidden == false })
     }
@@ -158,8 +158,8 @@ public class FormSection: NSObject {
 public typealias FormCellSelectionClosureType = (Cell -> Void)
 
 public class FormRow: NSObject {
-    weak public var form: Form?
-    weak public var section: FormSection?
+    public weak var form: Form?
+    public weak var section: FormSection?
     public var title: String?
     public var value: Any? {
         didSet {
@@ -173,6 +173,7 @@ public class FormRow: NSObject {
     public var selection: FormCellSelectionClosureType?
     public var valueChanged: ((FormRow)->Void)?
     
+    private var oldIndexPath: NSIndexPath?
     var indexPath: NSIndexPath? {
         guard let section = section, let sectionIndex = form?.sections.indexOf(section) else {
             return nil
@@ -183,7 +184,6 @@ public class FormRow: NSObject {
         return NSIndexPath(forRow: rowIndex, inSection: sectionIndex)
         
     }
-    private var oldIndexPath: NSIndexPath?
     
     public var hidden: Bool = false {
         willSet {
@@ -1142,7 +1142,7 @@ class SelectionFormViewController<T: SelectableOption where T: Equatable>: FormV
         
         let sectionTitles = selectionRow.sectionTitles ?? groupedOptions.map({ (sectionTitle, options) in sectionTitle })
         for (sectionIndex, sectionTitle) in sectionTitles.enumerate() {
-            var section = FormSection(title: sectionTitle)
+            let section = FormSection(title: sectionTitle)
             if let options = groupedOptions[sectionTitle] {
                 for (rowIndex, option) in options.enumerate() {
                     section.rows.append(SelectableFormRow(title: option.selectableOptionTitle(), selected: self.selectionRow.selectedOption == option, cellSelection: { (cell) in
