@@ -192,7 +192,7 @@ public class FormRow: NSObject {
             guard let tableView = self.form?.tableView else {
                 return
             }
-            tableView.beginUpdates()
+            
             if oldValue == false && hidden == true {
                 if let oldIndexPath = oldIndexPath {
                     tableView.deleteRowsAtIndexPaths([oldIndexPath], withRowAnimation: .Top)
@@ -202,7 +202,6 @@ public class FormRow: NSObject {
                     tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Bottom)
                 }
             }
-            tableView.endUpdates()
         }
     }
     
