@@ -84,7 +84,7 @@ public class Form: NSObject {
 
 extension Form: UITableViewDelegate {
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let row = sections[indexPath.section].rows[indexPath.row]
+        let row = sections[indexPath.section].visibleRows[indexPath.row]
         if let cell = tableView.cellForRowAtIndexPath(indexPath) as? Cell {
             row.selection?(cell)
         }
@@ -101,8 +101,7 @@ extension Form: UITableViewDataSource {
     }
     
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let section = sections[indexPath.section]
-        let row = section.visibleRows[indexPath.row]
+        let row = sections[indexPath.section].visibleRows[indexPath.row]
         
         let cell = tableView.dequeueReusableCellWithIdentifier(row.cellClass.cellIdentifier(), forIndexPath: indexPath)
         if let cell = cell as? Cell {
@@ -582,6 +581,7 @@ public class LabelFormCell: FormCell {
         fieldContainer.layoutMargins.bottom = 10
         
         label = UILabel()
+        label.userInteractionEnabled = false
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.grayColor()
         fieldContainer.addSubview(label)
@@ -918,13 +918,8 @@ public class SelectionFormCell: LabelFormCell {
         
         selectionStyle = .Default
         accessoryType = .DisclosureIndicator
-        gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(SelectionFormCell.didSelect(_:)))]
         
         contentView.layoutMargins.right = 0
-    }
-    
-    func didSelect(gestureRecognizer: UIGestureRecognizer) {
-        row?.selection?(self)
     }
     
     override public func configure(row: FormRow) {
@@ -934,17 +929,13 @@ public class SelectionFormCell: LabelFormCell {
             label.text = option.selectableOptionTitle()
         }
     }
-    
-    public override func prepareForReuse() {
-        gestureRecognizers?.removeAll()
-    }
 }
 
 public class SelectableFormCell: FormCell {
     override public func setupUI() {
         super.setupUI()
         
-        gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(SelectionFormCell.didSelect(_:)))]
+        gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(didSelect(_:)))]
     }
     
     func didSelect(gestureRecognizer: UIGestureRecognizer) {
@@ -964,10 +955,6 @@ public class SelectableFormCell: FormCell {
         if let row = row as? SelectableFormRow {
             accessoryType = row.selected == true ? .Checkmark : .None
         }
-    }
-    
-    public override func prepareForReuse() {
-        gestureRecognizers?.removeAll()
     }
 }
 
