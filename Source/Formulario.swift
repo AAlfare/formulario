@@ -100,9 +100,10 @@ extension Form: UITableViewDataSource {
     }
     
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let row = sections[indexPath.section].visibleRows[indexPath.row]
+        let section = sections[indexPath.section]
+        let row = section.visibleRows[indexPath.row]
         row.form = self
-        row.indexPath = indexPath
+        row.section = section
         
         let cell = tableView.dequeueReusableCellWithIdentifier(row.cellClass.cellIdentifier(), forIndexPath: indexPath)
         if let cell = cell as? Cell {
@@ -139,7 +140,7 @@ extension Form: UITableViewDataSource {
 //    }
 }
 
-public struct FormSection {
+public class FormSection: NSObject {
     public var rows: [FormRow]
     public var visibleRows: [FormRow] {
         return rows.filter({ $0.hidden == false })
@@ -148,6 +149,7 @@ public struct FormSection {
     public init(title: String? = nil, rows: [FormRow] = []) {
         self.title = title
         self.rows = rows
+        super.init()
     }
 }
 
@@ -157,6 +159,7 @@ public typealias FormCellSelectionClosureType = (Cell -> Void)
 
 public class FormRow: NSObject {
     weak public var form: Form?
+    weak public var section: FormSection?
     public var title: String?
     public var value: Any? {
         didSet {
@@ -169,17 +172,36 @@ public class FormRow: NSObject {
     public var cellClass: Cell.Type
     public var selection: FormCellSelectionClosureType?
     public var valueChanged: ((FormRow)->Void)?
-    var indexPath: NSIndexPath?
+    
+    var indexPath: NSIndexPath? {
+        guard let section = section, let sectionIndex = form?.sections.indexOf(section) else {
+            return nil
+        }
+        guard let rowIndex = section.visibleRows.indexOf(self) else {
+            return nil
+        }
+        return NSIndexPath(forRow: rowIndex, inSection: sectionIndex)
+        
+    }
+    private var oldIndexPath: NSIndexPath?
+    
     public var hidden: Bool = false {
+        willSet {
+            oldIndexPath = indexPath
+        }
         didSet {
-            guard let tableView = self.form?.tableView, let indexPath = indexPath else {
+            guard let tableView = self.form?.tableView else {
                 return
             }
             tableView.beginUpdates()
             if oldValue == false && hidden == true {
-                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Top)
+                if let oldIndexPath = oldIndexPath {
+                    tableView.deleteRowsAtIndexPaths([oldIndexPath], withRowAnimation: .Top)
+                }
             } else if oldValue == true && hidden == false {
-                tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Bottom)
+                if let indexPath = indexPath {
+                    tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Bottom)
+                }
             }
             tableView.endUpdates()
         }

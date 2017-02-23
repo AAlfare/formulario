@@ -145,19 +145,33 @@ class ViewController: FormViewController {
         let switchRow = SwitchFormRow(title: "Power mode", value: false, cellSelection: nil) { (row) in
             print(row.value)
         }
+        let byeRow = FormRow(title: nil, value: "Bye")
+        let byeByeRow = FormRow(title: nil, value: "Bye bye!")
         form.sections.append(
             FormSection(title: "Boolean", rows: [
-                SwitchFormRow(title: "Hide next rows?", value: false, cellSelection: nil, valueChanged: { (row) in
+                SwitchFormRow(title: "Hide next row?", value: false, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                     if let hidden = row.value as? Bool {
-                        self.form.update {
-                            happyRow.hidden = hidden
-                            switchRow.hidden = hidden
-                        }
+                        happyRow.hidden = hidden
                     }
                 }),
                 happyRow,
-                switchRow
+                SwitchFormRow(title: "Hide next row?", value: false, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                    if let hidden = row.value as? Bool {
+                        switchRow.hidden = hidden
+                    }
+                }),
+                switchRow,
+                SwitchFormRow(title: "Hide next rows?", value: false, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                    if let hidden = row.value as? Bool {
+                        byeRow.hidden = hidden
+                        byeByeRow.hidden = hidden
+                    }
+                }),
+                byeRow,
+                byeByeRow
             ])
         )
         
