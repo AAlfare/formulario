@@ -82,6 +82,19 @@ public class Form: NSObject {
     }
 }
 
+extension Form {
+    public func scrollToRow(row: FormRow, atScrollPosition scrollPosition: UITableViewScrollPosition = .None, animated: Bool = false) {
+        guard let indexPath = row.indexPath else {
+            return
+        }
+        tableView?.scrollToRowAtIndexPath(indexPath, atScrollPosition: scrollPosition, animated: animated)
+    }
+    
+    public func scrollToSection(section: FormSection, atScrollPosition scrollPosition: UITableViewScrollPosition = .None, animated: Bool = false) {
+        tableView?.scrollToRowAtIndexPath(NSIndexPath(forRow: NSNotFound, inSection: section.index ?? NSNotFound), atScrollPosition: scrollPosition, animated: animated)
+    }
+}
+
 extension Form: UITableViewDelegate {
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let row = sections[indexPath.section].visibleRows[indexPath.row]
@@ -145,6 +158,9 @@ public class FormSection: NSObject {
         return rows.filter({ $0.hidden == false })
     }
     public var title: String?
+    var index: Int? {
+        return form?.sections.indexOf(self)
+    }
     public init(title: String? = nil, rows: [FormRow] = []) {
         self.title = title
         self.rows = rows

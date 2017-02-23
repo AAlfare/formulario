@@ -168,6 +168,11 @@ class ViewController: FormViewController {
                     if let hidden = row.value as? Bool {
                         byeRow.hidden = hidden
                         byeByeRow.hidden = hidden
+                        if hidden == false {
+                            delay(0.1, closure: { 
+                                self.form.scrollToRow(byeRow, atScrollPosition: .Top, animated: true)
+                            })
+                        }
                     }
                 }),
                 byeRow,
