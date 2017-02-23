@@ -934,6 +934,10 @@ public class SelectionFormCell: LabelFormCell {
             label.text = option.selectableOptionTitle()
         }
     }
+    
+    public override func prepareForReuse() {
+        gestureRecognizers?.removeAll()
+    }
 }
 
 public class SelectableFormCell: FormCell {
@@ -960,6 +964,10 @@ public class SelectableFormCell: FormCell {
         if let row = row as? SelectableFormRow {
             accessoryType = row.selected == true ? .Checkmark : .None
         }
+    }
+    
+    public override func prepareForReuse() {
+        gestureRecognizers?.removeAll()
     }
 }
 
