@@ -327,8 +327,7 @@ public class OptionsFormRow<T: SelectableOption>: FormRow {
     
     public init(title: String?, options: [T], selectedOption: T?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.options = options
-        super.init(title: title, value: nil, cellClass: FormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
-        self.selectedOption = selectedOption
+        super.init(title: title, value: selectedOption, cellClass: FormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
 }
 
