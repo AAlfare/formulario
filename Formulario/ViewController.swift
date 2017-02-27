@@ -182,19 +182,22 @@ class ViewController: FormViewController {
         
         form.sections.append(
             FormSection(title: "✅ Options", rows: [
-                SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], selectedOption: nil, cellSelection: nil, valueChanged: { (row) in
+                SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], selectedOption: nil, titleForNilOption: "No Emoji", cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
                 SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: Animal.Dog, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                SelectionFormRow(title: "🙃", options: Person.all(), selectedOption: Person.all().first, cellSelection: nil, valueChanged: { (row) in
+                SelectionFormRow(title: "🙃", options: Person.all(), selectedOption: Person.all().first, requiresOption: true, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                SelectionFormRow(title: "🙃 Grouped", options: Person.all(), selectedOption: Person.all().last, sectionTitles: Person.allGroups(), cellSelection: nil, valueChanged: { (row) in
+                SelectionFormRow(title: "🙃 Grouped", options: Person.all(), selectedOption: Person.all().last, titleForNilOption: "Nobody", sectionTitles: Person.allGroups(), cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 }),
-                DropdownFormRow(title: "Dropdown", options: Animal.all(), selectedOption: Animal.Sheep, cellSelection: nil, valueChanged: { (row) in
+                DropdownFormRow(title: "Dropdown", options: Animal.all(), selectedOption: Animal.Sheep, titleForNilOption: "–", cellSelection: nil, valueChanged: { (row) in
+                    print(row.value)
+                }),
+                DropdownFormRow(title: "Dropdown", options: Animal.all(), selectedOption: Animal.Sheep, requiresOption: true, cellSelection: nil, valueChanged: { (row) in
                     print(row.value)
                 })
             ])
