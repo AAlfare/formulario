@@ -54,7 +54,7 @@ class CustomViewController: UIViewController {
             FormRow(title: "Vorname", value: nil, cellClass: CustomizedTextFieldCell.self, cellSelection: nil, valueChanged: nil),
             FormRow(title: "Nachname", value: "", cellClass: CustomizedTextFieldCell.self, cellSelection: nil, valueChanged: nil),
             FormRow(title: "Geschlecht", value: 0.3, cellClass: CustomCell.self, cellSelection: nil, valueChanged: { (row) -> Void in
-                print("Slider changed: \(row.value)")
+                print("Slider changed: \(String(describing: row.value))")
             }),
             
         ]))

@@ -101,24 +101,24 @@ class ViewController: FormViewController {
         form.sections.append(
             FormSection(title: "Various text field rows", rows: [
                 TextFieldFormRow(title: "Text", value: nil, placeholder: "Text", cellSelection: nil, valueChanged: { (row) -> Void in
-                    print("\(row.value)")
+                    print("\(String(describing: row.value))")
                 }, didEndEditing: {
                     print("text field did end editing")
                 }),
                 EmailFormRow(title: "Email", value: nil, placeholder: "Email", cellSelection: nil, valueChanged: { (row) -> Void in
-                    print("\(row.value)")
+                    print("\(String(describing: row.value))")
                 }),
                 PasswordFormRow(title: "Password", value: nil, placeholder: "Password", cellSelection: nil, valueChanged: { (row) -> Void in
-                    print("\(row.value)")
+                    print("\(String(describing: row.value))")
                 }),
                 PhoneFormRow(title: "Phone", value: nil, placeholder: "Phone", cellSelection: nil, valueChanged: { (row) -> Void in
-                    print("\(row.value)")
+                    print("\(String(describing: row.value))")
                 }),
                 DecimalFormRow(title: "Decimal", value: nil, placeholder: "Decimal", cellSelection: nil, valueChanged: { (row) -> Void in
-                    print("\(row.value)")
+                    print("\(String(describing: row.value))")
                 }),
                 CurrencyFormRow(title: "Price", value: NSDecimalNumber(value: 99.0 as Double), placeholder: "Price", cellSelection: nil, valueChanged: { (row) -> Void in
-                    print("\(row.value)")
+                    print("\(String(describing: row.value))")
                 })
             ])
         )
@@ -129,48 +129,76 @@ class ViewController: FormViewController {
         form.sections.append(
             FormSection(title: "Date Picker", rows: [
                 DatePickerFormRow(title: "Date", value: nil, cellSelection: nil, valueChanged: { (row) in
-                    print("\(row.value)")
+                    print("\(String(describing: row.value))")
                 }),
                 DatePickerFormRow(title: "Time", value: Date(), datePickerMode: .time, cellSelection: nil, valueChanged: { (row) in
-                    print("\(row.value)")
+                    print("\(String(describing: row.value))")
                 }),
                 DatePickerFormRow(title: "⌚️", value: nil, dateFormatter: customDateFormatter, cellSelection: nil, valueChanged: { (row) in
-                    print("\(row.value)")
+                    print("\(String(describing: row.value))")
                 })
             ])
         )
         let happyRow = SelectableFormRow(title: "Happy?", selected: true, cellSelection: nil, valueChanged: { (row) in
             print(row.value as Any)
         })
+        let switchRow = SwitchFormRow(title: "Power mode", value: false, cellSelection: nil) { (row) in
+            print(row.value as Any)
+        }
+        let byeRow = FormRow(title: nil, value: "Bye")
+        let byeByeRow = FormRow(title: nil, value: "Bye bye!")
         form.sections.append(
             FormSection(title: "Boolean", rows: [
                 SwitchFormRow(title: "Hide next row?", value: false, cellSelection: nil, valueChanged: { (row) in
-                    print("\(row.value)")
-                    if let bool = row.value as? Bool {
-                        happyRow.hidden = bool
+                    print(row.value as Any)
+                    if let hidden = row.value as? Bool {
+                        happyRow.hidden = hidden
                     }
-                    self.tableView.reloadData()
                 }),
-                happyRow
+                happyRow,
+                SwitchFormRow(title: "Hide next row?", value: false, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value as Any)
+                    if let hidden = row.value as? Bool {
+                        switchRow.hidden = hidden
+                    }
+                }),
+                switchRow,
+                SwitchFormRow(title: "Hide next rows?", value: false, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value as Any)
+                    if let hidden = row.value as? Bool {
+                        byeRow.hidden = hidden
+                        byeByeRow.hidden = hidden
+                        if hidden == false {
+                            delay(0.1, closure: { 
+                                self.form.scrollToRow(row: byeRow, at: .top, animated: true)
+                            })
+                        }
+                    }
+                }),
+                byeRow,
+                byeByeRow
             ])
         )
         
         form.sections.append(
             FormSection(title: "✅ Options", rows: [
-                SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], selectedOption: nil, cellSelection: nil, valueChanged: { (row) in
-                    print("\(row.value)")
+                SelectionFormRow(title: "Emoji", options: ["🐣", "👸", "🐮"], selectedOption: nil, titleForNilOption: "No Emoji", cellSelection: nil, valueChanged: { (row) in
+                    print(row.value as Any)
                 }),
                 SelectionFormRow(title: "Animals", options: Animal.all(), selectedOption: Animal.dog, cellSelection: nil, valueChanged: { (row) in
-                    print("\(row.value)")
+                    print("\(String(describing: row.value))")
                 }),
-                SelectionFormRow(title: "🙃", options: Person.all(), selectedOption: Person.all().first, cellSelection: nil, valueChanged: { (row) in
-                    print("\(row.value)")
+                SelectionFormRow(title: "🙃", options: Person.all(), selectedOption: Person.all().first, requiresOption: true, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value as Any)
                 }),
-                SelectionFormRow(title: "🙃 Grouped", options: Person.all(), selectedOption: Person.all().last, sectionTitles: Person.allGroups(), cellSelection: nil, valueChanged: { (row) in
-                    print("\(row.value)")
+                SelectionFormRow(title: "🙃 Grouped", options: Person.all(), selectedOption: Person.all().last, sectionTitles: Person.allGroups(), titleForNilOption: "Nobody", cellSelection: nil, valueChanged: { (row) in
+                    print(row.value as Any)
                 }),
-                DropdownFormRow(title: "Dropdown", options: Animal.all(), selectedOption: Animal.sheep, cellSelection: nil, valueChanged: { (row) in
-                    print("\(row.value)")
+                DropdownFormRow(title: "Dropdown", options: Animal.all(), selectedOption: Animal.sheep, titleForNilOption: "–", cellSelection: nil, valueChanged: { (row) in
+                    print(row.value as Any)
+                }),
+                DropdownFormRow(title: "Dropdown", options: Animal.all(), selectedOption: Animal.sheep, requiresOption: true, cellSelection: nil, valueChanged: { (row) in
+                    print(row.value as Any)
                 })
             ])
         )

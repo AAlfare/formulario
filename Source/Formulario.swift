@@ -18,6 +18,13 @@ open class Form: NSObject {
     
     open var sections: [FormSection] {
         didSet {
+            for section in sections {
+                section.form = self
+                for row in section.rows {
+                    row.section = section
+                    row.form = self
+                }
+            }
             tableView?.reloadData()
         }
     }
@@ -75,6 +82,19 @@ open class Form: NSObject {
     }
 }
 
+extension Form {
+    public func scrollToRow(row: FormRow, at scrollPosition: UITableViewScrollPosition = .none, animated: Bool = false) {
+        guard let indexPath = row.indexPath else {
+            return
+        }
+        tableView?.scrollToRow(at: indexPath, at: scrollPosition, animated: animated)
+    }
+    
+    public func scrollToSection(section: FormSection, at scrollPosition: UITableViewScrollPosition = .none, animated: Bool = false) {
+        tableView?.scrollToRow(at: IndexPath(row: NSNotFound, section: section.index ?? NSNotFound), at: scrollPosition, animated: animated)
+    }
+}
+
 extension Form: UITableViewDelegate {
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let row = sections[indexPath.section].rows[indexPath.row]
@@ -95,7 +115,6 @@ extension Form: UITableViewDataSource {
     
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].visibleRows[indexPath.row]
-        row.form = self
         
         let cell = tableView.dequeueReusableCell(withIdentifier: row.cellClass.cellIdentifier(), for: indexPath)
         if let cell = cell as? Cell {
@@ -132,15 +151,20 @@ extension Form: UITableViewDataSource {
 //    }
 }
 
-public struct FormSection {
+public class FormSection: NSObject {
     public var rows: [FormRow]
+    public weak var form: Form?
     public var visibleRows: [FormRow] {
         return rows.filter({ $0.hidden == false })
     }
     public var title: String?
+    var index: Int? {
+        return form?.sections.index(of: self)
+    }
     public init(title: String? = nil, rows: [FormRow] = []) {
         self.title = title
         self.rows = rows
+        super.init()
     }
 }
 
@@ -149,8 +173,9 @@ public struct FormSection {
 public typealias FormCellSelectionClosureType = ((Cell) -> Void)
 
 open class FormRow: NSObject {
-    weak open var form: Form?
+    open weak var form: Form?
     open var title: String?
+    open weak var section: FormSection?
     open var value: Any? {
         didSet {
             cell?.configure(self)
@@ -162,7 +187,39 @@ open class FormRow: NSObject {
     open var cellClass: Cell.Type
     open var selection: FormCellSelectionClosureType?
     open var valueChanged: ((FormRow)->Void)?
-    open var hidden: Bool = false
+    
+    fileprivate var oldIndexPath: IndexPath?
+    var indexPath: IndexPath? {
+        guard let section = section, let sectionIndex = form?.sections.index(of: section) else {
+            return nil
+        }
+        guard let rowIndex = section.visibleRows.index(of: self) else {
+            return nil
+        }
+        return IndexPath(row: rowIndex, section: sectionIndex)
+        
+    }
+    
+    public var hidden: Bool = false {
+        willSet {
+            oldIndexPath = indexPath
+        }
+        didSet {
+            guard let tableView = self.form?.tableView else {
+                return
+            }
+            
+            if oldValue == false && hidden == true {
+                if let oldIndexPath = oldIndexPath {
+                    tableView.deleteRows(at: [oldIndexPath], with: .top)
+                }
+            } else if oldValue == true && hidden == false {
+                if let indexPath = indexPath {
+                    tableView.insertRows(at: [indexPath], with: .bottom)
+                }
+            }
+        }
+    }
     
     public init(title: String?, value: Any?, cellClass: Cell.Type = LabelFormCell.self, cellHeight: CGFloat? = nil, cellSelection: FormCellSelectionClosureType? = nil, valueChanged: ((FormRow)->Void)? = nil) {
         self.title = title
@@ -283,11 +340,14 @@ open class OptionsFormRow<T: SelectableOption>: FormRow {
             value = newValue
         }
     }
+    public var requiresOption: Bool
+    public var titleForNilOption: String?
     
-    public init(title: String?, options: [T], selectedOption: T?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, options: [T], selectedOption: T?, requiresOption: Bool = false, titleForNilOption: String? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.options = options
-        super.init(title: title, value: nil, cellClass: FormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
-        self.selectedOption = selectedOption
+        self.requiresOption = requiresOption
+        self.titleForNilOption = titleForNilOption
+        super.init(title: title, value: selectedOption, cellClass: FormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
     }
 }
 
@@ -295,9 +355,9 @@ open class SelectionFormRow<T: SelectableOption>: OptionsFormRow<T> where T: Equ
     var sectionTitles: [String]?
     var tableStyle: UITableViewStyle
     
-    public init(title: String?, options: [T], selectedOption: T?, sectionTitles: [String]? = nil, tableStyle: UITableViewStyle = .plain, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, options: [T], selectedOption: T?, sectionTitles: [String]? = nil, requiresOption: Bool = false, titleForNilOption: String? = nil, tableStyle: UITableViewStyle = .plain, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.tableStyle = tableStyle
-        super.init(title: title, options: options, selectedOption: selectedOption, cellSelection: nil, valueChanged: valueChanged)
+        super.init(title: title, options: options, selectedOption: selectedOption, requiresOption: requiresOption, titleForNilOption: titleForNilOption, cellSelection: nil, valueChanged: valueChanged)
         self.sectionTitles = sectionTitles
         self.cellClass = SelectionFormCell.self
         self.selection = { cell in
@@ -335,8 +395,8 @@ open class DropdownFormRow<T: SelectableOption>: OptionsFormRow<T>, UIPickerView
             }
         }
     }
-    public override init(title: String?, options: [T], selectedOption: T?, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
-        super.init(title: title, options: options, selectedOption: selectedOption, cellSelection: cellSelection, valueChanged: valueChanged)
+    public override init(title: String?, options: [T], selectedOption: T?, requiresOption: Bool = false, titleForNilOption: String? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+        super.init(title: title, options: options, selectedOption: selectedOption, requiresOption: requiresOption, titleForNilOption: titleForNilOption, cellSelection: cellSelection, valueChanged: valueChanged)
         self.cellClass = DropdownFormCell.self
     }
     
@@ -344,16 +404,23 @@ open class DropdownFormRow<T: SelectableOption>: OptionsFormRow<T>, UIPickerView
         return 1
     }
     
-    open func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return options.count
+    public func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return options.count + (requiresOption == false ? 1 : 0)
     }
     
-    open func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return options[row].selectableOptionTitle()
+    public func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        if requiresOption == false && row == 0 {
+            return titleForNilOption
+        }
+        return options[row + (requiresOption == false ? -1 : 0)].selectableOptionTitle()
     }
     
-    open func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        selectedOption = options[row]
+    public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if requiresOption == false && row == 0 {
+            selectedOption = nil
+        } else {
+            selectedOption = options[row + (requiresOption == false ? -1 : 0)]
+        }
     }
 }
 
@@ -539,6 +606,7 @@ open class LabelFormCell: FormCell {
         fieldContainer.layoutMargins.bottom = 10
         
         label = UILabel()
+        label.isUserInteractionEnabled = false
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = UIColor.gray
         fieldContainer.addSubview(label)
@@ -874,13 +942,8 @@ open class SelectionFormCell: LabelFormCell {
         
         selectionStyle = .default
         accessoryType = .disclosureIndicator
-        gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(SelectionFormCell.didSelect(_:)))]
         
         contentView.layoutMargins.right = 0
-    }
-    
-    func didSelect(_ gestureRecognizer: UIGestureRecognizer) {
-        row?.selection?(self)
     }
     
     override open func configure(_ row: FormRow) {
@@ -896,7 +959,7 @@ open class SelectableFormCell: FormCell {
     override open func setupUI() {
         super.setupUI()
         
-        gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(SelectionFormCell.didSelect(_:)))]
+        gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(didSelect(_:)))]
     }
     
     func didSelect(_ gestureRecognizer: UIGestureRecognizer) {
@@ -1098,14 +1161,23 @@ class SelectionFormViewController<T: SelectableOption>: FormViewController where
         
         let sectionTitles = selectionRow.sectionTitles ?? groupedOptions.map({ (sectionTitle, options) in sectionTitle })
         for (sectionIndex, sectionTitle) in sectionTitles.enumerated() {
-            var section = FormSection(title: sectionTitle)
+            let section = FormSection(title: sectionTitle)
+            
+            if selectionRow.requiresOption == false && sectionIndex == 0 {
+                let nilRow = SelectableFormRow(title: selectionRow.titleForNilOption, selected: self.selectionRow.selectedOption == nil, cellSelection: { (cell) in
+                    self.didSelect(option: nil)
+                }, valueChanged: nil)
+                if sectionTitles.count > 1 {
+                    form.sections.append(FormSection(title: nil, rows: [nilRow]))
+                } else {
+                    section.rows.append(nilRow)
+                }
+            }
+            
             if let options = groupedOptions[sectionTitle] {
                 for (rowIndex, option) in options.enumerated() {
                     section.rows.append(SelectableFormRow(title: option.selectableOptionTitle(), selected: self.selectionRow.selectedOption == option, cellSelection: { (cell) in
-                        self.selectionRow.selectedOption = option
-                        if self.allowsMultipleSelection == false {
-                            self.navigationController?.popViewController(animated: true)
-                        }
+                        self.didSelect(option: option)
                     }, valueChanged: nil))
                     if self.selectionRow.selectedOption == option {
                         self.selectedOptionIndexPath = IndexPath(row: rowIndex, section: sectionIndex)
@@ -1123,6 +1195,13 @@ class SelectionFormViewController<T: SelectableOption>: FormViewController where
         
         DispatchQueue.main.async { 
             self.tableView.selectRow(at: self.selectedOptionIndexPath, animated: false, scrollPosition: .middle)
+        }
+    }
+    
+    func didSelect(option: T?) {
+        self.selectionRow.selectedOption = option
+        if self.allowsMultipleSelection == false {
+            self.navigationController?.popViewController(animated: true)
         }
     }
 }
