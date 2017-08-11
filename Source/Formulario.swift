@@ -704,6 +704,10 @@ open class EmailFormCell: TextFieldFormCell {
         textField.keyboardType = .emailAddress
         textField.autocapitalizationType = .none
         textField.autocorrectionType = .no
+        if #available(iOS 11.0, *) {
+            textField.autocorrectionType = .default
+            textField.textContentType = .username
+        }
     }
 }
 
@@ -712,6 +716,9 @@ open class PasswordFormCell: TextFieldFormCell {
         super.setupUI()
         
         textField.isSecureTextEntry = true
+        if #available(iOS 11.0, *) {
+            textField.textContentType = .password
+        }
     }
 }
 
