@@ -203,10 +203,11 @@ class ViewController: FormViewController {
             ])
         )
         
-        let mapRow = MapFormRow(coordinate: CLLocationCoordinate2D(latitude: 47.8, longitude: 13.033333), cellHeight: 100, cellSelection: nil, valueChanged: nil)
+        let mapRow = MapFormRow(coordinate: CLLocationCoordinate2D(latitude: 47.8, longitude: 13.033333), cellHeight: 200, cellSelection: nil, valueChanged: nil)
         form.sections.append(
             FormSection(title: "Map", rows: [
-                mapRow
+                mapRow,
+                MapFormRow(coordinate: CLLocationCoordinate2D(latitude: 47.8, longitude: 13.033333), cellSelection: nil, valueChanged: nil)
             ])
         )
         
