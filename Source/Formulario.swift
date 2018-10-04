@@ -455,14 +455,14 @@ public struct MapConfiguration {
 
 open class MapFormRow: FormRow {
     var mapConfiguration: MapConfiguration
-    public init(coordinate: CLLocationCoordinate2D?, cellHeight: CGFloat? = nil, mapConfiguration: MapConfiguration? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(coordinate: CLLocationCoordinate2D?, cellHeight: CGFloat? = 80, mapConfiguration: MapConfiguration? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.mapConfiguration = mapConfiguration ?? MapConfiguration()
         super.init(title: nil, value: coordinate, cellClass: MapFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
         if let cellHeight = cellHeight {
             self.cellHeight = cellHeight
         }
     }
-    public init(location: CLLocation?, cellHeight: CGFloat? = nil, mapConfiguration: MapConfiguration? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(location: CLLocation?, cellHeight: CGFloat? = 80, mapConfiguration: MapConfiguration? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.mapConfiguration = mapConfiguration ?? MapConfiguration()
         super.init(title: nil, value: location, cellClass: MapFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
         if let cellHeight = cellHeight {
@@ -1020,6 +1020,7 @@ open class MapFormPin: NSObject, MKAnnotation {
 open class MapFormCell: FormCell, MKMapViewDelegate {
     var mapView: MKMapView!
     var mapInitialized = false
+    var mapHeightConstraint: NSLayoutConstraint?
     
     override open func setupUI() {
         super.setupUI()
@@ -1035,6 +1036,8 @@ open class MapFormCell: FormCell, MKMapViewDelegate {
         ]
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[mapView]-|", options: [], metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[mapView]-|", options: [], metrics: nil, views: views))
+        mapHeightConstraint = mapView.heightAnchor.constraint(equalToConstant: 0)
+        mapHeightConstraint?.isActive = true
     }
     
     override open func configure(_ row: FormRow) {
@@ -1045,6 +1048,10 @@ open class MapFormCell: FormCell, MKMapViewDelegate {
         contentView.layoutMargins = UIEdgeInsets()
         container.layoutMargins = UIEdgeInsets()
         fieldContainer.layoutMargins = UIEdgeInsets()
+        
+        if let height = (row as? MapFormRow)?.cellHeight {
+            mapHeightConstraint?.constant = height
+        }
         
         var shouldAnimateRegionChange = false
         
