@@ -98,6 +98,11 @@ class ViewController: FormViewController {
             ])
         ]
         
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .currencyPlural
+        numberFormatter.generatesDecimalNumbers = true
+        numberFormatter.locale = Locale(identifier: "de_AT")
+        
         form.sections.append(
             FormSection(title: "Various text field rows", rows: [
                 TextFieldFormRow(title: "Text", value: nil, placeholder: "Text", cellSelection: nil, valueChanged: { (row) -> Void in
@@ -117,9 +122,12 @@ class ViewController: FormViewController {
                 DecimalFormRow(title: "Decimal", value: nil, placeholder: "Decimal", cellSelection: nil, valueChanged: { (row) -> Void in
                     print("\(String(describing: row.value))")
                 }),
-                CurrencyFormRow(title: "Price", value: NSDecimalNumber(value: 99.0 as Double), placeholder: "Price", cellSelection: nil, valueChanged: { (row) -> Void in
+                CurrencyFormRow(title: "Price", value: NSDecimalNumber(value: 99.0), placeholder: "Price", cellSelection: nil, valueChanged: { (row) -> Void in
                     print("\(String(describing: row.value))")
-                })
+                }),
+//                TextFieldFormRow(title: "Donation", value: NSDecimalNumber(value: 12000.0), placeholder: "Donation", keyboardType: .decimalPad, numberFormatter: numberFormatter, cellSelection: nil, valueChanged: { (row) in
+//                    print("\(String(describing: row.value as? NSDecimalNumber))")
+//                }),
             ])
         )
         

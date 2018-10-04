@@ -56,8 +56,6 @@ open class Form: NSObject {
         TextFieldFormCell.self,
         EmailFormCell.self,
         PasswordFormCell.self,
-        PhoneFormCell.self,
-        DecimalFormCell.self,
         CurrencyFormCell.self,
         DatePickerFormCell.self,
         SliderFormCell.self,
@@ -238,40 +236,44 @@ open class FormRow: NSObject {
 open class TextFieldFormRow: FormRow {
     open var placeholder: String?
     open var textFieldDidEndEditing: (() -> Void)?
+    open var keyboardType: UIKeyboardType?
+    open var numberFormatter: NumberFormatter?
     
-    public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = TextFieldFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    public init(title: String?, value: Any?, placeholder: String?, keyboardType: UIKeyboardType = .default, numberFormatter: NumberFormatter? = nil, cellClass: Cell.Type = TextFieldFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         self.placeholder = placeholder
         self.textFieldDidEndEditing = textFieldDidEndEditing
+        self.keyboardType = keyboardType
+        self.numberFormatter = numberFormatter
         super.init(title: title, value: value, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged)
     }
 }
 
 open class EmailFormRow: TextFieldFormRow {
-    override public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = EmailFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
-        super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
+    public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = EmailFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+        super.init(title: title, value: value, placeholder: placeholder, keyboardType: .emailAddress, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 open class PasswordFormRow: TextFieldFormRow {
-    override public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = PasswordFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+    public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = PasswordFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 open class PhoneFormRow: TextFieldFormRow {
-    override public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = PhoneFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
-        super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
+    public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = TextFieldFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+        super.init(title: title, value: value, placeholder: placeholder, keyboardType: .phonePad, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
 open class DecimalFormRow: TextFieldFormRow {
-    override public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = DecimalFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
-        super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
+    public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = TextFieldFormCell.self, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+        super.init(title: title, value: value, placeholder: placeholder, keyboardType: .decimalPad, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
 
-open class CurrencyFormRow: TextFieldFormRow {
-    override public init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = CurrencyFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
+open class CurrencyFormRow: DecimalFormRow {
+    public override init(title: String?, value: Any?, placeholder: String?, cellClass: Cell.Type = CurrencyFormCell.self,cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?, didEndEditing textFieldDidEndEditing: (() -> Void)? = nil) {
         super.init(title: title, value: value, placeholder: placeholder, cellClass: cellClass, cellSelection: cellSelection, valueChanged: valueChanged, didEndEditing: textFieldDidEndEditing)
     }
 }
@@ -674,20 +676,42 @@ open class TextFieldFormCell: FormCell, UITextFieldDelegate {
         super.init(coder: aDecoder)
     }
     
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        if let row = row as? TextFieldFormRow, let formatter = row.numberFormatter {
+            let number = textField.text.map({ formatter.number(from: $0) }) ?? nil
+            textField.text = number.map({ convertFormatter.string(from: $0) }) ?? nil
+        }
+    }
+    
+    func textFieldValueChanged(_ textField: UITextField) {
+        if (row as? TextFieldFormRow)?.numberFormatter == nil {
+            row?.value = textField.text
+        }
+    }
+    
+    private let convertFormatter = NumberFormatter()
+    
+    open func textFieldDidEndEditing(_ textField: UITextField) {
+        if let row = row as? TextFieldFormRow, let formatter = row.numberFormatter {
+            convertFormatter.generatesDecimalNumbers = formatter.generatesDecimalNumbers
+            row.value = textField.text.map({ convertFormatter.number(from: $0) }) ?? nil
+        }
+        (row as? TextFieldFormRow)?.textFieldDidEndEditing?()
+    }
+    
     override open func configure(_ row: FormRow) {
         super.configure(row)
         
         textField.textAlignment = row.form?.layoutAxis == .horizontal ? .right : .left
         textField.text = row.value as? String
-        textField.placeholder = (row as? TextFieldFormRow)?.placeholder
-    }
-    
-    func textFieldValueChanged(_ textField: UITextField) {
-        row?.value = textField.text
-    }
-    
-    open func textFieldDidEndEditing(_ textField: UITextField) {
-        (row as? TextFieldFormRow)?.textFieldDidEndEditing?()
+        
+        if let row = row as? TextFieldFormRow {
+            if let formatter = row.numberFormatter, let number = row.value as? NSNumber {
+                textField.text = formatter.string(from: number)
+            }
+            textField.placeholder = row.placeholder
+            row.keyboardType.map({ textField.keyboardType = $0 })
+        }
     }
     
     override open func setSelected(_ selected: Bool, animated: Bool) {
@@ -695,13 +719,19 @@ open class TextFieldFormCell: FormCell, UITextFieldDelegate {
             textField.becomeFirstResponder()
         }
     }
+    
+    open override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        textField.text = nil
+        textField.keyboardType = .default
+    }
 }
 
 open class EmailFormCell: TextFieldFormCell {
     override open func setupUI() {
         super.setupUI()
         
-        textField.keyboardType = .emailAddress
         textField.autocapitalizationType = .none
         textField.autocorrectionType = .no
         if #available(iOS 11.0, *) {
@@ -722,54 +752,41 @@ open class PasswordFormCell: TextFieldFormCell {
     }
 }
 
-open class PhoneFormCell: TextFieldFormCell {
-    override open func setupUI() {
-        super.setupUI()
-        
-        textField.keyboardType = .phonePad
-    }
-}
-
-open class DecimalFormCell: TextFieldFormCell {
-    override open func setupUI() {
-        super.setupUI()
-        
-        textField.keyboardType = .decimalPad
-    }
-}
-
 open class CurrencyFormCell: TextFieldFormCell {
+    let formatter = NumberFormatter()
+    
     override open func setupUI() {
         super.setupUI()
-        
-        textField.keyboardType = .numberPad
+        formatter.numberStyle = .currency
     }
     
     override func textFieldValueChanged(_ textField: UITextField) {
-        if let centString = textField.text?.components(separatedBy: CharacterSet.decimalDigits.inverted).joined(separator: ""), centString.isEmpty == false {
-            let centValue = (centString as NSString).doubleValue
-            let number = NSDecimalNumber(value: centValue/100.0 as Double)
-            row?.value = number
-        } else {
-            row?.value = nil
-        }
+        
+    }
+    
+    public override func textFieldDidBeginEditing(_ textField: UITextField) {
+        let number = row?.value as? NSNumber
+        textField.text = number?.stringValue
+    }
+    
+    open override func textFieldDidEndEditing(_ textField: UITextField) {
+        let number = NSDecimalNumber(string: textField.text)
+        row?.value = number == NSDecimalNumber.notANumber ? nil : number
+        super.textFieldDidEndEditing(textField)
     }
     
     open override func configure(_ row: FormRow) {
         super.configure(row)
         
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        
         let number = row.value as? NSDecimalNumber
-        textField.text = number != nil ? formatter.string(from: number!) : nil
+        textField.text = number.map({ formatter.string(from: $0) }) ?? nil
     }
 }
 
 open class DatePickerFormCell: TextFieldFormCell {
-    open let datePicker = UIDatePicker()
-    open let dateLabel = UILabel()
-    open let clearButton = UIButton()
+    public let datePicker = UIDatePicker()
+    public let dateLabel = UILabel()
+    public let clearButton = UIButton()
     open var clearButtonWidthConstraint: NSLayoutConstraint!
     
     override open func setupUI() {
@@ -810,7 +827,7 @@ open class DatePickerFormCell: TextFieldFormCell {
         textField.becomeFirstResponder()
     }
     
-    open func textFieldDidBeginEditing(_ textField: UITextField) {
+    open override func textFieldDidBeginEditing(_ textField: UITextField) {
         row?.value = datePicker.date
     }
     
@@ -844,8 +861,8 @@ open class DatePickerFormCell: TextFieldFormCell {
 }
 
 open class DropdownFormCell: TextFieldFormCell {
-    open let picker = UIPickerView()
-    open let label = UILabel()
+    public let picker = UIPickerView()
+    public let label = UILabel()
     
     override open func setupUI() {
         super.setupUI()
@@ -872,7 +889,7 @@ open class DropdownFormCell: TextFieldFormCell {
         textField.becomeFirstResponder()
     }
     
-    open func textFieldDidBeginEditing(_ textField: UITextField) {
+    open override func textFieldDidBeginEditing(_ textField: UITextField) {
         
     }
     
