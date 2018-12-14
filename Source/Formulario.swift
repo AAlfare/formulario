@@ -593,6 +593,8 @@ open class FormCell: Cell {
         maximalHeightConstraint.constant = row.cellHeight ?? 0
         maximalHeightConstraint.isActive = !(row.cellHeight == nil)
         
+        titleLabel.lineBreakMode = .byTruncatingMiddle
+        
         if let layoutAxis = row.form?.layoutAxis {
             titleLabel.font = UIFont.systemFont(ofSize: layoutAxis == .vertical ? 14 : 17)
             switch layoutAxis {

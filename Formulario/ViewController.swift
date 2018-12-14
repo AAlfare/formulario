@@ -128,6 +128,7 @@ class ViewController: FormViewController {
                 CurrencyFormRow(title: "Price", value: NSDecimalNumber(value: 99.0), placeholder: "Price", cellSelection: nil, valueChanged: { (row) -> Void in
                     print("\(String(describing: row.value))")
                 }),
+                SelectableFormRow(title: "This text should be truncated in the middle of the text and not at the end.", selected: true, cellSelection: nil, valueChanged: nil)
 //                TextFieldFormRow(title: "Donation", value: NSDecimalNumber(value: 12000.0), placeholder: "Donation", keyboardType: .decimalPad, numberFormatter: numberFormatter, cellSelection: nil, valueChanged: { (row) in
 //                    print("\(String(describing: row.value as? NSDecimalNumber))")
 //                }),
