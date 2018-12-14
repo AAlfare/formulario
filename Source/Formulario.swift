@@ -1061,6 +1061,8 @@ open class SelectableFormCell: FormCell {
         super.configure(row)
         
         if let row = row as? SelectableFormRow {
+            titleLabel.minimumScaleFactor = 0.7
+            titleLabel.adjustsFontSizeToFitWidth = true
             accessoryType = row.selected == true ? .checkmark : .none
         }
     }
