@@ -54,6 +54,7 @@ open class Form: NSObject {
         MultiLineLabelFormCell.self,
         SubtitleFormCell.self,
         TextFieldFormCell.self,
+        TextViewFormCell.self,
         EmailFormCell.self,
         PasswordFormCell.self,
         CurrencyFormCell.self,
@@ -180,7 +181,7 @@ open class FormRow: NSObject {
             valueChanged?(self)
         }
     }
-    open var cellHeight: CGFloat = 44
+    open var cellHeight: CGFloat?
     open weak var cell: Cell?
     open var cellClass: Cell.Type
     open var selection: FormCellSelectionClosureType?
@@ -491,6 +492,7 @@ open class FormCell: Cell {
     open var titleContainer: UIView!
     open var titleLabel: UILabel!
     open var fieldContainer: UIView!
+    open var maximalHeightConstraint: NSLayoutConstraint!
     
     override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -527,6 +529,8 @@ open class FormCell: Cell {
         fieldContainer.translatesAutoresizingMaskIntoConstraints = false
         fieldContainer.preservesSuperviewLayoutMargins = false
         container.addSubview(fieldContainer)
+        
+        maximalHeightConstraint = NSLayoutConstraint(item: contentView, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 0)
     }
     
     open override func updateConstraints() {
@@ -585,6 +589,9 @@ open class FormCell: Cell {
         fieldContainer.layoutMargins = UIEdgeInsets()
         
         titleLabel.text = row.title
+        
+        maximalHeightConstraint.constant = row.cellHeight ?? 0
+        maximalHeightConstraint.isActive = !(row.cellHeight == nil)
         
         if let layoutAxis = row.form?.layoutAxis {
             titleLabel.font = UIFont.systemFont(ofSize: layoutAxis == .vertical ? 14 : 17)
@@ -651,6 +658,52 @@ open class SubtitleFormCell: FormCell {
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+}
+
+open class TextViewFormCell: FormCell, UITextViewDelegate {
+    open var textView = UITextView()
+    
+    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: .value1, reuseIdentifier: reuseIdentifier)
+        
+        textView.delegate = self
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        fieldContainer.addSubview(textView)
+        
+        let views: [String: Any] = [
+            "textView": textView
+        ]
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[textView]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[textView]-|", options: [], metrics: nil, views: views))
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    public func textViewDidChange(_ textView: UITextView) {
+        row?.value = textView.text
+    }
+    
+    override open func configure(_ row: FormRow) {
+        super.configure(row)
+        
+        textView.textAlignment = row.form?.layoutAxis == .horizontal ? .right : .left
+        textView.text = row.value as? String
+    }
+    
+    override open func setSelected(_ selected: Bool, animated: Bool) {
+        if selected {
+            textView.becomeFirstResponder()
+        }
+    }
+    
+    open override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        textView.text = nil
+        textView.keyboardType = .default
     }
 }
 
@@ -1020,7 +1073,6 @@ open class MapFormPin: NSObject, MKAnnotation {
 open class MapFormCell: FormCell, MKMapViewDelegate {
     var mapView: MKMapView!
     var mapInitialized = false
-    var mapHeightConstraint: NSLayoutConstraint?
     
     override open func setupUI() {
         super.setupUI()
@@ -1036,8 +1088,6 @@ open class MapFormCell: FormCell, MKMapViewDelegate {
         ]
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[mapView]-|", options: [], metrics: nil, views: views))
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[mapView]-|", options: [], metrics: nil, views: views))
-        mapHeightConstraint = mapView.heightAnchor.constraint(equalToConstant: 0)
-        mapHeightConstraint?.isActive = true
     }
     
     override open func configure(_ row: FormRow) {
@@ -1048,10 +1098,6 @@ open class MapFormCell: FormCell, MKMapViewDelegate {
         contentView.layoutMargins = UIEdgeInsets()
         container.layoutMargins = UIEdgeInsets()
         fieldContainer.layoutMargins = UIEdgeInsets()
-        
-        if let height = (row as? MapFormRow)?.cellHeight {
-            mapHeightConstraint?.constant = height
-        }
         
         var shouldAnimateRegionChange = false
         

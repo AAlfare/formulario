@@ -119,6 +119,9 @@ class ViewController: FormViewController {
                 PhoneFormRow(title: "Phone", value: nil, placeholder: "Phone", cellSelection: nil, valueChanged: { (row) -> Void in
                     print("\(String(describing: row.value))")
                 }),
+                FormRow(title: "Note", value: multiLineText, cellClass: TextViewFormCell.self, cellHeight: 120.0, valueChanged: { (row) in
+                    print("\(String(describing: row.value))")
+                }),
                 DecimalFormRow(title: "Decimal", value: nil, placeholder: "Decimal", cellSelection: nil, valueChanged: { (row) -> Void in
                     print("\(String(describing: row.value))")
                 }),
