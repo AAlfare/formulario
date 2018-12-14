@@ -206,6 +206,7 @@ class ViewController: FormViewController {
                 SelectionFormRow(title: "🙃 Grouped", options: Person.all(), selectedOption: Person.all().last, sectionTitles: Person.allGroups(), titleForNilOption: "Nobody", cellSelection: nil, valueChanged: { (row) in
                     print(row.value as Any)
                 }),
+                SelectionFormRow(title: "What a long long long long long long long long long long long title!", options: Person.all(), selectedOption: nil, cellSelection: nil, valueChanged: nil),
                 DropdownFormRow(title: "Dropdown", options: Animal.all(), selectedOption: Animal.sheep, titleForNilOption: "–", cellSelection: nil, valueChanged: { (row) in
                     print(row.value as Any)
                 }),

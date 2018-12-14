@@ -1028,6 +1028,11 @@ open class SelectionFormCell: LabelFormCell {
     override open func configure(_ row: FormRow) {
         super.configure(row)
         
+        label.minimumScaleFactor = 0.7
+        label.adjustsFontSizeToFitWidth = true
+        titleLabel.minimumScaleFactor = 0.7
+        titleLabel.adjustsFontSizeToFitWidth = true
+        
         if let option = row.value as? SelectableOption {
             label.text = option.selectableOptionTitle()
         }
