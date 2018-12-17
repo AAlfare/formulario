@@ -1250,8 +1250,8 @@ class SelectionFormViewController<T: SelectableOption>: FormViewController where
             let section = FormSection(title: sectionTitle)
             
             if selectionRow.requiresOption == false && sectionIndex == 0 {
-                let nilRow = SelectableFormRow(title: selectionRow.titleForNilOption, selected: self.selectionRow.selectedOption == nil, cellSelection: { (cell) in
-                    self.didSelect(option: nil)
+                let nilRow = SelectableFormRow(title: selectionRow.titleForNilOption, selected: self.selectionRow.selectedOption == nil, cellSelection: { [weak self] (cell) in
+                    self?.didSelect(option: nil)
                 }, valueChanged: nil)
                 if sectionTitles.count > 1 {
                     form.sections.append(FormSection(title: nil, rows: [nilRow]))
@@ -1262,11 +1262,11 @@ class SelectionFormViewController<T: SelectableOption>: FormViewController where
             
             if let options = groupedOptions[sectionTitle] {
                 for (rowIndex, option) in options.enumerated() {
-                    section.rows.append(SelectableFormRow(title: option.selectableOptionTitle(), selected: self.selectionRow.selectedOption == option, cellSelection: { (cell) in
-                        self.didSelect(option: option)
+                    section.rows.append(SelectableFormRow(title: option.selectableOptionTitle(), selected: self.selectionRow.selectedOption == option, cellSelection: { [weak self] (cell) in
+                        self?.didSelect(option: option)
                     }, valueChanged: nil))
                     if self.selectionRow.selectedOption == option {
-                        self.selectedOptionIndexPath = IndexPath(row: rowIndex, section: sectionIndex)
+                        self.selectedOptionIndexPath = IndexPath(row: rowIndex, section: form.sections.count)
                     }
                 }
             }
