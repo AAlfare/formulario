@@ -12,9 +12,9 @@ import MapKit
 open class Form: NSObject {
     open var title: String?
     open var formViewController: UIViewController?
-    var tableStyle: UITableViewStyle = .plain
+    var tableStyle: UITableView.Style = .plain
     open var minimalRowHeight: CGFloat = 44.5
-    open var layoutAxis: UILayoutConstraintAxis = .horizontal
+    open var layoutAxis: NSLayoutConstraint.Axis = .horizontal
     
     open var sections: [FormSection] {
         didSet {
@@ -38,7 +38,7 @@ open class Form: NSObject {
             tableView?.dataSource = self
             tableView?.delegate = self
             tableView?.keyboardDismissMode = .onDrag
-            tableView?.rowHeight = UITableViewAutomaticDimension
+            tableView?.rowHeight = UITableView.automaticDimension
             tableView?.estimatedRowHeight = 50
             
             for cellClass in Form.registeredCellClasses {
@@ -82,14 +82,14 @@ open class Form: NSObject {
 }
 
 extension Form {
-    public func scrollToRow(row: FormRow, at scrollPosition: UITableViewScrollPosition = .none, animated: Bool = false) {
+    public func scrollToRow(row: FormRow, at scrollPosition: UITableView.ScrollPosition = .none, animated: Bool = false) {
         guard let indexPath = row.indexPath else {
             return
         }
         tableView?.scrollToRow(at: indexPath, at: scrollPosition, animated: animated)
     }
     
-    public func scrollToSection(section: FormSection, at scrollPosition: UITableViewScrollPosition = .none, animated: Bool = false) {
+    public func scrollToSection(section: FormSection, at scrollPosition: UITableView.ScrollPosition = .none, animated: Bool = false) {
         tableView?.scrollToRow(at: IndexPath(row: NSNotFound, section: section.index ?? NSNotFound), at: scrollPosition, animated: animated)
     }
 }
@@ -158,7 +158,7 @@ public class FormSection: NSObject {
     }
     public var title: String?
     var index: Int? {
-        return form?.sections.index(of: self)
+        return form?.sections.firstIndex(of: self)
     }
     public init(title: String? = nil, rows: [FormRow] = []) {
         self.title = title
@@ -189,10 +189,10 @@ open class FormRow: NSObject {
     
     fileprivate var oldIndexPath: IndexPath?
     var indexPath: IndexPath? {
-        guard let section = section, let sectionIndex = form?.sections.index(of: section) else {
+        guard let section = section, let sectionIndex = form?.sections.firstIndex(of: section) else {
             return nil
         }
-        guard let rowIndex = section.visibleRows.index(of: self) else {
+        guard let rowIndex = section.visibleRows.firstIndex(of: self) else {
             return nil
         }
         return IndexPath(row: rowIndex, section: sectionIndex)
@@ -280,13 +280,13 @@ open class CurrencyFormRow: DecimalFormRow {
 }
 
 open class DatePickerFormRow: FormRow {
-    open var datePickerMode: UIDatePickerMode
+    open var datePickerMode: UIDatePicker.Mode
     open var formatter: DateFormatter?
     
-    open class func defaultFormatter(_ datePickerMode: UIDatePickerMode) -> DateFormatter {
+    open class func defaultFormatter(_ datePickerMode: UIDatePicker.Mode) -> DateFormatter {
         let formatter = DateFormatter()
-        var dateStyle = DateFormatter.Style.none
-        var timeStyle = DateFormatter.Style.none
+        var dateStyle: DateFormatter.Style = .none
+        var timeStyle: DateFormatter.Style = .none
         switch datePickerMode {
         case .date:
             dateStyle = .long
@@ -297,13 +297,14 @@ open class DatePickerFormRow: FormRow {
             timeStyle = .short
         case .countDownTimer:
             timeStyle = .none
+        @unknown default: ()
         }
         formatter.dateStyle = dateStyle
         formatter.timeStyle = timeStyle
         return formatter
     }
     
-    public init(title: String?, value: Date?, datePickerMode: UIDatePickerMode = .date, dateFormatter: DateFormatter? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, value: Date?, datePickerMode: UIDatePicker.Mode = .date, dateFormatter: DateFormatter? = nil, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.datePickerMode = datePickerMode
         super.init(title: title, value: value, cellClass: DatePickerFormCell.self, cellSelection: cellSelection, valueChanged: valueChanged)
         self.formatter = dateFormatter
@@ -356,9 +357,9 @@ open class OptionsFormRow<T: SelectableOption>: FormRow {
 
 open class SelectionFormRow<T: SelectableOption>: OptionsFormRow<T> where T: Equatable {
     var sectionTitles: [String]?
-    var tableStyle: UITableViewStyle
+    var tableStyle: UITableView.Style
     
-    public init(title: String?, options: [T], selectedOption: T?, sectionTitles: [String]? = nil, requiresOption: Bool = false, titleForNilOption: String? = nil, tableStyle: UITableViewStyle = .plain, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
+    public init(title: String?, options: [T], selectedOption: T?, sectionTitles: [String]? = nil, requiresOption: Bool = false, titleForNilOption: String? = nil, tableStyle: UITableView.Style = .plain, cellSelection: FormCellSelectionClosureType?, valueChanged: ((FormRow) -> Void)?) {
         self.tableStyle = tableStyle
         super.init(title: title, options: options, selectedOption: selectedOption, requiresOption: requiresOption, titleForNilOption: titleForNilOption, cellSelection: nil, valueChanged: valueChanged)
         self.sectionTitles = sectionTitles
@@ -393,7 +394,7 @@ open class DropdownFormRow<T: SelectableOption>: OptionsFormRow<T>, UIPickerView
             dropdownCell?.picker.dataSource = self
             dropdownCell?.picker.delegate = self
             
-            if let selectedOption = selectedOption, let selectedOptionIndex = options.index(of: selectedOption) {
+            if let selectedOption = selectedOption, let selectedOptionIndex = options.firstIndex(of: selectedOption) {
                 dropdownCell?.picker.selectRow(selectedOptionIndex, inComponent: 0, animated: false)
             }
         }
@@ -494,7 +495,7 @@ open class FormCell: Cell {
     open var fieldContainer: UIView!
     open var maximalHeightConstraint: NSLayoutConstraint!
     
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setupUI()
@@ -546,7 +547,7 @@ open class FormCell: Cell {
             "fieldContainer": fieldContainer
         ]
         
-        contentView.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .vertical)
+        contentView.setContentCompressionResistancePriority(.required, for: .vertical)
         contentView.addConstraint(NSLayoutConstraint(item: contentView, attribute: .height, relatedBy: .greaterThanOrEqual, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: row.form?.minimalRowHeight ?? 44.5))
         
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[container]-|", options: [], metrics: nil, views: views))
@@ -557,20 +558,20 @@ open class FormCell: Cell {
         
         switch row.form?.layoutAxis {
         case .horizontal?:
-            container.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .vertical)
-            container.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .vertical)
+            container.setContentCompressionResistancePriority(.required, for: .vertical)
+            container.setContentHuggingPriority(.defaultLow, for: .vertical)
             
-            titleLabel.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .horizontal)
-            titleLabel.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .vertical)
+            titleLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+            titleLabel.setContentHuggingPriority(.defaultLow, for: .vertical)
             
-            fieldContainer.setContentHuggingPriority(UILayoutPriorityDefaultHigh, for: .vertical)
+            fieldContainer.setContentHuggingPriority(.defaultHigh, for: .vertical)
             
             contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[titleContainer][fieldContainer]-|", options: [], metrics: nil, views: views))
             contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[titleContainer]-|", options: [], metrics: nil, views: views))
             contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[fieldContainer]-|", options: [], metrics: nil, views: views))
         case .vertical?:
-            container.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .vertical)
-            container.setContentHuggingPriority(UILayoutPriorityDefaultLow, for: .vertical)
+            container.setContentCompressionResistancePriority(.required, for: .vertical)
+            container.setContentHuggingPriority(.defaultLow, for: .vertical)
             
             contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[titleContainer]-|", options: [], metrics: nil, views: views))
             contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[fieldContainer]-|", options: [], metrics: nil, views: views))
@@ -622,7 +623,7 @@ open class LabelFormCell: FormCell {
         label.textColor = UIColor.gray
         fieldContainer.addSubview(label)
         
-        let views: [String: Any] = [
+        let views = [
             "label": label
         ]
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[label]-|", options: [], metrics: nil, views: views))
@@ -652,7 +653,7 @@ open class MultiLineLabelFormCell: LabelFormCell {
 }
 
 open class SubtitleFormCell: FormCell {
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = .none
@@ -666,7 +667,7 @@ open class SubtitleFormCell: FormCell {
 open class TextViewFormCell: FormCell, UITextViewDelegate {
     open var textView = UITextView()
     
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .value1, reuseIdentifier: reuseIdentifier)
         
         textView.delegate = self
@@ -712,7 +713,7 @@ open class TextViewFormCell: FormCell, UITextViewDelegate {
 open class TextFieldFormCell: FormCell, UITextFieldDelegate {
     open var textField = UITextField()
     
-    override public init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    override public init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .value1, reuseIdentifier: reuseIdentifier)
         
         textField.addTarget(self, action: #selector(TextFieldFormCell.textFieldValueChanged(_:)), for: .editingChanged)
@@ -738,7 +739,7 @@ open class TextFieldFormCell: FormCell, UITextFieldDelegate {
         }
     }
     
-    func textFieldValueChanged(_ textField: UITextField) {
+    @objc func textFieldValueChanged(_ textField: UITextField) {
         if (row as? TextFieldFormRow)?.numberFormatter == nil {
             row?.value = textField.text
         }
@@ -857,8 +858,8 @@ open class DatePickerFormCell: TextFieldFormCell {
         fieldContainer.addSubview(dateLabel)
         
         clearButton.translatesAutoresizingMaskIntoConstraints = false
-        clearButton.setTitle("✕", for: UIControlState())
-        clearButton.setTitleColor(UIColor.lightGray, for: UIControlState())
+        clearButton.setTitle("✕", for: .init())
+        clearButton.setTitleColor(UIColor.lightGray, for: .init())
         clearButton.addTarget(self, action: #selector(clearButtonTapped(_:)), for: .touchUpInside)
         clearButton.contentHorizontalAlignment = .right
         fieldContainer.addSubview(clearButton)
@@ -878,7 +879,7 @@ open class DatePickerFormCell: TextFieldFormCell {
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[clearButton]-|", options: [], metrics: nil, views: views))
     }
     
-    func didSelect(_ gestureRecognizer: UIGestureRecognizer) {
+    @objc func didSelect(_ gestureRecognizer: UIGestureRecognizer) {
         textField.becomeFirstResponder()
     }
     
@@ -886,11 +887,11 @@ open class DatePickerFormCell: TextFieldFormCell {
         row?.value = datePicker.date
     }
     
-    func datePickerValueChanged(_ datePicker: UIDatePicker) {
+    @objc func datePickerValueChanged(_ datePicker: UIDatePicker) {
         row?.value = datePicker.date
     }
     
-    func clearButtonTapped(_ sender: AnyObject) {
+    @objc func clearButtonTapped(_ sender: AnyObject) {
         row?.value = nil
         textField.resignFirstResponder()
     }
@@ -940,7 +941,7 @@ open class DropdownFormCell: TextFieldFormCell {
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[label]-|", options: [], metrics: nil, views: views))
     }
     
-    func didSelect(_ gestureRecognizer: UIGestureRecognizer) {
+    @objc func didSelect(_ gestureRecognizer: UIGestureRecognizer) {
         textField.becomeFirstResponder()
     }
     
@@ -980,7 +981,7 @@ open class SliderFormCell: FormCell {
         }
     }
     
-    func sliderChanged(_ slider: UISlider) {
+    @objc func sliderChanged(_ slider: UISlider) {
         row?.value = slider.value
     }
 }
@@ -1010,7 +1011,7 @@ open class SwitchFormCell: FormCell {
         }
     }
     
-    func switched(_ control: UISwitch) {
+    @objc func switched(_ control: UISwitch) {
         row?.value = control.isOn
     }
 }
@@ -1046,7 +1047,7 @@ open class SelectableFormCell: FormCell {
         gestureRecognizers = [UITapGestureRecognizer(target: self, action: #selector(didSelect(_:)))]
     }
     
-    func didSelect(_ gestureRecognizer: UIGestureRecognizer) {
+    @objc func didSelect(_ gestureRecognizer: UIGestureRecognizer) {
         guard let selected = (row as? SelectableFormRow)?.selected else {
             return
         }
@@ -1092,7 +1093,7 @@ open class MapFormCell: FormCell, MKMapViewDelegate {
         mapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didSelectMap(_:))))
         fieldContainer.addSubview(mapView)
         
-        let views: [String: Any] = [
+        let views = [
             "mapView": mapView
         ]
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[mapView]-|", options: [], metrics: nil, views: views))
@@ -1159,7 +1160,7 @@ open class MapFormCell: FormCell, MKMapViewDelegate {
         return annotationView
     }
     
-    func didSelectMap(_ recognizer: UITapGestureRecognizer) {
+    @objc func didSelectMap(_ recognizer: UITapGestureRecognizer) {
         row?.selection?(self)
     }
 }
@@ -1189,7 +1190,7 @@ open class FormViewController: UITableViewController {
         super.init(style: form.tableStyle)
     }
     
-    public override init(style: UITableViewStyle) {
+    public override init(style: UITableView.Style) {
         super.init(style: style)
     }
 

@@ -31,7 +31,7 @@ class CustomCell: FormCell {
         
     }
     
-    func valueChanged(_ segmentedControl: UISegmentedControl) {
+    @objc func valueChanged(_ segmentedControl: UISegmentedControl) {
         row?.value = segmentedControl.selectedSegmentIndex
     }
 }

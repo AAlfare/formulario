@@ -81,7 +81,7 @@ class ViewController: FormViewController {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .left
         
-        let multiLineText = NSMutableAttributedString(string: "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.", attributes: [ NSParagraphStyleAttributeName: paragraphStyle ])
+        let multiLineText = NSMutableAttributedString(string: "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.", attributes: [ .paragraphStyle: paragraphStyle ])
         
         form.sections = [
             FormSection(title: "Static", rows: [
