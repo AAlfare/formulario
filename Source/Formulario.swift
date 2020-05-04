@@ -1023,7 +1023,7 @@ open class SelectionFormCell: LabelFormCell {
         selectionStyle = .default
         accessoryType = .disclosureIndicator
         
-        contentView.layoutMargins.right = 0
+//        contentView.layoutMargins.right = 0
     }
     
     override open func configure(_ row: FormRow) {
