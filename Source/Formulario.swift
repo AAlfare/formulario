@@ -96,7 +96,7 @@ extension Form {
 
 extension Form: UITableViewDelegate {
     open func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let row = sections[indexPath.section].rows[indexPath.row]
+        let row = sections[indexPath.section].visibleRows[indexPath.row]
         if let cell = tableView.cellForRow(at: indexPath) as? Cell {
             row.selection?(cell)
         }
@@ -208,6 +208,8 @@ open class FormRow: NSObject {
                 return
             }
             
+            tableView.beginUpdates()
+            
             if oldValue == false && hidden == true {
                 if let oldIndexPath = oldIndexPath {
                     tableView.deleteRows(at: [oldIndexPath], with: .top)
@@ -217,6 +219,8 @@ open class FormRow: NSObject {
                     tableView.insertRows(at: [indexPath], with: .bottom)
                 }
             }
+            
+            tableView.endUpdates()
         }
     }
     
