@@ -212,11 +212,11 @@ open class FormRow: NSObject {
             
             if oldValue == false && hidden == true {
                 if let oldIndexPath = oldIndexPath {
-                    tableView.deleteRows(at: [oldIndexPath], with: .top)
+                    tableView.deleteRows(at: [oldIndexPath], with: .automatic)
                 }
             } else if oldValue == true && hidden == false {
                 if let indexPath = indexPath {
-                    tableView.insertRows(at: [indexPath], with: .bottom)
+                    tableView.insertRows(at: [indexPath], with: .automatic)
                 }
             }
             
