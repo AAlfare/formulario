@@ -862,8 +862,10 @@ open class DatePickerFormCell: TextFieldFormCell {
             stackView.translatesAutoresizingMaskIntoConstraints = false
             stackView.axis = .horizontal
             stackView.alignment = .center
+            stackView.distribution = .equalSpacing
             stackView.addArrangedSubview(UIView())
             stackView.addArrangedSubview(datePicker)
+            datePicker.translatesAutoresizingMaskIntoConstraints = false
             fieldContainer.addSubview(stackView)
         } else {
             textField.inputView = datePicker
