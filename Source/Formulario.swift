@@ -844,6 +844,7 @@ open class CurrencyFormCell: TextFieldFormCell {
 }
 
 open class DatePickerFormCell: TextFieldFormCell {
+    public let stackView = UIStackView()
     public let datePicker = UIDatePicker()
     public let dateLabel = UILabel()
     public let clearButton = UIButton()
@@ -853,13 +854,24 @@ open class DatePickerFormCell: TextFieldFormCell {
         super.setupUI()
         
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
-        textField.inputView = datePicker
+        
         textField.delegate = self
         textField.isHidden = true
         
-        dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.textAlignment = .right
-        fieldContainer.addSubview(dateLabel)
+        if #available(iOS 13.4, *) {
+            stackView.translatesAutoresizingMaskIntoConstraints = false
+            stackView.axis = .horizontal
+            stackView.alignment = .center
+            stackView.addArrangedSubview(UIView())
+            stackView.addArrangedSubview(datePicker)
+            fieldContainer.addSubview(stackView)
+        } else {
+            textField.inputView = datePicker
+            dateLabel.translatesAutoresizingMaskIntoConstraints = false
+            dateLabel.textAlignment = .right
+            fieldContainer.addSubview(dateLabel)
+        }
+        
         
         clearButton.translatesAutoresizingMaskIntoConstraints = false
         clearButton.setTitle("✕", for: .init())
@@ -874,17 +886,30 @@ open class DatePickerFormCell: TextFieldFormCell {
             "textLabel": textLabel!,
             "dateLabel": dateLabel,
             "clearButton": clearButton,
-            "textField": textField
+            "textField": textField,
+            "stackView": stackView,
         ]
         self.clearButtonWidthConstraint = NSLayoutConstraint(item: clearButton, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 0)
         contentView.addConstraint(clearButtonWidthConstraint!)
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[dateLabel][clearButton]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-|", options: [], metrics: nil, views: views))
+        
+        if #available(iOS 13.4, *) {
+            contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[stackView][clearButton]-|", options: [], metrics: nil, views: views))
+            contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[stackView]|", options: [], metrics: nil, views: views))
+        } else {
+            contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[dateLabel][clearButton]-|", options: [], metrics: nil, views: views))
+            contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[dateLabel]-|", options: [], metrics: nil, views: views))
+        }
+        
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[clearButton]-|", options: [], metrics: nil, views: views))
     }
     
     @objc func didSelect(_ gestureRecognizer: UIGestureRecognizer) {
-        textField.becomeFirstResponder()
+        if #available(iOS 13.4, *) {
+            row?.value = datePicker.date
+            datePicker.isHidden = false
+        } else {
+            textField.becomeFirstResponder()
+        }
     }
     
     open override func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -915,7 +940,13 @@ open class DatePickerFormCell: TextFieldFormCell {
         } else {
             dateLabel.text = nil
         }
+        
+        if #available(iOS 13.4, *) {
+            datePicker.isHidden = row.value == nil
+        }
+        
         clearButtonWidthConstraint.constant = row.value != nil ? 25 : 0
+        stackView.layoutIfNeeded()
         contentView.layoutIfNeeded()
     }
 }
