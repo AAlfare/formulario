@@ -823,6 +823,7 @@ open class CurrencyFormCell: TextFieldFormCell {
         
         internalFormatter.numberStyle = .decimal
         internalFormatter.locale = .current
+        internalFormatter.generatesDecimalNumbers = true
     }
     
     override func textFieldValueChanged(_ textField: UITextField) {
@@ -830,7 +831,7 @@ open class CurrencyFormCell: TextFieldFormCell {
     }
     
     public override func textFieldDidBeginEditing(_ textField: UITextField) {
-        let number = row?.value as? NSNumber
+        let number = row?.value as? NSDecimalNumber
         textField.text = number.flatMap { internalFormatter.string(from: $0) }
         
         DispatchQueue.main.asyncAfter(deadline: .now()+0.01) {
@@ -847,7 +848,7 @@ open class CurrencyFormCell: TextFieldFormCell {
     open override func configure(_ row: FormRow) {
         super.configure(row)
         
-        let number = row.value as? NSNumber
+        let number = row.value as? NSDecimalNumber
         textField.text = number.map({ formatter.string(from: $0) }) ?? nil
     }
 }
