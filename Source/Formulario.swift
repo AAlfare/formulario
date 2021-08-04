@@ -814,10 +814,15 @@ open class PasswordFormCell: TextFieldFormCell {
 
 open class CurrencyFormCell: TextFieldFormCell {
     let formatter = NumberFormatter()
+    private let internalFormatter = NumberFormatter()
     
     override open func setupUI() {
         super.setupUI()
         formatter.numberStyle = .currency
+        formatter.locale = .current
+        
+        internalFormatter.numberStyle = .decimal
+        internalFormatter.locale = .current
     }
     
     override func textFieldValueChanged(_ textField: UITextField) {
@@ -826,19 +831,23 @@ open class CurrencyFormCell: TextFieldFormCell {
     
     public override func textFieldDidBeginEditing(_ textField: UITextField) {
         let number = row?.value as? NSNumber
-        textField.text = number?.stringValue
+        textField.text = number.flatMap { internalFormatter.string(from: $0) }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.01) {
+            textField.selectedTextRange = textField.textRange(from: textField.endOfDocument, to: textField.endOfDocument)
+        }
+        
     }
     
     open override func textFieldDidEndEditing(_ textField: UITextField) {
-        let number = NSDecimalNumber(string: textField.text)
-        row?.value = number == NSDecimalNumber.notANumber ? nil : number
+        row?.value = internalFormatter.number(from: textField.text ?? "")
         super.textFieldDidEndEditing(textField)
     }
     
     open override func configure(_ row: FormRow) {
         super.configure(row)
         
-        let number = row.value as? NSDecimalNumber
+        let number = row.value as? NSNumber
         textField.text = number.map({ formatter.string(from: $0) }) ?? nil
     }
 }
