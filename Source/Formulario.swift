@@ -827,7 +827,6 @@ open class CurrencyFormCell: TextFieldFormCell {
     }
     
     override func textFieldValueChanged(_ textField: UITextField) {
-        row?.value = internalFormatter.number(from: textField.text ?? "")
     }
     
     public override func textFieldDidBeginEditing(_ textField: UITextField) {
