@@ -1142,8 +1142,8 @@ open class MapFormCell: FormCell, MKMapViewDelegate {
         let views = [
             "mapView": mapView
         ]
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-[mapView]-|", options: [], metrics: nil, views: views))
-        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[mapView]-|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|[mapView]|", options: [], metrics: nil, views: views))
+        contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[mapView]|", options: [], metrics: nil, views: views))
     }
     
     override open func configure(_ row: FormRow) {
